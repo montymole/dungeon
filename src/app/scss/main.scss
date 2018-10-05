@@ -1,0 +1,91 @@
+
+@import url('https://fonts.googleapis.com/css?family=Teko:600');
+$font-stack: 'Teko', sans-serif;
+$bg: #000;
+$c1: #fff;
+$c2: #060;
+$c3: #085;
+$c4: #0a8;
+* {
+  margin:0;
+  padding:0;
+}
+
+.world {
+  position: fixed;
+  z-Index: 0;
+  top: 0;
+  left: 0;
+  bottom:0;
+  right: 0;
+  border:solid 1px #fff;
+}
+
+body {
+  background-color:$bg;
+  color: $c1;
+  font: 100% $font-stack;
+  margin:0;
+  padding:0;
+}
+
+a {
+  color: $c1;
+}
+
+h1 {
+  text-shadow: 2px 2px #ff0000;
+}
+
+.row {
+}
+
+.col {
+  display:inline-block;
+}
+
+.menu {
+  display: block;
+  background-color: $c2;
+  li {
+    display: inline-block;
+    a {
+      display:block;
+      text-decoration: none;
+      padding:.2em 1em;
+      font-size:1em;
+      &:hover {
+        background-color:$c1;
+        color:$c2;
+      }
+    }
+  }
+}
+
+button {
+  padding:.2em 1em;
+  font: 100% $font-stack;
+  color:$c1;
+  background-color:$c3;
+  border: none;
+  &:focus {
+    background-color:$c4;
+    outline:none;  
+  }
+}
+
+.showkeys {
+  position:fixed;
+  bottom:5px;
+  left:0;
+  right:0;
+  text-align: center;
+  h2 {
+    margin:auto 5px;
+    padding:0.1em 1em;
+    color:$c2;
+    border:solid 1px $c2;
+    text-align: center;
+    display:inline-block;
+  }
+}

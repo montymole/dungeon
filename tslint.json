@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "tslint-config-airbnb"
+  ],
+  "rules": {
+    "semicolon": [
+      true,
+      "always"
+    ],
+    "max-line-length": 512,
+    "experimentalDecorators": true,
+    "space-before-function-paren": false,
+    "import-name": false,
+    "trailing-comma": false,
+    "member-ordering": [
+      "fields-first"
+    ]
+  }
+}
