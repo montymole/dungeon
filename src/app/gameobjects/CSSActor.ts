@@ -2,21 +2,13 @@ import * as THREE from 'three';
 import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
 const SCALE = 0.01;
 export class CSSActor extends THREE.CSS3DObject {
-  props: any;
-  constructor(
-    props = {
-      element: null,
-      position: { x: 0, y: 0, z: 0 },
-      rotation: { x: 0, y: 0, z: 0 }
-    }
-  ) {
+  constructor(props) {
     super(props.element);
-    this.setProps(props);
     this.scale.set(SCALE, SCALE, SCALE);
+    this.update(props);
   }
-  setProps (props) {
-    this.props = props;
-    const { position, rotation } = this.props;
+  update (props) {
+    const { position, rotation } = props;
     if (position) {
       this.position.x = position.x;
       this.position.y = position.y;

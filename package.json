@@ -34,7 +34,7 @@
       "restart": "webpack --mode development"
     },
     "watch": [
-      "./src/**/**"
+      "./src/**/*"
     ]
   },
   "eslintConfig": {

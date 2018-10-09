@@ -14,24 +14,16 @@ export default class World extends React.Component<any, any> {
   controls: THREE.OrbitControls;
   css3DScene: THREE.Scene;
   css3Drenderer: THREE.CSS3DRenderer;
-  html3Delements: THREE.Object3D[];
   raycaster: THREE.Raycaster;
   mouse3D: THREE.Vector3;
 
-  constructor(props, context) {
-    super(props, context);
-    this.html3Delements = [];
-  }
 
   componentDidMount () {
+    const { onInit } = this.props;
     this.initWebGL(this.domRoot);
     this.initCSS3D(this.domRoot);
+    if (onInit) { onInit(this); }
     this.renderAnimationFrame();
-  }
-
-  componentDidUpdate () {
-    if (this.html3Delements)
-      this.html3Delements.forEach(o => this.css3DScene.add(o));
   }
 
   initWorld (domRoot) {
@@ -88,7 +80,7 @@ export default class World extends React.Component<any, any> {
     this.raycaster.setFromCamera(mouse, this.camera);
     // calculate objects intersecting the picking ray
     const intersections = this.raycaster.intersectObjects(this.scene.children, true);
-    console.log('3D WORLD', mouse, intersections);
+    console.log('3D WORLD', mouse, intersections, this.scene);
   }
 
   renderAnimationFrame () {
@@ -100,10 +92,9 @@ export default class World extends React.Component<any, any> {
 
   render () {
     const { children } = this.props;
-    const children3D = React.Children.map(children, (c: any) => React.cloneElement(c, { onReady: e => this.html3Delements.push(e) }));
     return (
       <div className="world" ref={domRoot => this.initWorld(domRoot)} onClick={this.onWorldClick.bind(this)} >
-        {children3D}
+        {children}
       </div>
     );
   }

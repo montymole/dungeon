@@ -19,7 +19,7 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       # Change this if deploying to staging or production
-      - MYSQL_DATABASE=sb2_staging
+      - MYSQL_DATABASE=timeline
 
   redis:
     image: "redis"
