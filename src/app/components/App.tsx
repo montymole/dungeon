@@ -21,11 +21,11 @@ export class App extends React.Component<any, any> {
           <HTML3D position={{ x: Math.sin(this.props.appState.timer), y: 0, z: 2 }} world={world}>
             <h1>TOKA</h1>
           </HTML3D>
-          <HTML3D position={{ x: 0, y: 1.6, z: 1 }} onClick={this.onReset} world={world}>
+          <HTML3D position={{ x: 0, y: 0, z: 1 }} mass={2} onClick={this.onReset} world={world}>
             TESTI1234 {this.props.appState.timer}
           </HTML3D>
-          <GL3D position={{ x: 0, y: 1, z: Math.sin(this.props.appState.timer) }} world={world} />
-          <GL3D position={{ x: 0, y: -1, z: 1 }} world={world} />
+          <GL3D position={{ x: 0, y: 2, z: 0 }} mass={5} world={world} />
+          <GL3D position={{ x: 1, y: 3, z: 1 }} mass={2} world={world} />
         </World>
         <DevTools />
         Time {this.props.appState.timer}

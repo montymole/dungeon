@@ -1,11 +1,14 @@
 import * as React from 'react';
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 global['THREE'] = THREE;
 import '../../../node_modules/three/examples/js/controls/OrbitControls';
 import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
 
+const fixedTimeStep = 1.0 / 60.0; // seconds
 export default class World extends React.Component<any, any> {
   domRoot: HTMLElement;
+  lastFrameTime: number;
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   camera: THREE.Camera;
@@ -16,6 +19,24 @@ export default class World extends React.Component<any, any> {
   css3Drenderer: THREE.CSS3DRenderer;
   raycaster: THREE.Raycaster;
   mouse3D: THREE.Vector3;
+  physics: any;
+
+  constructor(props) {
+    super(props);
+    if (!this.physics) {
+      // Setup our world
+      this.physics = new CANNON.World();
+      this.physics.gravity.set(0, 0, -0.9); // m/s²
+      // Create a plane
+      const groundBody = new CANNON.Body({
+        mass: 0 // mass == 0 makes the body static
+      });
+      const groundShape = new CANNON.Plane();
+      groundBody.addShape(groundShape);
+      this.physics.addBody(groundBody);
+      this.raycaster = new THREE.Raycaster();
+    }
+  }
 
 
   componentDidMount () {
@@ -28,7 +49,6 @@ export default class World extends React.Component<any, any> {
 
   initWorld (domRoot) {
     this.domRoot = domRoot;
-    this.raycaster = new THREE.Raycaster();
   }
 
   initWebGL (containerEl) {
@@ -83,11 +103,19 @@ export default class World extends React.Component<any, any> {
     console.log('3D WORLD', mouse, intersections, this.scene);
   }
 
-  renderAnimationFrame () {
-    requestAnimationFrame(() => this.renderAnimationFrame());
+  renderAnimationFrame (now: number = 0) {
+    requestAnimationFrame(t => this.renderAnimationFrame(t));
+    if (this.lastFrameTime) {
+      const delta = (now - this.lastFrameTime) / 1000;
+      this.physics.step(fixedTimeStep, delta, 10);
+      this.scene.children
+        .filter((c: any) => c.renderAnimationFrame)
+        .forEach((c: any) => c.renderAnimationFrame(now));
+    }
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.css3Drenderer.render(this.css3DScene, this.camera);
+    this.lastFrameTime = now;
   }
 
   render () {

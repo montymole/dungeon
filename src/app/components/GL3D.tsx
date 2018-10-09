@@ -7,8 +7,7 @@ export default class GL3D extends React.Component<any, any> {
   componentDidUpdate () {
     const { world, position, rotation } = this.props;
     if (!this.obj3d && world) {
-      this.obj3d = new Actor({ position, rotation });
-      world.scene.add(this.obj3d);
+      this.obj3d = new Actor({ world, position, rotation });
     }
     if (this.obj3d) {
       this.obj3d.update({ position, rotation });
