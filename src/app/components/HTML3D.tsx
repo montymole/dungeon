@@ -3,20 +3,16 @@ import * as React from 'react';
 import { CSSActor } from '../gameobjects';
 
 export default class HTML3D extends React.Component<any, any> {
-  domRoot: HTMLElement;
+  element: HTMLElement;
   obj3d: any;
   componentDidUpdate () {
-    const { world, position, rotation } = this.props;
+    const { world, position, mass, force } = this.props;
+    const { element } = this;
     if (!this.obj3d && world) {
-      console.log('CSSobj');
-      this.obj3d = new CSSActor({ position, rotation, element: this.domRoot });
-      world.css3DScene.add(this.obj3d);
-    }
-    if (this.obj3d) {
-      this.obj3d.update({ position, rotation });
+      this.obj3d = new CSSActor({ element, world, position, mass, force });
     }
   }
   render () {
-    return (<div ref={domRoot => this.domRoot = domRoot}>{this.props.children}</div>);
+    return (<div ref={element => this.element = element}>{this.props.children}</div>);
   }
 }

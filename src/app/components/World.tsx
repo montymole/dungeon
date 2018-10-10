@@ -22,22 +22,15 @@ export default class World extends React.Component<any, any> {
   physics: any;
 
   constructor(props) {
+    const { gravity } = props;
     super(props);
     if (!this.physics) {
       // Setup our world
       this.physics = new CANNON.World();
-      this.physics.gravity.set(0, 0, -0.9); // m/s²
-      // Create a plane
-      const groundBody = new CANNON.Body({
-        mass: 0 // mass == 0 makes the body static
-      });
-      const groundShape = new CANNON.Plane();
-      groundBody.addShape(groundShape);
-      this.physics.addBody(groundBody);
+      if (gravity) this.physics.gravity.set(gravity.x, gravity.y, gravity.z);
       this.raycaster = new THREE.Raycaster();
     }
   }
-
 
   componentDidMount () {
     const { onInit } = this.props;
@@ -54,15 +47,17 @@ export default class World extends React.Component<any, any> {
   initWebGL (containerEl) {
     const width = containerEl.offsetWidth;
     const height = containerEl.offsetHeight;
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
     this.renderer.setSize(width, height);
+    this.renderer.shadowMapEnabled = true;
+
     this.renderer.domElement.style.position = 'absolute';
     this.renderer.domElement.style.zIndex = '1';
     containerEl.appendChild(this.renderer.domElement);
     this.scene = new THREE.Scene();
     // default camera
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    this.camera.position.set(0, 1.2, 2.5);
+    this.camera.position.set(1.2, 5, 20);
     this.scene.add(this.camera);
     // add subtle blue ambient lighting
     this.ambientLight = new THREE.AmbientLight(0x000080);
@@ -70,10 +65,11 @@ export default class World extends React.Component<any, any> {
     // lighting
     this.light = new THREE.PointLight(0xffeedd, 5.5, 1000);
     this.light.position.set(10, 10, 10);
+    this.light.castShadow = true;
     this.scene.add(this.light);
     // controls
     this.controls = new THREE.OrbitControls(this.camera);
-    this.controls.target = new THREE.Vector3(0, 0.6, 0);
+    this.controls.target = new THREE.Vector3(0, 2, 0);
     return this.renderer.domElement;
   }
 
@@ -108,6 +104,9 @@ export default class World extends React.Component<any, any> {
     if (this.lastFrameTime) {
       const delta = (now - this.lastFrameTime) / 1000;
       this.physics.step(fixedTimeStep, delta, 10);
+      this.css3DScene.children
+        .filter((c: any) => c.renderAnimationFrame)
+        .forEach((c: any) => c.renderAnimationFrame(now));
       this.scene.children
         .filter((c: any) => c.renderAnimationFrame)
         .forEach((c: any) => c.renderAnimationFrame(now));

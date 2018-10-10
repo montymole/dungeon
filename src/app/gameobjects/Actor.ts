@@ -3,37 +3,60 @@ import * as CANNON from 'cannon';
 export class Actor extends THREE.Object3D {
   mesh: any;            // mesh
   material: any;        // material
-  body: any;             // physics body
+  body: any;            // physics body
+  shape: any;           // physics shape
   constructor(props) {
     super();
     this.init(props);
     this.update(props);
   }
-
   init (props) {
-    const { world, mass = 0 } = props;
-    this.body = new CANNON.Body({
-      mass: 5, // kg
-      position: new CANNON.Vec3(0, 0, 0),
-      shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1))
-    });
-    if (world && world.physics)
-      world.physics.addBody(this.body);
-    this.material = new THREE.MeshPhongMaterial({
-      transparent: true,
-      specular: 0xFFFFFF,
-      color: 0x880000,
-      emissive: 0x000000,
-      shininess: 10,
-      opacity: 0.7
-    });
-    this.mesh = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), this.material);
+    const { world, mass = 0, position, type = 'CUBE', color = 0x808080 } = props;
+    let geometry;
+    let shape;
+    // graphics
+    this.material = new THREE.MeshLambertMaterial({ color, transparent: true });
+    switch (type) {
+      case 'PLANE':
+        geometry = new THREE.PlaneGeometry(10, 10, 64, 64);
+        shape = new CANNON.Plane();
+        this.mesh = new THREE.Mesh(geometry, this.material);
+        this.mesh.scale.set(100, 100, 100);
+        break;
+      case 'CUBE':
+      default:
+        geometry = new THREE.CubeGeometry(2, 2, 2);
+        shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+        this.mesh = new THREE.Mesh(geometry, this.material);
+        break;
+    }
+    this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
+    const mesh = this.mesh;
+    if (mesh.children) {
+      for (let i = 0; i < mesh.children.length; i += 1) {
+        mesh.children[i].castShadow = true;
+        mesh.children[i].receiveShadow = true;
+        if (mesh.children[i]) {
+          for (let j = 0; j < mesh.children[i].length; j += 1) {
+            mesh.children[i].children[j].castShadow = true;
+            mesh.children[i].children[j].receiveShadow = true;
+          }
+        }
+      }
+    }
     this.add(this.mesh);
-    if (world && world.scene)
-      world.scene.add(this);
+    // physics
+    this.body = new CANNON.Body({
+      mass,
+      shape,
+      position: new CANNON.Vec3(position.x, position.y, position.z)
+    });
+    if (world && world.physics) world.physics.addBody(this.body);
+    if (world && world.scene) world.scene.add(this);
   }
   update (props) {
-    const { position, rotation, mass } = props;
+    const { position, rotation } = props;
     if (position) {
       this.body.position.x = position.x;
       this.body.position.y = position.y;

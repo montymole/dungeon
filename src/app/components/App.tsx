@@ -15,20 +15,22 @@ export class App extends React.Component<any, any> {
   render () {
     const { appState } = this.props;
     const world = appState && appState.world;
+    const test = 'HELLLOO WORLD JEEE JEE'.split('');
     return (
       <div>
-        <World onInit={world => this.saveWorld(world)}>
-          <HTML3D position={{ x: Math.sin(this.props.appState.timer), y: 0, z: 2 }} world={world}>
-            <h1>TOKA</h1>
-          </HTML3D>
-          <HTML3D position={{ x: 0, y: 0, z: 1 }} mass={2} onClick={this.onReset} world={world}>
-            TESTI1234 {this.props.appState.timer}
-          </HTML3D>
-          <GL3D position={{ x: 0, y: 2, z: 0 }} mass={5} world={world} />
-          <GL3D position={{ x: 1, y: 3, z: 1 }} mass={2} world={world} />
+        <World onInit={world => this.saveWorld(world)} gravity={{ x: 0, y: 0, z: -9.8 }}>
+          <GL3D position={{ x: 0, y: 0, z: 0 }} mass={0} world={world} type="PLANE" color={0x20a020} />
+
+          {test.map((a, i) =>
+            <HTML3D position={{ x: -20 + i * 2, y: 0, z: 10 * i }} world={world} mass={1}>
+              😀<h1>{a}</h1>
+            </HTML3D>)}
+
+          {test.map((a, i) => <GL3D position={{ x: 0, y: 10, z: 5 + i * 1.5 }} mass={1} world={world} type="CUBE" color={0xa01010 * i} />)}
         </World>
         <DevTools />
-        Time {this.props.appState.timer}
+        <div> Time {this.props.appState.timer}</div>
+
       </div>
     );
   }

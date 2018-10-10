@@ -5,12 +5,9 @@ import { Actor } from '../gameobjects';
 export default class GL3D extends React.Component<any, any> {
   obj3d: any;
   componentDidUpdate () {
-    const { world, position, rotation } = this.props;
+    const { world, position, mass, type, color } = this.props;
     if (!this.obj3d && world) {
-      this.obj3d = new Actor({ world, position, rotation });
-    }
-    if (this.obj3d) {
-      this.obj3d.update({ position, rotation });
+      this.obj3d = new Actor({ world, position, mass, type, color });
     }
   }
   render () {
