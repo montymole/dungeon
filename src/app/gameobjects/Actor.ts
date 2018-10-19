@@ -11,11 +11,13 @@ export class Actor extends THREE.Object3D {
     this.update(props);
   }
   init (props) {
-    const { world, mass = 0, position, type = 'CUBE', color = 0x808080 } = props;
+    const { world, mass = 0, position, type = 'CUBE', material } = props;
     let geometry;
     let shape;
     // graphics
-    this.material = new THREE.MeshLambertMaterial({ color, transparent: true });
+    if (material) {
+      this.material = new THREE[material.shader](material.props);
+    }
     switch (type) {
       case 'PLANE':
         geometry = new THREE.PlaneGeometry(10, 10, 64, 64);

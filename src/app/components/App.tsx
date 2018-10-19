@@ -8,6 +8,10 @@ import GL3D from './GL3D';
 @observer
 export class App extends React.Component<any, any> {
 
+  async componentWillMount () {
+    await this.props.appState.loadMaterials();
+  }
+
   saveWorld (world) {
     this.props.appState.saveWorld(world);
   }
@@ -15,6 +19,9 @@ export class App extends React.Component<any, any> {
   render () {
     const { appState } = this.props;
     const world = appState && appState.world;
+    const materials = appState && appState.materials;
+    if (!materials) return (<div style={{ margin: '25%' }}><h1>..loading</h1></div>);
+
     const test = 'HELLLOO WORLD JEEE JEE'.split('');
     return (
       <div>
@@ -26,7 +33,7 @@ export class App extends React.Component<any, any> {
               😀<h1>{a}</h1>
             </HTML3D>)}
 
-          {test.map((a, i) => <GL3D position={{ x: 0, y: 10, z: 5 + i * 1.5 }} mass={1} world={world} type="CUBE" color={0xa01010 * i} />)}
+          {test.map((a, i) => <GL3D position={{ x: 0, y: 10, z: 5 + i * 1.5 }} mass={1} world={world} type="CUBE" material={materials && materials[Math.round(Math.random() * materials.length)]} />)}
         </World>
         <DevTools />
         <div> Time {this.props.appState.timer}</div>
