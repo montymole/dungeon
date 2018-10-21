@@ -11,14 +11,24 @@ export class Actor extends THREE.Object3D {
     this.update(props);
   }
   init (props) {
-    const { world, mass = 0, position, type = 'CUBE', material } = props;
+    const { instance } = props;
+    const {
+      world,
+      mass = (instance && instance.mass) || 0,
+      scale = (instance && instance.scale),
+      position = instance && instance.position,
+      material = instance && instance.material
+    } = props;
     let geometry;
-    let shape;
+    let shape = (instance && instance.shape) || props.shape || 'CUBE';
     // graphics
     if (material) {
       this.material = new THREE[material.shader](material.props);
     }
-    switch (type) {
+
+    console.log(shape);
+
+    switch (shape) {
       case 'PLANE':
         geometry = new THREE.PlaneGeometry(10, 10, 64, 64);
         shape = new CANNON.Plane();
@@ -47,6 +57,8 @@ export class Actor extends THREE.Object3D {
         }
       }
     }
+    if (scale)
+      this.scale.set(scale.x, scale.y, scale.z);
     this.add(this.mesh);
     // physics
     this.body = new CANNON.Body({

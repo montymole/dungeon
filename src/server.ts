@@ -53,7 +53,8 @@ app.use(session({
 app.use('/', api({ knex, config: configJson }));
 
 // serve static files
-app.use('/', express.static('./dist/app'));
+app.use('/app', express.static('./dist/app'));
+app.use('/', express.static('./static'));
 
 console.log('Running in :', environment);
 server.listen(process.env.PORT || configJson.port, () => {

@@ -9,4 +9,10 @@ export default class BaseModel extends Model {
     }
     return this.query().insertAndFetch(opts);
   }
+  static async createOrUpdateGraph (opts) {
+    if (opts.id) {
+      return await this.query().upsertGraph(opts);
+    }
+    return await this.query().insertGraph(opts);
+  }
 }

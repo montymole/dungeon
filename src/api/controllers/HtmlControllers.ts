@@ -13,6 +13,7 @@ function html (opts: any): any {
   </head>
   <body>
     <div id="root"><h1>...</h1></div>
+    <script src="/fmodstudio.js"></script>
     <script src="${opts.appSrc}"></script>
   </body>
 </html>
@@ -26,8 +27,8 @@ export class IndexController extends BaseController {
     const opts = {
       title: process.env.npm_package_name,
       version: process.env.npm_package_version,
-      appSrc: '/client.js',
-      cssSrc: '/client.css'
+      appSrc: '/app/client.js',
+      cssSrc: '/app/client.css'
     };
     return { html: html(opts) };
   }
