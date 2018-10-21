@@ -6,7 +6,7 @@ export default class FModController {
   gSystemLowLevel: any;
   initApp: any;
   preloadFiles: string[];
-  constructor(opts = { preloadFiles: [], initApp: null }) {
+  constructor(opts: any = {}) {
     if (!FMODModule) {
       console.error('please inlcude fmodstudio.js in your page');
       this.FMOD = new Error('please include fmodstudio.js in your page');
@@ -25,7 +25,7 @@ export default class FModController {
   }
   preRun () {
     const { FMOD } = this;
-    if (this.preloadFiles.length) {
+    if (this.preloadFiles) {
       this.preloadFiles.forEach((f) => {
         const ff = f.split('/');
         FMOD.FS_createPreloadedFile('/', ff[ff.length - 1], f, true, false);

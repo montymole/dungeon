@@ -40,7 +40,7 @@ export class App extends React.Component<any, any> {
     fmod.checkResult(eventDescription.val.createInstance(eventInstance));
     this.gEventInstance = eventInstance.val;
     fmod.checkResult(this.gEventInstance.setParameterValueByIndex(this.gSurfaceIndex, 1.0));
-    const surfaceParameterValue = 0;
+    const surfaceParameterValue = 1;
     fmod.checkResult(this.gEventInstance.setParameterValueByIndex(this.gSurfaceIndex, 1.0));
     fmod.checkResult(this.gEventInstance.getParameterValueByIndex(this.gSurfaceIndex, surfaceParameterValue, null));
   }
@@ -50,6 +50,8 @@ export class App extends React.Component<any, any> {
       fmod.checkResult(gEventInstance.setParameterValueByIndex(gSurfaceIndex, Math.random() * 3.0));
       fmod.checkResult(gEventInstance.start());
     }
+    fmod.checkResult(fmod.gSystem.update());
+
   }
   saveWorld (world) {
     this.props.appState.saveWorld(world);
