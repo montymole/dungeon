@@ -11,10 +11,12 @@
     "removeComments": false,
     "noImplicitAny": false,
     "allowJs": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "baseUrl": "src"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "static/fmodstudio.js"
   ],
   "exclude": [
     "node_modules",

@@ -15,8 +15,8 @@
   "main": "dist/server",
   "scripts": {
     "postinstall": "node init.js",
-    "dev": "clear ; nodemon --watch",
-    "devapp": "clear; webpack --watch",
+    "devserver": "clear ; nodemon --watch",
+    "dev": "clear; webpack --watch",
     "clean": "rm -rf dist",
     "start": "node dist/server",
     "init": "knex --knexfile ./src/knexfile.ts migrate:latest ",

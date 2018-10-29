@@ -12,10 +12,10 @@ function html (opts: any): any {
     <link rel="stylesheet" type="text/css" href="${opts.cssSrc}"/>
   </head>
   <body>
-    <div id="root"><h1>...</h1></div>
+    <div id="root"><!--APP--></div>
     <script src="/fmodstudio.js"></script>
     <script src="${opts.appSrc}"></script>
-  </body>
+  </body> 
 </html>
 `);
 }

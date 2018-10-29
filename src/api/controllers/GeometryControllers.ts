@@ -33,3 +33,4 @@ export class GetObject extends BaseController {
     return await Object3D.findById(id);
   }
 }
+  
