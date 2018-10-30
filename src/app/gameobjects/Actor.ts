@@ -11,7 +11,7 @@ export class Actor extends THREE.Object3D {
     this.update(props);
   }
   init (props) {
-    const { instance } = props;
+    const { instance, onCollide } = props;
     const {
       world,
       mass = (instance && instance.mass) || 0,
@@ -26,7 +26,7 @@ export class Actor extends THREE.Object3D {
       this.material = new THREE[material.shader](material.props);
     }
 
-    console.log(shape);
+    console.log('TESTI-------------->', instance, shape, shape);
 
     switch (shape) {
       case 'PLANE':
@@ -66,6 +66,9 @@ export class Actor extends THREE.Object3D {
       shape,
       position: new CANNON.Vec3(position.x, position.y, position.z)
     });
+    if (onCollide)
+      this.body.addEventListener('collide', onCollide);
+
     if (world && world.physics) world.physics.addBody(this.body);
     if (world && world.scene) world.scene.add(this);
   }

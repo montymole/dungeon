@@ -11,12 +11,15 @@ export class CSSActor extends THREE.CSS3DObject {
     this.update(props);
   }
   init (props) {
-    const { world, mass = 0, position } = props;
+    const { world, mass = 0, position, onCollide } = props;
+    // physics
     this.body = new CANNON.Body({
       mass,
       position: new CANNON.Vec3(position.x, position.y, position.z),
       shape: new CANNON.Box(new CANNON.Vec3(0.01, 0.01, 0.01))
     });
+    if (onCollide)
+      this.body.addEventListener('collide', onCollide);
     if (world && world.physics) world.physics.addBody(this.body);
     if (world && world.scene) world.css3DScene.add(this);
   }

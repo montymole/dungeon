@@ -10,14 +10,17 @@ import { default as FModController } from '../audio/FModController';
 @observer
 export class App extends React.Component<any, any> {
   fmod: FModController;
+  sounds: any;
   gEventInstance: any;
   gSurfaceIndex: any;
 
   async componentWillMount () {
+    this.sounds = {};
     this.fmod = new FModController({
       preloadFiles: [
         '/fmod/Master_Bank.bank',
         '/fmod/Master_Bank.strings.bank',
+        '/fmod/Music.bank',
         '/fmod/SFX.bank'
       ],
       initApp: () => this.fmodMounted()
@@ -30,29 +33,53 @@ export class App extends React.Component<any, any> {
     console.log('DO SOMETIN...');
     fmod.loadBank('Master_Bank.bank');
     fmod.loadBank('Master_Bank.strings.bank');
+    fmod.loadBank('Music.bank');
     fmod.loadBank('SFX.bank');
-    const eventDescription: any = {};
-    fmod.checkResult(fmod.gSystem.getEvent('event:/Character/Player Footsteps', eventDescription));
-    const paramDesc: any = {};
-    fmod.checkResult(eventDescription.val.getParameter('Surface', paramDesc));
-    this.gSurfaceIndex = paramDesc.index;
-    const eventInstance: any = {};
-    fmod.checkResult(eventDescription.val.createInstance(eventInstance));
-    this.gEventInstance = eventInstance.val;
-    fmod.checkResult(this.gEventInstance.setParameterValueByIndex(this.gSurfaceIndex, 1.0));
-    const surfaceParameterValue = 1;
-    fmod.checkResult(this.gEventInstance.setParameterValueByIndex(this.gSurfaceIndex, 1.0));
-    fmod.checkResult(this.gEventInstance.getParameterValueByIndex(this.gSurfaceIndex, surfaceParameterValue, null));
-  }
-  testFmod () {
-    const { fmod, gEventInstance, gSurfaceIndex } = this;
-    if (gEventInstance) {
-      fmod.checkResult(gEventInstance.setParameterValueByIndex(gSurfaceIndex, Math.random() * 3.0));
-      fmod.checkResult(gEventInstance.start());
-    }
-    fmod.checkResult(fmod.gSystem.update());
 
+    // ready music
+    const musicInstance: any = {};
+    const musicDescription: any = {};
+    fmod.checkResult(fmod.gSystem.getEvent('event:/Music/Level 01', musicDescription));
+    fmod.checkResult(musicDescription.val.createInstance(musicInstance));
+    this.sounds.bgMusic = musicInstance.val;
+
+    // get explosion
+    const explosionDescription: any = {};
+    fmod.checkResult(fmod.gSystem.getEvent('event:/Weapons/Explosion', explosionDescription));
+    this.sounds.explosion = explosionDescription.val;
+    this.sounds.explosion.loadSampleData();
+    // start music
+    fmod.checkResult(this.sounds.bgMusic.setParameterValue('Progression', 1.0));
+    fmod.checkResult(this.sounds.bgMusic.setParameterValue('Stinger', 1.0));
+    fmod.checkResult(this.sounds.bgMusic.start());
   }
+
+  oneShot (snd, volume = 1, pitch = 1) {
+    if (!snd) return;
+    const inst: any = {};
+    return [
+      snd.createInstance(inst),
+      inst.val.setPitch(pitch),
+      inst.val.setVolume(volume),
+      inst.val.start(),
+      inst.val.release()
+    ];
+  }
+
+  boxCollision (e) {
+    const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
+    if (relativeVelocity > 0) {
+      this.oneShot(this.sounds.explosion, relativeVelocity * 0.1, 3);
+    }
+  }
+
+  letterCollision (e) {
+    const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
+    if (relativeVelocity > 0) {
+      this.oneShot(this.sounds.explosion, relativeVelocity * 0.01, 5);
+    }
+  }
+
   saveWorld (world) {
     this.props.appState.saveWorld(world);
   }
@@ -66,21 +93,29 @@ export class App extends React.Component<any, any> {
     const test = 'HELLLOO WORLD JEEE JEE'.split('');
     return (
       <div>
-        <button onClick={() => this.testFmod()}>FMOD TEST</button>
-        {/*
         <World onInit={world => this.saveWorld(world)} gravity={{ x: 0, y: 0, z: -9.8 }}>
           <GL3D position={{ x: 0, y: 0, z: 0 }} mass={0} world={world} shape="PLANE" material={materials[0]} />
-          <GL3D position={{ x: 2, y: 2, z: 2 }} mass={0} world={world} instance={objects3d[1]} />
           {test.map((a, i) =>
-            <HTML3D position={{ x: -20 + i * 2, y: 0, z: 10 * i }} world={world} mass={1}>
-              😀<h1>{a}</h1>
+            <HTML3D
+              position={{ x: -20 + i * 2, y: 0, z: 10 * i }}
+              world={world}
+              mass={1}
+              onCollide={e => this.letterCollision(e)}
+            >
+              <h1>{a}</h1>
             </HTML3D>)}
-          {test.map((a, i) => <GL3D position={{ x: 0, y: 10, z: 5 + i * 1.5 }} mass={1} world={world} shape="CUBE" material={materials[Math.round(Math.random() * materials.length)]} />)}
+          {test.map((a, i) =>
+            <GL3D
+              position={{ x: 0, y: 10, z: 5 + i * 1.5 }}
+              mass={1}
+              world={world}
+              shape="CUBE"
+              material={materials[Math.round(Math.random() * materials.length)]}
+              onCollide={e => this.boxCollision(e)} />)}
         </World>
-          */}
         <DevTools />
         <div> Time {this.props.appState.timer}</div>
-      </div>
+      </div >
     );
   }
   onReset = () => {

@@ -17,9 +17,9 @@ export default class FModController {
       this.FMOD = {
         preRun: () => this.preRun(),
         onRuntimeInitialized: () => this.onRuntimeInitialized(),
-        TOTAL_MEMORY: 64 * 1024 * 1024
+        TOTAL_MEMORY: 64 * 1024 * 1024  // FMOD Heap defaults to 16mb, but set it to 64mb
       };
-      global['FMOD'] = this.FMOD;
+      global['fmod'] = this;
       FMODModule(this.FMOD);                            // Calling the constructor function with our object 
     }
   }
@@ -31,7 +31,7 @@ export default class FModController {
         FMOD.FS_createPreloadedFile('/', ff[ff.length - 1], f, true, false);
       });
     }
-    console.log('prerun done');
+    console.log('FMOD prerun done');
   }
   loadBank (name) {
     const { FMOD, gSystem } = this;
@@ -49,7 +49,11 @@ export default class FModController {
       throw new Error(msg);
     }
   }
-  onRuntimeInitialized () {
+  update () {
+    this.checkResult(this.gSystem.update());
+    requestAnimationFrame(t => this.update());
+  }
+  async onRuntimeInitialized () {
     const { FMOD } = this;
     console.log('Creating FMOD System object');
     const createSysVal: any = {};
@@ -59,12 +63,13 @@ export default class FModController {
     const lowLevelSysVal: any = {};
     this.checkResult(this.gSystem.getLowLevelSystem(lowLevelSysVal));
     this.gSystemLowLevel = lowLevelSysVal.val;
-    console.log('set DSP Buffer size');
+    console.log('set DSP Buffer size to larger than default');
     this.checkResult(this.gSystemLowLevel.setDSPBufferSize(2048, 2));
-    console.log('init FMOD...');
+    console.log('init FMOD:  1024 virtual channels');
     this.checkResult(this.gSystem.initialize(1024, FMOD.STUDIO_INIT_NORMAL, FMOD.INIT_NORMAL, null));
     if (this.initApp) this.initApp();
     console.log('FMOD init done');
+    this.update();
     return FMOD.OK;
   }
 }
