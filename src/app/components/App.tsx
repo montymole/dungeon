@@ -32,40 +32,31 @@ export class App extends React.Component<any, any> {
   }
   fmodMounted () {
     const { fmod } = this;
-    console.log('DO SOMETIN...');
     fmod.loadBank('Master_Bank.bank');
     fmod.loadBank('Master_Bank.strings.bank');
     fmod.loadBank('Music.bank');
     fmod.loadBank('SFX.bank');
-
     // list bank contents
     this.sndEvents = fmod.getAllBankEvents('SFX');
     console.log(this.sndEvents);
     // ready music
     this.sndInstances.bgMusic = fmod.getEventInstance('event:/Music/Level 01');
-
-
-    // get explosion
-    // this.sndEvents.explosion = fmod.getEvent('event:/Weapons/Explosion');
-    // this.sndEvents.explosion.loadSampleData();
-    // start music
-
     this.sndInstances.bgMusic.setParameterValue('Progression', 1.0);
     this.sndInstances.bgMusic.setParameterValue('Stinger', 1.0);
     this.sndInstances.bgMusic.start();
-
   }
-
   oneShot (snd, volume = 1, pitch = 1) {
     if (!snd) return;
     const inst: any = {};
-    return [
-      snd.createInstance(inst),
-      inst.val.setPitch(pitch),
-      inst.val.setVolume(volume),
-      inst.val.start(),
-      inst.val.release()
-    ];
+    try {
+      snd.createInstance(inst);
+      inst.val.setPitch(pitch);
+      inst.val.setVolume(volume);
+      inst.val.start();
+      inst.val.release();
+    } catch (e) {
+
+    }
   }
 
   boxCollision (e) {
