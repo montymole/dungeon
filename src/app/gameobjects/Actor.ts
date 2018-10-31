@@ -25,9 +25,6 @@ export class Actor extends THREE.Object3D {
     if (material) {
       this.material = new THREE[material.shader](material.props);
     }
-
-    console.log('TESTI-------------->', instance, shape, shape);
-
     switch (shape) {
       case 'PLANE':
         geometry = new THREE.PlaneGeometry(10, 10, 64, 64);

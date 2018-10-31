@@ -72,6 +72,47 @@ export default class FModController {
     this.update();
     return FMOD.OK;
   }
+  listBankEvents (path: String) {
+    const bank: any = {};
+    this.checkResult(this.gSystem.getBank(`bank:/${path}`, bank));
+    const a: any = {}; // array
+    const c: any = {}; // count
+    this.checkResult(bank.val.getEventList(a, 100, c));
+    const eventlist = [];
+    a.val.forEach((ed) => {
+      const p: any = {}; // event path
+      ed.getPath(p, 256, {});
+      eventlist.push(p.val);
+    });
+    return {
+      eventlist,
+      count: c.val
+    };
+  }
+  getEvent (path: String) {
+    const d: any = {}; // description
+    this.checkResult(this.gSystem.getEvent(path, d));
+    return d.val;
+  }
+  getEventInstance (path: String) {
+    const i: any = {}; // instance
+    this.getEvent(path).createInstance(i);
+    return i.val;
+  }
+  getAllBankEvents (path: String, preload = true) {
+    const { eventlist } = this.listBankEvents(path);
+    const events = {};
+    eventlist.forEach((ev) => {
+      const event = this.getEvent(ev);
+      if (preload)
+        event.loadSampleData();
+      // make structure
+      const p = ev.replace(' ', '').split('/');
+      p.shift();
+      events[p.join('')] = event;
+    });
+    return events;
+  }
 }
 
 

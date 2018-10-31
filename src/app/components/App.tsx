@@ -10,12 +10,14 @@ import { default as FModController } from '../audio/FModController';
 @observer
 export class App extends React.Component<any, any> {
   fmod: FModController;
-  sounds: any;
+  sndEvents: any;
+  sndInstances: any;
   gEventInstance: any;
   gSurfaceIndex: any;
 
   async componentWillMount () {
-    this.sounds = {};
+    this.sndEvents = {};
+    this.sndInstances = {};
     this.fmod = new FModController({
       preloadFiles: [
         '/fmod/Master_Bank.bank',
@@ -36,22 +38,22 @@ export class App extends React.Component<any, any> {
     fmod.loadBank('Music.bank');
     fmod.loadBank('SFX.bank');
 
+    // list bank contents
+    this.sndEvents = fmod.getAllBankEvents('SFX');
+    console.log(this.sndEvents);
     // ready music
-    const musicInstance: any = {};
-    const musicDescription: any = {};
-    fmod.checkResult(fmod.gSystem.getEvent('event:/Music/Level 01', musicDescription));
-    fmod.checkResult(musicDescription.val.createInstance(musicInstance));
-    this.sounds.bgMusic = musicInstance.val;
+    this.sndInstances.bgMusic = fmod.getEventInstance('event:/Music/Level 01');
+
 
     // get explosion
-    const explosionDescription: any = {};
-    fmod.checkResult(fmod.gSystem.getEvent('event:/Weapons/Explosion', explosionDescription));
-    this.sounds.explosion = explosionDescription.val;
-    this.sounds.explosion.loadSampleData();
+    // this.sndEvents.explosion = fmod.getEvent('event:/Weapons/Explosion');
+    // this.sndEvents.explosion.loadSampleData();
     // start music
-    fmod.checkResult(this.sounds.bgMusic.setParameterValue('Progression', 1.0));
-    fmod.checkResult(this.sounds.bgMusic.setParameterValue('Stinger', 1.0));
-    fmod.checkResult(this.sounds.bgMusic.start());
+
+    this.sndInstances.bgMusic.setParameterValue('Progression', 1.0);
+    this.sndInstances.bgMusic.setParameterValue('Stinger', 1.0);
+    this.sndInstances.bgMusic.start();
+
   }
 
   oneShot (snd, volume = 1, pitch = 1) {
@@ -69,14 +71,14 @@ export class App extends React.Component<any, any> {
   boxCollision (e) {
     const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
     if (relativeVelocity > 0) {
-      this.oneShot(this.sounds.explosion, relativeVelocity * 0.1, 3);
+      this.oneShot(this.sndEvents.WeaponsExplosion, relativeVelocity * 0.1, 2);
     }
   }
 
   letterCollision (e) {
     const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
     if (relativeVelocity > 0) {
-      this.oneShot(this.sounds.explosion, relativeVelocity * 0.01, 5);
+      this.oneShot(this.sndEvents.WeaponsPistol, relativeVelocity * 0.01, 2);
     }
   }
 
