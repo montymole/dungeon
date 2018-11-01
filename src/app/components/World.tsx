@@ -87,9 +87,11 @@ export default class World extends React.Component<any, any> {
   }
 
   onWorldClick (e) {
+    const width = e.target.offsetWidth;
+    const height = e.target.offsetHeight;
     const mouse = {
-      x: (e.clientX / this.props.width) * 2 - 1,
-      y: -(e.clientY / this.props.height) * 2 + 1,
+      x: (e.clientX / width) * 2 - 1,
+      y: -(e.clientY / height) * 2 + 1,
       z: 0.5
     };
     // update the picking ray with the camera and mouse position

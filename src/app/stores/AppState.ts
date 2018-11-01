@@ -1,23 +1,12 @@
-import { observable, action, runInAction } from 'mobx'
-import { ObjectFlags } from 'typescript';
-import { Object3D } from 'three';
+import { observable, action, runInAction } from 'mobx';
 
 export default class AppState {
-  @observable timer = 0;
   @observable fetching;
   @observable world;
 
-  @observable materials;
-  @observable objects3d;
+  @observable materials: any[] = [];
+  @observable objects3d: any[] = [];
 
-  constructor() {
-    this.objects3d = [];
-    setInterval(() => { this.timer += 1; }, 5000);
-
-  }
-  resetTimer () {
-    this.timer = 0;
-  }
   saveWorld (world) {
     this.world = world;
   }
