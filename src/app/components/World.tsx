@@ -57,7 +57,7 @@ export default class World extends React.Component<any, any> {
     this.scene = new THREE.Scene();
     // default camera
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    this.camera.position.set(1.2, 5, 20);
+    this.camera.position.set(12, 10, 20);
     this.scene.add(this.camera);
     // add subtle blue ambient lighting
     this.ambientLight = new THREE.AmbientLight(0x000080);

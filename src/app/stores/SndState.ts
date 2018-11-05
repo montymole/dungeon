@@ -21,11 +21,12 @@ export default class SndState {
           throw new Error('FMOD already mounted!');
         }
         const preloadFiles = list.map(b => b.downloadpath);
-        const events = {};
+
         this.fmod = new FModController({
           preloadFiles,
           initApp: () => {
             const { fmod } = this;
+            let events = {};
             list.forEach((b) => {
               try {
                 const bank = fmod.loadBank(b.name);
@@ -33,7 +34,7 @@ export default class SndState {
                   throw new Error('invalid bank, no events');
                 }
                 console.log(bank.events);
-                merge(events, bank.events);
+                events = merge(events, bank.events);
               } catch (err) {
                 console.log('invalid bank', b);
               }
@@ -57,10 +58,11 @@ export default class SndState {
   }
   @action('FMOD start background music') startBgMusic = () => {
     // ready music if not playing
-    if (!this.instances.bgMusic) {
+    console.log('MUZAK', this.instances);
+    if (!this.instances.bgMusic && this.events.MusicLevel01) {
       this.createEventInstance('bgMusic', this.events.MusicLevel01);
-      this.instances.bgMusic.setParameterValue('Progression', 1.0);
-      this.instances.bgMusic.setParameterValue('Stinger', 1.0);
+      //  this.instances.bgMusic.setParameterValue('Progression', 1.0);
+      //  this.instances.bgMusic.setParameterValue('Stinger', 1.0);
       this.instances.bgMusic.start();
     }
   }

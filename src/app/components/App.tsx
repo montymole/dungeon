@@ -13,7 +13,7 @@ export class App extends React.Component<any, any> {
     // await this.props.appState.loadObject(1);
     await this.props.sndState.init();
     // console.log
-    // this.props.sndState.startBgMusic();
+    this.props.sndState.startBgMusic();
   }
 
   oneShot (snd, volume = 1, pitch = 1) {
@@ -34,7 +34,7 @@ export class App extends React.Component<any, any> {
     const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
     if (relativeVelocity > 0) {
       const { events } = this.props.sndState;
-      this.oneShot(events.VOWelcome, relativeVelocity * 0.01, 2);
+      this.oneShot(events.VOMainMenu, relativeVelocity * 0.01, 2);
     }
   }
 
