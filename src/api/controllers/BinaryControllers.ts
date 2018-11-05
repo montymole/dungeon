@@ -36,8 +36,15 @@ export class UploadBin extends BaseController {
 export class GetBin extends BaseController {
   static routes = ['GET /bin/:id', 'GET /bin', 'GET /binlist', 'GET /bins'];
   async response () {
-    const { id } = this.params;
-    return id ? await Binary.query().findById(id) : await Binary.query();
+    const { id, type } = this.params;
+    const query = Binary.query();
+    if (id) {
+      return await query.findById(id);
+    }
+    if (type) {
+      query.where({type});
+    }
+    return await query;
   }
 }
 

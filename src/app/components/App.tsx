@@ -12,7 +12,8 @@ export class App extends React.Component<any, any> {
     // await this.props.appState.loadMaterials();
     // await this.props.appState.loadObject(1);
     await this.props.sndState.init();
-    this.props.sndState.startBgMusic();
+    // console.log
+    // this.props.sndState.startBgMusic();
   }
 
   oneShot (snd, volume = 1, pitch = 1) {
@@ -33,7 +34,7 @@ export class App extends React.Component<any, any> {
     const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
     if (relativeVelocity > 0) {
       const { events } = this.props.sndState;
-      this.oneShot(events.WeaponsExplosion, relativeVelocity * 0.01, 2);
+      this.oneShot(events.VOWelcome, relativeVelocity * 0.01, 2);
     }
   }
 
@@ -41,7 +42,7 @@ export class App extends React.Component<any, any> {
     const relativeVelocity = Math.abs(Math.round(e.contact.getImpactVelocityAlongNormal()));
     if (relativeVelocity > 0) {
       const { events } = this.props.sndState;
-      this.oneShot(events.WeaponsPistol, relativeVelocity * 0.001, 2);
+      this.oneShot(events.VOWelcome, relativeVelocity * 0.001, 2);
     }
   }
 

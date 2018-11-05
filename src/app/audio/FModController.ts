@@ -1,5 +1,5 @@
 declare var FMODModule: any;
-const VERBOSE = true;
+const VERBOSE = false;
 export default class FModController {
   FMOD: any;
   gSystem: any;
@@ -35,11 +35,23 @@ export default class FModController {
   }
   loadBank (name) {
     const { FMOD, gSystem } = this;
-    const bankhandle = {};
-    const result = gSystem.loadBankFile('/' + name, FMOD.STUDIO_LOAD_BANK_NORMAL, bankhandle);
-    if (result !== FMOD.OK) {
-      throw new Error(FMOD.ErrorString(result));
-    }
+    const bank: any = {};
+    this.checkResult(gSystem.loadBankFile('/' + name, FMOD.STUDIO_LOAD_BANK_NORMAL, bank));
+    const p: any = {};
+    const r: any = {};
+    this.checkResult(bank.val.getPath(p, 256, r));
+    const path = p.val;
+    const { eventlist } = this.listBankEvents(bank);
+    const events = (eventlist.length && {}) || null;
+    eventlist.forEach((ev) => {
+      const event = this.getEvent(ev);
+      event.loadSampleData();
+      // make structure
+      const p = ev.replace(' ', '').split('/');
+      p.shift();
+      events[p.join('')] = event;
+    });
+    return { path, events };
   }
   checkResult (result: any) {
     const { FMOD } = this;
@@ -72,9 +84,10 @@ export default class FModController {
     this.update();
     return FMOD.OK;
   }
-  listBankEvents (path: String) {
-    const bank: any = {};
-    this.checkResult(this.gSystem.getBank(`bank:/${path}`, bank));
+  listBankEvents (bank: any = {}, path: string = null) {
+    if (!bank.val && path) {
+      this.checkResult(this.gSystem.getBank(`bank:/${path}`, bank));
+    }
     const a: any = {}; // array
     const c: any = {}; // count
     this.checkResult(bank.val.getEventList(a, 100, c));
@@ -99,19 +112,10 @@ export default class FModController {
     this.getEvent(path).createInstance(i);
     return i.val;
   }
-  getAllBankEvents (path: string, preload = true) {
-    const { eventlist } = this.listBankEvents(path);
-    const events = {};
-    eventlist.forEach((ev) => {
-      const event = this.getEvent(ev);
-      if (preload)
-        event.loadSampleData();
-      // make structure
-      const p = ev.replace(' ', '').split('/');
-      p.shift();
-      events[p.join('')] = event;
-    });
-    return events;
+  createEventInstance (event: any) {
+    const i: any = {}; // instance
+    event.createInstance(i);
+    return i.val;
   }
 }
 

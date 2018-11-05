@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel';
-import { TABLES } from '../../constants';
+import { TABLES, DOWNLOAD_PATH } from '../../constants';
 
 export default class Binary extends BaseModel {
   readonly id: number;
@@ -18,4 +18,10 @@ export default class Binary extends BaseModel {
       filepath: { type: 'string' }
     }
   };
+  $formatJson(json) {
+    json = super.$formatJson(json);
+    delete json.filepath;
+    json.downloadpath = `${DOWNLOAD_PATH}/${json.name}`
+    return json;
+  }
 }

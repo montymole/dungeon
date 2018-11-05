@@ -2,37 +2,47 @@
  * FMOD
  */
 
+import { merge } from 'ramda';
 import { observable, action, runInAction } from 'mobx';
 import { default as FModController } from '../audio/FModController';
 
 export default class SndState {
   fmod: FModController;
+  @observable fetching;
   @observable mounted: boolean = false;
   @observable events: any = {};
   @observable instances: any = {};
-  @action('FMOD init') init = () => {
+  @action('FMOD init') init = async () => {
+    this.fetching = true;
+    const list = await (await fetch('/binlist?type=FMOD')).json();
     return new Promise((resolve, reject) => {
       try {
         if (this.mounted) {
           throw new Error('FMOD already mounted!');
         }
+        const preloadFiles = list.map(b => b.downloadpath);
+        const events = {};
         this.fmod = new FModController({
-          preloadFiles: [
-            '/fmod/Master_Bank.bank',
-            '/fmod/Master_Bank.strings.bank',
-            '/fmod/Music.bank',
-            '/fmod/SFX.bank'
-          ],
+          preloadFiles,
           initApp: () => {
             const { fmod } = this;
-            fmod.loadBank('Master_Bank.bank');
-            fmod.loadBank('Master_Bank.strings.bank');
-            fmod.loadBank('Music.bank');
-            fmod.loadBank('SFX.bank');
-            // list bank contents
-            this.events = fmod.getAllBankEvents('SFX');
+            list.forEach((b) => {
+              try {
+                const bank = fmod.loadBank(b.name);
+                if (!bank.events) {
+                  throw new Error('invalid bank, no events');
+                }
+                console.log(bank.events);
+                merge(events, bank.events);
+              } catch (err) {
+                console.log('invalid bank', b);
+              }
+            });
+            // save events
+            this.events = events;
             // mark as ready
             this.mounted = true;
+            this.fetching = false;
             resolve();
           }
         });
@@ -41,14 +51,14 @@ export default class SndState {
       }
     });
   }
-  @action('FMOD create event instance') createEventInstance = (name: string, path: string) => {
-    this.instances[name] = this.fmod.getEventInstance(path);
+  @action('FMOD create event instance') createEventInstance = (name: string, event: any) => {
+    this.instances[name] = this.fmod.createEventInstance(event);
     return this.instances[name];
   }
   @action('FMOD start background music') startBgMusic = () => {
     // ready music if not playing
     if (!this.instances.bgMusic) {
-      this.createEventInstance('bgMusic', 'event:/Music/Level 01');
+      this.createEventInstance('bgMusic', this.events.MusicLevel01);
       this.instances.bgMusic.setParameterValue('Progression', 1.0);
       this.instances.bgMusic.setParameterValue('Stinger', 1.0);
       this.instances.bgMusic.start();

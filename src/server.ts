@@ -12,7 +12,7 @@ import * as knexfile from './knexfile';
 import api from './api/api';
 import configJson from './config.json';
 import * as Redis from 'connect-redis';
-import { BINARY_SAVE_PATH } from './constants';
+import { DOWNLOAD_PATH, BINARY_SAVE_PATH } from './constants';
 
 const environment = process.env.NODE_ENV || 'development';
 const app = express();
@@ -56,7 +56,7 @@ app.use('/', api({ knex, config: configJson }));
 // serve static files
 app.use('/app', express.static('./dist/app'));
 app.use('/', express.static('./static'));
-app.use('/dl', express.static(BINARY_SAVE_PATH));
+app.use(DOWNLOAD_PATH, express.static(BINARY_SAVE_PATH));
 
 console.log('Running in :', environment);
 server.listen(process.env.PORT || configJson.port, () => {
