@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import World from './World';
 import HTML3D from './HTML3D';
 import GL3D from './GL3D';
+import Hud from './Hud';
 
 @observer
 export class App extends React.Component<any, any> {
@@ -11,9 +12,9 @@ export class App extends React.Component<any, any> {
   async componentWillMount () {
     // await this.props.appState.loadMaterials();
     // await this.props.appState.loadObject(1);
-    await this.props.sndState.init();
+    // await this.props.sndState.init();
     // console.log
-    this.props.sndState.startBgMusic();
+    // this.props.sndState.startBgMusic();
   }
 
   oneShot (snd, volume = 1, pitch = 1) {
@@ -26,7 +27,7 @@ export class App extends React.Component<any, any> {
       inst.val.start();
       inst.val.release();
     } catch (e) {
-      // just die trying
+      // just die quietly
     }
   }
 
@@ -59,7 +60,7 @@ export class App extends React.Component<any, any> {
     const test = 'FMOD'.split('');
     return (
       <div>
-        <World onInit={world => this.saveWorld(world)} gravity={{ x: 0, y: 0, z: -9.8 }}>
+        <World onInit={world => this.saveWorld(world)} gravity={{ x: 0, y: 0, z: -9.8 }} width={640} height={400}>
           <GL3D position={{ x: 0, y: 0, z: 0 }} mass={0} world={world} shape="PLANE" material={materials.length && materials[0]} />
           {test.map((a, i) =>
             <HTML3D
@@ -80,6 +81,9 @@ export class App extends React.Component<any, any> {
               shape="CUBE"
               material={materials.length && materials[0]}
               onCollide={e => this.boxCollision(e)} />)}
+          <Hud>
+            <p>{JSON.stringify(this.props.sndState.events)}</p>
+          </Hud>
         </World>
       </div >
     );

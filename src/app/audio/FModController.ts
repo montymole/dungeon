@@ -17,7 +17,7 @@ export default class FModController {
       this.FMOD = {
         preRun: () => this.preRun(),
         onRuntimeInitialized: () => this.onRuntimeInitialized(),
-        TOTAL_MEMORY: 64 * 1024 * 1024  // FMOD Heap defaults to 16mb, but set it to 64mb
+        TOTAL_MEMORY: 128 * 1024 * 1024  // FMOD Heap defaults to 16mb, but set it to 64mb
       };
       global['fmod'] = this;
       FMODModule(this.FMOD); // Calling the constructor function with our object 
@@ -28,7 +28,9 @@ export default class FModController {
     if (this.preloadFiles) {
       this.preloadFiles.forEach((f) => {
         const ff = f.split('/');
+        console.log('FILE', f);
         FMOD.FS_createPreloadedFile('/', ff[ff.length - 1], f, true, false);
+        console.log('PRELOAD', f);
       });
     }
     if (VERBOSE) console.log('FMOD prerun done');
@@ -36,11 +38,12 @@ export default class FModController {
   loadBank (name) {
     const { FMOD, gSystem } = this;
     const bank: any = {};
-    this.checkResult(gSystem.loadBankFile('/' + name, FMOD.STUDIO_LOAD_BANK_NORMAL, bank));
-    const p: any = {};
+    this.checkResult(gSystem.loadBankFile('/' + name, FMOD.STUDIO_LOAD_BANK_NORMAL, bank), `loadBankFile: ${name}`);
+    const c: any = {};
+    this.checkResult(gSystem.getBankCount(c), 'getBankCount');
     const r: any = {};
-    this.checkResult(bank.val.getPath(p, 256, r));
-    const path = p.val;
+    this.checkResult(bank.val.getID(r), 'getID');
+    const id = r.val;
     const { eventlist } = this.listBankEvents(bank);
     const events = (eventlist.length && {}) || null;
     eventlist.forEach((ev) => {
@@ -51,51 +54,57 @@ export default class FModController {
       p.shift();
       events[p.join('')] = event;
     });
-    return { path, events };
+    console.log(events);
+    return { id, events };
   }
-  checkResult (result: any) {
+  checkResult (result: any, description: string = '') {
     const { FMOD } = this;
     if (result !== FMOD.OK) {
-      const msg = FMOD.ErrorString(result);
-      if (VERBOSE) console.error(msg);
-      throw new Error(msg);
+      const message = FMOD.ErrorString(result);
+      if (VERBOSE) console.error(message, description);
+      throw new Error(`${message} + ${description}`);
+    } else {
+      console.log(description, 'OK'); 4
     }
   }
   update () {
-    this.checkResult(this.gSystem.update());
+    this.gSystem.update();
     requestAnimationFrame(t => this.update());
   }
   async onRuntimeInitialized () {
     const { FMOD } = this;
-    if (VERBOSE) console.log('Creating FMOD System object');
     const createSysVal: any = {};
-    this.checkResult(FMOD.Studio_System_Create(createSysVal));
+    this.checkResult(FMOD.Studio_System_Create(createSysVal), 'Studio System Create');
     this.gSystem = createSysVal.val;
-    if (VERBOSE) console.log('Creating FMOD Low Level System object');
     const lowLevelSysVal: any = {};
-    this.checkResult(this.gSystem.getLowLevelSystem(lowLevelSysVal));
+    this.checkResult(this.gSystem.getLowLevelSystem(lowLevelSysVal), 'getLowLevelSystem');
     this.gSystemLowLevel = lowLevelSysVal.val;
-    if (VERBOSE) console.log('set DSP Buffer size to larger than default');
-    this.checkResult(this.gSystemLowLevel.setDSPBufferSize(2048, 2));
-    if (VERBOSE) console.log('init FMOD:  1024 virtual channels');
-    this.checkResult(this.gSystem.initialize(1024, FMOD.STUDIO_INIT_NORMAL, FMOD.INIT_NORMAL, null));
+    this.checkResult(this.gSystemLowLevel.setDSPBufferSize(2048, 2), 'setDSPBufferSize');
+    this.checkResult(this.gSystem.initialize(1024, FMOD.STUDIO_INIT_NORMAL, FMOD.INIT_NORMAL, null), 'initialize channels');
     if (this.initApp) this.initApp();
-    if (VERBOSE) console.log('FMOD init done');
     this.update();
     return FMOD.OK;
   }
-  listBankEvents (bank: any = {}, path: string = null) {
-    if (!bank.val && path) {
-      this.checkResult(this.gSystem.getBank(`bank:/${path}`, bank));
+  listBankEvents (bank: any = {}, id: any = null) {
+    if (!bank.val && id) {
+      this.checkResult(this.gSystem.getBankByID(id, bank), 'getBankByID');
     }
     const a: any = {}; // array
     const c: any = {}; // count
-    this.checkResult(bank.val.getEventList(a, 100, c));
+    this.checkResult(bank.val.getEventList(a, 600, c), 'getEventList');
+    console.log(a);
     const eventlist = [];
-    a.val.forEach((ed) => {
-      const p: any = {}; // event path
-      ed.getPath(p, 256, {});
-      eventlist.push(p.val);
+    a.val.forEach((eventDescription, idx) => {
+      try {
+        const l: any = {}; // event len
+        this.checkResult(eventDescription.getSoundSize(l), `eventDescription ${idx} getSoundSize`);
+        console.log(l);
+        const p: any = {}; // event path
+        this.checkResult(eventDescription.getPath(p, 1024, null), `eventDescription ${idx} getPath`);
+        eventlist.push(p.val);
+      } catch (error) {
+        console.error(error);
+      }
     });
     return {
       eventlist,

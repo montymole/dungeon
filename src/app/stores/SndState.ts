@@ -33,10 +33,10 @@ export default class SndState {
                 if (!bank.events) {
                   throw new Error('invalid bank, no events');
                 }
-                console.log(bank.events);
                 events = merge(events, bank.events);
               } catch (err) {
                 console.log('invalid bank', b);
+                console.log(err);
               }
             });
             // save events

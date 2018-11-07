@@ -12,13 +12,17 @@ $c4: #0a8;
 }
 
 .world {
-  position: fixed;
+  position: relative;
   z-Index: 0;
-  top: 0;
-  left: 0;
-  bottom:64px;
-  right: 0;
   border:solid 1px #fff;
+  margin:auto;
+}
+
+.hud {
+  position:absolute;
+  top:0;
+  left:0;
+  z-index: 10;
 }
 
 body {

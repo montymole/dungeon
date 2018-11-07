@@ -45,8 +45,8 @@ export default class World extends React.Component<any, any> {
   }
 
   initWebGL (containerEl) {
-    const width = containerEl.offsetWidth;
-    const height = containerEl.offsetHeight;
+
+    const { width, height } = this.props;
     this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
@@ -74,8 +74,7 @@ export default class World extends React.Component<any, any> {
   }
 
   initCSS3D (containerEl) {
-    const width = containerEl.offsetWidth;
-    const height = containerEl.offsetHeight;
+    const { width, height } = this.props;
     this.css3Drenderer = new THREE.CSS3DRenderer();
     this.css3Drenderer.setSize(width, height);
     this.css3Drenderer.domElement.style.position = 'absolute';
@@ -87,8 +86,7 @@ export default class World extends React.Component<any, any> {
   }
 
   onWorldClick (e) {
-    const width = e.target.offsetWidth;
-    const height = e.target.offsetHeight;
+    const { width, height } = this.props;
     const mouse = {
       x: (e.clientX / width) * 2 - 1,
       y: -(e.clientY / height) * 2 + 1,
@@ -120,9 +118,14 @@ export default class World extends React.Component<any, any> {
   }
 
   render () {
-    const { children } = this.props;
+    const { children, width, height } = this.props;
     return (
-      <div className="world" ref={domRoot => this.initWorld(domRoot)} onClick={this.onWorldClick.bind(this)} >
+      <div
+        style={{ width: width + 'px', height: height + 'px' }}
+        className="world"
+        ref={domRoot => this.initWorld(domRoot)}
+        onClick={e => this.onWorldClick(e)}
+      >
         {children}
       </div>
     );
