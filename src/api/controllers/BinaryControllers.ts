@@ -1,6 +1,6 @@
 import { createWriteStream } from 'fs';
 import * as Busboy from 'busboy';
-import { BaseController, ControllerError } from './classes';
+import { BaseController } from './classes';
 import { Binary } from '../models';
 import { BINARY_SAVE_PATH } from '../../constants';
 

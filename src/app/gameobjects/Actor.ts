@@ -14,7 +14,7 @@ export class Actor extends THREE.Object3D {
     const { instance, onCollide } = props;
     const {
       world,
-      mass = (instance && instance.mass) || 0,
+      mass = (instance && instance.mass),
       scale = (instance && instance.scale),
       position = instance && instance.position,
       material = instance && instance.material
@@ -58,15 +58,16 @@ export class Actor extends THREE.Object3D {
       this.scale.set(scale.x, scale.y, scale.z);
     this.add(this.mesh);
     // physics
-    this.body = new CANNON.Body({
-      mass,
-      shape,
-      position: new CANNON.Vec3(position.x, position.y, position.z)
-    });
-    if (onCollide)
-      this.body.addEventListener('collide', onCollide);
-
-    if (world && world.physics) world.physics.addBody(this.body);
+    if (mass !== null) {
+      this.body = new CANNON.Body({
+        mass,
+        shape,
+        position: new CANNON.Vec3(position.x, position.y, position.z)
+      });
+      if (onCollide)
+        this.body.addEventListener('collide', onCollide);
+      if (world && world.physics) world.physics.addBody(this.body);
+    }
     if (world && world.scene) world.scene.add(this);
   }
   update (props) {
