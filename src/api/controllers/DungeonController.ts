@@ -6,7 +6,7 @@ export class RevealArea extends BaseController {
     async response() {
         const { x, y, w, h } = this.params;
         const d = new Dungeon();
-        d.createArea(x,y,w,h,50);
+        d.createArea(x,y,w,h,100);
         return  d.getArea(x,y,w,h);
     }
 }

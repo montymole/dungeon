@@ -11,7 +11,7 @@ export default class AppState {
   @observable objects3d: any[] = [];
 
   @observable keyStateMap: any = {};
-  @observable cameraPosition: any = { x:12, y: 10, z: 30};
+  @observable cameraPosition: any = { x:50, y: 50, z: 20};
 
   keyDownListener: any;
   keyUpListener: any;
@@ -42,7 +42,7 @@ export default class AppState {
     const dungeonMap = await (await fetch('/dungeon',{
       method: 'post',
       body: JSON.stringify({
-        x:-50, y:-50, w:100, h:100
+        x:-100, y:-100, w:200, h:200
       }),
       headers: { 'Content-Type': 'application/json' }
     })).json();

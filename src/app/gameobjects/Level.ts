@@ -46,7 +46,17 @@ export class Level extends THREE.Object3D {
             let tileMesh;
             switch(tile.type) {
                 case TILE_TYPE.WALL:
-                     tileMesh = this.findMeshByName('WALL');
+                    switch(tile.subtype) {
+                        case TILE_SUB_TYPE.TOP_LEFT_CORNER:
+                        case TILE_SUB_TYPE.TOP_RIGHT_CORNER:
+                        case TILE_SUB_TYPE.BOTTOM_LEFT_CORNER:
+                        case TILE_SUB_TYPE.BOTTOM_RIGHT_CORNER:
+                            tileMesh = this.findMeshByName('CORNER');
+                            break;
+                        default:
+                            tileMesh = this.findMeshByName('WALL');
+                            break;
+                    }
                     break;
                 case TILE_TYPE.FLOOR:
                      tileMesh = this.findMeshByName('FLOOR');
