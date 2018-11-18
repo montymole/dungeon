@@ -76,7 +76,8 @@
     "ramda": "0.24.1",
     "react": "16.5.2",
     "react-dom": "16.5.2",
-    "three": "0.97.0"
+    "three": "0.97.0",
+    "three-gltf-loader": "^1.98.0"
   },
   "devDependencies": {
     "@types/connect-redis": "0.0.6",

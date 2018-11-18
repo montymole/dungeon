@@ -33,15 +33,14 @@ export class Dungeon extends React.Component<any, any> {
           onInit={world => this.saveWorld(world)}
           gravity={{ x: 0, y: 0, z: -9.8 }}
           camera={cameraPosition}
-          width={640}
-          height={400}>
-          <GL3D position={{ x: 0, y: 0, z: 0 }} mass={0} world={world} shape="PLANE"/>
-          {tiles && tiles.length &&
-            <Room world={world} tiles={tiles}/>}
+          width={800}
+          height={600}>
+          
+          {tiles && tiles.length && <Room world={world} tiles={tiles}/>}
           <Hud>
-            <div style={{position:'relative',top:'50px',left:'50px'}}>
-              {tiles && tiles.map((tile) => <div key={tile.key} style={{position:'absolute',left:tile.x*8+'px',top:tile.y*8+'px'}}>{tile.symbol}</div>)}
-            </div>
+            <div className="miniMap"><div>
+              {tiles && tiles.map((tile) => <div className="tile" key={tile.key} style={{left:tile.x*8+'px',top:tile.y*8+'px'}}>{tile.symbol}</div>)}
+            </div></div>
           </Hud>
         </World>
       </div >
