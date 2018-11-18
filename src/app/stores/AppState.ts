@@ -1,4 +1,5 @@
 import { observable, action, runInAction } from 'mobx';
+import { throws } from 'assert';
 
 export default class AppState {
   @observable fetching;
@@ -9,6 +10,29 @@ export default class AppState {
   @observable materials: any[] = [];
   @observable objects3d: any[] = [];
 
+  @observable keyStateMap: any = {};
+  @observable cameraPosition: any = { x:12, y: 10, z: 30};
+
+  keyDownListener: any;
+  keyUpListener: any;
+
+  onKeyDown(event: KeyboardEvent) {
+    this.keyStateMap[event.code] = true;
+  }
+  onKeyUp(event: KeyboardEvent) {
+    this.keyStateMap[event.code] = false;
+  }
+
+  @action('bind keyboardevents') bindKeyboardEvents = () =>  {
+    this.keyDownListener = window.addEventListener('keydown', this.onKeyDown.bind(this));
+    this.keyUpListener = window.addEventListener('keyup', this.onKeyUp.bind(this));
+  }
+
+  @action('unbind keyboardevents') unbindKeyboardEvents = () => {
+    window.removeEventListener('keydown', this.keyDownListener);
+    window.removeEventListener('keyup', this.keyUpListener);
+  }
+
   saveWorld (world) {
     this.world = world;
   }
@@ -18,7 +42,7 @@ export default class AppState {
     const dungeonMap = await (await fetch('/dungeon',{
       method: 'post',
       body: JSON.stringify({
-        x:-20, y:-20, w:40, h:40
+        x:-50, y:-50, w:100, h:100
       }),
       headers: { 'Content-Type': 'application/json' }
     })).json();

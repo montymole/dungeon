@@ -45,19 +45,17 @@ export default class World extends React.Component<any, any> {
   }
 
   initWebGL (containerEl) {
-
-    const { width, height } = this.props;
+    const { width, height, camera } = this.props;
     this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
-
     this.renderer.domElement.style.position = 'absolute';
     this.renderer.domElement.style.zIndex = '1';
     containerEl.appendChild(this.renderer.domElement);
     this.scene = new THREE.Scene();
     // default camera
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    this.camera.position.set(12, 10, 20);
+    this.camera.position.set(camera.x, camera.y, camera.z);
     this.scene.add(this.camera);
     // add subtle blue ambient lighting
     this.ambientLight = new THREE.AmbientLight(0x000080);
@@ -85,6 +83,7 @@ export default class World extends React.Component<any, any> {
     return this.css3Drenderer.domElement;
   }
 
+  /*
   onWorldClick (e) {
     const { width, height } = this.props;
     const mouse = {
@@ -98,7 +97,7 @@ export default class World extends React.Component<any, any> {
     const intersections = this.raycaster.intersectObjects(this.scene.children, true);
     console.log('3D WORLD', mouse, intersections, this.scene);
   }
-
+*/
   renderAnimationFrame (now: number = 0) {
     requestAnimationFrame(t => this.renderAnimationFrame(t));
     if (this.lastFrameTime) {
@@ -124,7 +123,6 @@ export default class World extends React.Component<any, any> {
         style={{ width: width + 'px', height: height + 'px' }}
         className="world"
         ref={domRoot => this.initWorld(domRoot)}
-        onClick={e => this.onWorldClick(e)}
       >
         {children}
       </div>
