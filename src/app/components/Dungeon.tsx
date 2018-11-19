@@ -10,8 +10,9 @@ import Hud from './Hud';
 export class Dungeon extends React.Component<any, any> {
   tiles: any;
   async componentWillMount () {
+    const seed = window.location.href.split('#')[1];
     const { appState } = this.props;
-    await appState.createDungeonArea();
+    await appState.createDungeonArea(seed);
     appState.bindKeyboardEvents();
   }
 

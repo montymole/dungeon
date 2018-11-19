@@ -37,12 +37,12 @@ export default class AppState {
     this.world = world;
   }
 
-  @action('create dungeon area') createDungeonArea = async () => {
+  @action('create dungeon area') createDungeonArea = async (seed) => {
     this.fetching = true;
     const dungeonMap = await (await fetch('/dungeon', {
       method: 'post',
       body: JSON.stringify({
-        x: -20, y: -20, w: 40, h: 40
+        seed, x: -50, y: -50, w: 250, h: 250,
       }),
       headers: { 'Content-Type': 'application/json' }
     })).json();

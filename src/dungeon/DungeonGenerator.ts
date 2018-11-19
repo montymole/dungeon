@@ -186,7 +186,7 @@ export class Dungeon {
     return room;
   }
 
-  createArea (x: number, y: number, w: number, h: number, createNumRooms: number = 10) {
+  createArea (x: number, y: number, createNumRooms: number = 10) {
     const { rooms, tunnels } = this;
     while (rooms.length < createNumRooms) {
       this.addRoom({
