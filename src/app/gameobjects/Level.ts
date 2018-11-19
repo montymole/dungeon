@@ -69,7 +69,7 @@ export class Level extends THREE.Object3D {
         if (tile.subtype === TILE_SUB_TYPE.HORIZONTAL) {
           tileMesh.rotation.y = 90 * (Math.PI / 180);
         }
-        tileMesh.position.set(tile.x, tile.y, 0.0);
+        tileMesh.position.set(tile.x, -tile.y, 0.0);
         level.mergeMesh(tileMesh);
       }
     });
