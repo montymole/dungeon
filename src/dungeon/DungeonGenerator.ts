@@ -31,15 +31,44 @@ export class Tile {
   }
 }
 
+export class Room {
+  id: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  stairsUp: Tile;
+  stairsDown: Tile;
+  constructor(o) {
+    const { id, x, y, w, h } = o;
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
+  get center () {
+    return [this.centerX, this.centerY];
+  }
+  get centerX () {
+    return Math.round(this.x + this.w / 2);
+  }
+  get centerY () {
+    return Math.round(this.y + this.h / 2);
+  }
+}
+
+
 export class Dungeon {
-  seed: string = RANDOM_SEED;
+  seed: string;
   tilemap: any = {};
-  rooms: any = [];
+  rooms: Room[] = [];
   tunnels: any = [];
   random: any;
 
   constructor(seed = RANDOM_SEED) {
-    this.random = new randomSeed(seed);
+    this.seed = seed;
+    this.random = new randomSeed(this.seed);
   }
 
   rollChance (c: number) {
@@ -116,11 +145,7 @@ export class Dungeon {
     const { x, y, w, h } = o;
     const MARGIN = 1;
     const id = this.rooms.length;
-    const room = {
-      id,
-      x, y, w, h,
-      doors: []
-    };
+    const room = new Room({ id, x, y, w, h });
     this.rooms.push(room);
     // check area overlap
     let overlap;
@@ -153,17 +178,17 @@ export class Dungeon {
           let subtype = 0;
           if (above.type === TILE_TYPE.EMPTY || left.type === TILE_TYPE.EMPTY || x === eastWall || y === southWall) {
             type = TILE_TYPE.WALL;
-            if (x === room.x && y === room.y) {
-              subtype = TILE_SUB_TYPE.TOP_LEFT_CORNER;
-            }
             if (left.type === TILE_TYPE.WALL) {
               subtype = TILE_SUB_TYPE.HORIZONTAL;
             }
-            if (x === eastWall && y === southWall) {
-              subtype = TILE_SUB_TYPE.TOP_RIGHT_CORNER;
+            if (x === room.x && y === room.y) {
+              subtype = TILE_SUB_TYPE.TOP_LEFT_CORNER;
             }
             if (x === room.x && above.type === TILE_TYPE.WALL && left.type === TILE_TYPE.EMPTY) {
               subtype = TILE_SUB_TYPE.VERTICAL;
+            }
+            if (x === eastWall && y === room.y) {
+              subtype = TILE_SUB_TYPE.TOP_RIGHT_CORNER;
             }
             if (x === room.x && y === southWall) {
               subtype = TILE_SUB_TYPE.BOTTOM_LEFT_CORNER;
@@ -171,7 +196,7 @@ export class Dungeon {
             if (x === eastWall && left.type === TILE_TYPE.FLOOR) {
               subtype = TILE_SUB_TYPE.VERTICAL;
             }
-            if (x === southWall && y === eastWall) {
+            if (x === eastWall && y === southWall) {
               subtype = TILE_SUB_TYPE.BOTTOM_RIGHT_CORNER;
             }
             if (right.type === TILE_TYPE.WALL || below.type === TILE_TYPE.WALL) {
@@ -179,36 +204,45 @@ export class Dungeon {
               subtype = 0;
             }
           }
-          tilemap[k] = new Tile(x, y, type, subtype, room.id);
+          const tile = new Tile(x, y, type, subtype, room.id);
+          tilemap[k] = tile;
         }
       }
     });
     return room;
   }
 
-  createArea (x: number, y: number, createNumRooms: number = 10) {
+  createArea (x: number, y: number, maxNumRooms: number = 10) {
     const { rooms, tunnels } = this;
-    while (rooms.length < createNumRooms) {
+    const numRooms = 1 + this.random(maxNumRooms);
+    const numTunnels = numRooms;
+    while (rooms.length < numRooms) {
       this.addRoom({
-        x: this.random(x),
-        y: this.random(y),
+        x, y,
         w: MIN_ROOM_WIDTH + this.random(MAX_ROOM_WIDTH),
         h: MIN_ROOM_HEIGHT + this.random(MAX_ROOM_HEIGHT)
       });
     }
-    while (tunnels.length < rooms.length) {
+    while (tunnels.length < numTunnels) {
       const room1 = rooms[this.random(rooms.length)];
       const room2 = rooms[this.random(rooms.length)];
-      const sx = Math.round(room1.x + room1.w / 2);
-      const sy = Math.round(room1.y + room1.h / 2);
-      const ex = Math.round(room2.x + room2.w / 2);
-      const ey = Math.round(room2.y + room2.h / 2);
+      const [sx, sy] = room1.center;
+      const [ex, ey] = room2.center;
       this.tunnel({ sx, sy, ex, ey });
     }
+
+    // add exits
+    const firstRoom = rooms[0];
+    firstRoom.stairsUp = this.tileAt(Math.round(firstRoom.x + firstRoom.w / 2), Math.round(firstRoom.y + firstRoom.h / 2));
+    firstRoom.stairsUp.setType(TILE_TYPE.STAIRS_UP);
+
+    const lastRoom = rooms[rooms.length - 1];
+    lastRoom.stairsDown = this.tileAt(Math.round(lastRoom.x + lastRoom.w / 2), Math.round(lastRoom.y + lastRoom.h / 2));
+    lastRoom.stairsDown.setType(TILE_TYPE.STAIRS_DOWN);
   }
 
   getArea (x: number, y: number, w: number, h: number) {
-    const { tilemap } = this;
+    const { seed, rooms, tunnels, tilemap } = this;
     const tiles = {};
     this.scan({
       x, y, w, h,
@@ -217,7 +251,7 @@ export class Dungeon {
         tiles[k] = tile;
       }
     });
-    return tiles;
+    return { seed, rooms, tunnels, tiles };
   }
 
   toString (x: number, y: number, w: number, h: number) {
@@ -234,11 +268,10 @@ export class Dungeon {
         const room = rooms[tile.roomId];
         if (room && tile.y === room.y + 2) {
           const idString = tile.roomId.toString();
-          const rxc = Math.round(room.x + room.w / 2);
-          if (tile.x === rxc - idString.length) {
+          if (tile.x === room.centerX - idString.length) {
             r += idString;
             return;
-          } else if (tile.x > rxc - idString.length && tile.x < rxc) {
+          } else if (tile.x > room.centerX - idString.length && tile.x < room.centerX) {
             return;
           }
         }

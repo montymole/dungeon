@@ -47,7 +47,7 @@ export default class AppState {
       headers: { 'Content-Type': 'application/json' }
     })).json();
     this.dungeonMap = dungeonMap;
-    this.tiles = Object.keys(dungeonMap).map(k => dungeonMap[k]);
+    this.tiles = Object.keys(dungeonMap.tiles).map(k => dungeonMap.tiles[k]);
   }
 
 

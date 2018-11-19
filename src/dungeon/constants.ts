@@ -4,7 +4,9 @@ export const TILE_TYPE = {
   FLOOR: 1,
   WALL: 2,
   DOOR: 3,
-  CORRIDOR: 4
+  CORRIDOR: 4,
+  STAIRS_UP: 5,
+  STAIRS_DOWN: 6
 };
 // subtypes
 export const TILE_SUB_TYPE = {
@@ -27,10 +29,12 @@ export const DIRECTION = {
 // character symbols
 export const SYMBOLS = {
   [TILE_TYPE.EMPTY]: [' '],
-  [TILE_TYPE.WALL]: ['#', '#', '#', '#', '#', '#', '#'],
+  [TILE_TYPE.WALL]: ['#', '#', '#', 'F', '7', 'L', 'J'],
   [TILE_TYPE.FLOOR]: ['.'],
   [TILE_TYPE.CORRIDOR]: [':'],
-  [TILE_TYPE.DOOR]: ['D', '-', '|', '\\', '/', '\\', '/']
+  [TILE_TYPE.DOOR]: ['D', '-', '|', '\\', '/', '\\', '/'],
+  [TILE_TYPE.STAIRS_UP]: ['<'],
+  [TILE_TYPE.STAIRS_DOWN]: ['>']
 };
 // roll of 100
 export const ROLL = {

@@ -27,7 +27,7 @@ export class Dungeon extends React.Component<any, any> {
 
   render () {
     const { appState } = this.props;
-    const { world, tiles, cameraPosition } = appState;
+    const { world, dungeonMap, tiles, cameraPosition } = appState;
     return (
       <div>
         <World
@@ -38,6 +38,7 @@ export class Dungeon extends React.Component<any, any> {
           height={600}>
           {tiles && tiles.length && <Room world={world} tiles={tiles} />}
           <Hud>
+            <h1>{dungeonMap && dungeonMap.seed}</h1>
             <div className="miniMap"><div>
               {tiles && tiles.map((tile) => <div className="tile" key={tile.key} style={{ left: tile.x * 8 + 'px', top: tile.y * 8 + 'px' }}>{tile.symbol}</div>)}
             </div></div>
