@@ -74,6 +74,7 @@
     "mysql": "2.14.1",
     "objection": "0.8.8",
     "ramda": "0.24.1",
+    "random-seed": "0.3.0",
     "react": "16.5.2",
     "react-dom": "16.5.2",
     "three": "0.97.0",

@@ -11,19 +11,19 @@ export default class AppState {
   @observable objects3d: any[] = [];
 
   @observable keyStateMap: any = {};
-  @observable cameraPosition: any = { x:50, y: 50, z: 20};
+  @observable cameraPosition: any = { x: 50, y: 50, z: 20 };
 
   keyDownListener: any;
   keyUpListener: any;
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown (event: KeyboardEvent) {
     this.keyStateMap[event.code] = true;
   }
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp (event: KeyboardEvent) {
     this.keyStateMap[event.code] = false;
   }
 
-  @action('bind keyboardevents') bindKeyboardEvents = () =>  {
+  @action('bind keyboardevents') bindKeyboardEvents = () => {
     this.keyDownListener = window.addEventListener('keydown', this.onKeyDown.bind(this));
     this.keyUpListener = window.addEventListener('keyup', this.onKeyUp.bind(this));
   }
@@ -37,12 +37,12 @@ export default class AppState {
     this.world = world;
   }
 
-  @action('create dungeon area') createDungeonArea = async() => {
+  @action('create dungeon area') createDungeonArea = async () => {
     this.fetching = true;
-    const dungeonMap = await (await fetch('/dungeon',{
+    const dungeonMap = await (await fetch('/dungeon', {
       method: 'post',
       body: JSON.stringify({
-        x:-20, y:-20, w:40, h:40
+        x: -20, y: -20, w: 40, h: 40
       }),
       headers: { 'Content-Type': 'application/json' }
     })).json();
