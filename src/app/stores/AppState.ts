@@ -42,7 +42,7 @@ export default class AppState {
     const dungeonMap = await (await fetch('/dungeon',{
       method: 'post',
       body: JSON.stringify({
-        x:-100, y:-100, w:200, h:200
+        x:-20, y:-20, w:40, h:40
       }),
       headers: { 'Content-Type': 'application/json' }
     })).json();
