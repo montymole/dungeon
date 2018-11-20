@@ -6,7 +6,7 @@ import { merge } from 'ramda';
 import { observable, action, runInAction } from 'mobx';
 import { default as FModController } from '../audio/FModController';
 
-export default class SndState {
+export class FMODState {
   fmod: FModController;
   @observable fetching;
   @observable mounted: boolean = false;

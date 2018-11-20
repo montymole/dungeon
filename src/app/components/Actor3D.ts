@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-export class Actor extends THREE.Object3D {
+export class Actor3D extends THREE.Object3D {
   mesh: any;            // mesh
   material: any;        // material
   body: any;            // physics body

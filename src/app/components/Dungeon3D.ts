@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import * as GLTFLoader from 'three-gltf-loader';
 global['THREE'] = THREE;
-import '../../../node_modules/three/examples/js/utils/BufferGeometryUtils';
+import 'three/examples/js/utils/BufferGeometryUtils';
 
 import { TILE_TYPE, TILE_SUB_TYPE } from '../../dungeon/constants';
 
-export class Level extends THREE.Object3D {
+export class Dungeon3D extends THREE.Object3D {
   glb: any;
 
   constructor(props) {

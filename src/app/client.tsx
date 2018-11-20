@@ -1,9 +1,9 @@
 require('./scss/main.scss');
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { AppState, SndState } from './stores';
-import { Dungeon } from './components/Dungeon';
+import { GameState, FMODState } from './stores';
+import { Game } from './components/Game';
 
-const appState = new AppState();
-const sndState = new SndState();
-ReactDOM.render(<Dungeon appState={appState} sndState={sndState} />, document.getElementById('root'));
+const gameState = new GameState();
+const fmodState = new FMODState();
+ReactDOM.render(<Game gameState={gameState} fmodState={fmodState} />, document.getElementById('root'));

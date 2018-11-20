@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
+import 'three/examples/js/renderers/CSS3DRenderer';
 const SCALE = 0.1;
-export class CSSActor extends THREE.CSS3DObject {
+export class CSSActor3D extends THREE.CSS3DObject {
   body: any;             // physics body
   constructor(props) {
     super(props.element);

@@ -7,6 +7,7 @@ Timeline
 -level generator based on   http://donjon.bin.sh/code/dungeon/
 -create level page w*h generate with randomSEED
 -when ITEMS done place random items
+-maze room http://www.roguebasin.roguelikedevelopment.org/index.php?title=Simple_maze#Maze_Generator_in_Visual_Basic_6
 
 ## PLAYER
 -player position 

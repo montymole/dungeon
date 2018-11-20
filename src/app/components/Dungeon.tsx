@@ -1,51 +1,20 @@
 
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import World from './World';
-import GL3D from './GL3D';
-import Room from './Room';
-import Hud from './Hud';
+import { Dungeon3D } from './Dungeon3D';
 
-@observer
 export class Dungeon extends React.Component<any, any> {
-  tiles: any;
-  async componentWillMount () {
-    const seed = window.location.href.split('#')[1];
-    const { appState } = this.props;
-    await appState.createDungeonArea(seed);
-    appState.bindKeyboardEvents();
+  obj3d: any;
+  componentDidMount () {
+    this.init();
   }
-
-  async componentWillUnmount () {
-    const { appState } = this.props;
-    appState.unbindKeyboardEvents();
+  componentDidUpdate () {
+    this.init();
   }
-
-  saveWorld (world) {
-    this.props.appState.saveWorld(world);
+  init () {
+    const { world } = this.props;
+    if (!this.obj3d && world) {
+      this.obj3d = new Dungeon3D({ ...this.props });
+    }
   }
-
-  render () {
-    const { appState } = this.props;
-    const { world, dungeonMap, tiles, cameraPosition } = appState;
-    return (
-      <div>
-        <World
-          onInit={world => this.saveWorld(world)}
-          gravity={{ x: 0, y: 0, z: -9.8 }}
-          camera={cameraPosition}
-          width={800}
-          height={600}>
-          {tiles && tiles.length && <Room world={world} tiles={tiles} />}
-          <Hud>
-            <h1>{dungeonMap && dungeonMap.seed}</h1>
-            <div className="miniMap"><div>
-              {tiles && tiles.map((tile) => <div className="tile" key={tile.key} style={{ left: tile.x * 8 + 'px', top: tile.y * 8 + 'px' }}>{tile.symbol}</div>)}
-            </div></div>
-          </Hud>
-        </World>
-      </div >
-    );
-  }
+  render () { return null; }
 }
-

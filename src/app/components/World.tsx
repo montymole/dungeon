@@ -6,7 +6,7 @@ import '../../../node_modules/three/examples/js/controls/OrbitControls';
 import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
 
 const fixedTimeStep = 1.0 / 60.0; // seconds
-export default class World extends React.Component<any, any> {
+export class World extends React.Component<any, any> {
   domRoot: HTMLElement;
   lastFrameTime: number;
   scene: THREE.Scene;

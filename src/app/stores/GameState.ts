@@ -1,7 +1,7 @@
 import { observable, action, runInAction } from 'mobx';
 import { throws } from 'assert';
 
-export default class AppState {
+export class GameState {
   @observable fetching;
   @observable world;
 
