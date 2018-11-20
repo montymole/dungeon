@@ -1,5 +1,5 @@
 import * as randomSeed from 'random-seed';
-import { TILE_TYPE, TILE_SUB_TYPE, DIRECTION, ROLL, SYMBOLS, RANDOM_SEED } from './constants';
+import { TILE_TYPE, TILE_SUB_TYPE, DIRECTION, ROLL, SYMBOLS, RANDOM_SEED, ADJACENT } from './constants';
 import { throws } from 'assert';
 
 
@@ -10,7 +10,7 @@ const MAX_ROOM_HEIGHT = 20;
 
 export class Tile {
   key: string;
-  roomId: number;
+  roomId?: number;
   type: number;
   subtype: number;
   symbol: string;
@@ -75,6 +75,10 @@ export class Dungeon {
     return this.random(100) <= c;
   }
 
+  randomInt (n) {
+    return Math.round(this.random(n));
+  }
+
   scan (o) {
     const sx = o.x;
     const sy = o.y;
@@ -108,7 +112,7 @@ export class Dungeon {
     return overlaps;
   }
 
-  tunnel (o) {
+  tunnel1 (o) {
     const { sx, sy, ex, ey } = o;
     const { tilemap, tunnels } = this;
     const id = tunnels.length;
@@ -122,7 +126,7 @@ export class Dungeon {
         case TILE_TYPE.EMPTY:
           // make corridor
           tilemap[pos.key] = new Tile(x, y, TILE_TYPE.CORRIDOR);
-          tunnel.tiles.push(tilemap[pos.k]);
+          tunnel.tiles.push(tilemap[pos.key]);
           break;
         case TILE_TYPE.WALL:
           // make door
@@ -139,6 +143,105 @@ export class Dungeon {
         y += d;
       }
     }
+    this.tunnelWalls(tunnel);
+    return tunnel;
+  }
+
+  tunnel (o) {
+    const { sx, sy, ex, ey } = o;
+    const { tilemap, tunnels } = this;
+    const id = tunnels.length;
+    const tunnel = { id, sx, sy, ex, ey, tiles: [] };
+    tunnels.push(tunnel);
+    let x = sx;
+    let y = sy;
+    let steps = 0;
+    let maxsteps = this.randomInt(5);
+    let maze = 1;
+    let direction = this.rollChance(50) ? 'Y' : 'X';
+    let px;
+    let py;
+    while (x !== ex || y !== ey) {
+      const pos = this.tileAt(x, y);
+      switch (pos.type) {
+        case TILE_TYPE.EMPTY:
+          // make corridor
+          tilemap[pos.key] = new Tile(x, y, TILE_TYPE.CORRIDOR);
+          tunnel.tiles.push(tilemap[pos.key]);
+          break;
+        case TILE_TYPE.WALL:
+          if (pos.subtype === TILE_SUB_TYPE.HORIZONTAL) {
+            const left = this.tileAt(x - 1, y);
+            const right = this.tileAt(x + 1, y);
+            if (left.type === TILE_TYPE.WALL && right.type === TILE_TYPE.WALL) {
+              // make door
+              pos.setType(TILE_TYPE.DOOR);
+            } else {
+              x = px;
+              y = py;
+            }
+          } else if (pos.subtype === TILE_SUB_TYPE.VERTICAL) {
+            const top = this.tileAt(x, y - 1);
+            const bottom = this.tileAt(x, y + 1);
+            if (top.type === TILE_TYPE.WALL && bottom.type === TILE_TYPE.WALL) {
+              // make door
+              pos.setType(TILE_TYPE.DOOR);
+            } else {
+              x = px;
+              y = py;
+            }
+          } else {
+            x = px;
+            y = py;
+          }
+          break;
+        case TILE_TYPE.CORRIDOR:
+          // is corridor already;
+          steps = maxsteps;
+        default:
+      }
+      steps++;
+      if (steps > maxsteps) {
+        steps = 0;
+        direction = this.rollChance(50) ? 'Y' : 'X';
+        maze = this.rollChance(20) ? -1 : 1;
+        maxsteps = maze === 1 ? this.randomInt(6) : this.randomInt(3);
+      }
+      px = x; py = y;
+      if (direction === 'X') {
+        // move x
+        const d = (x < ex) ? 1 : -1;
+        if (pos.type === TILE_TYPE.EMPTY) {
+          x += d * maze;
+        } else {
+          x += d;
+        }
+      } else {
+        // move y
+        const d = (y < ey) ? 1 : -1;
+        if (pos.type === TILE_TYPE.EMPTY) {
+          y += d * maze;
+        } else {
+          y += d;
+        }
+      }
+    }
+    this.tunnelWalls(tunnel);
+    return tunnel;
+  }
+
+  tunnelWalls (tunnel) {
+    const { tilemap } = this;
+    tunnel.tiles.forEach((tile) => {
+      if (tile && tile.type === TILE_TYPE.CORRIDOR) {
+        ADJACENT.forEach((a) => {
+          const t = this.tileAt(tile.x + a[0], tile.y + a[1]);
+          if (t.type === TILE_TYPE.EMPTY && !tilemap[t.key]) {
+            tilemap[t.key] = new Tile(t.x, t.y, TILE_TYPE.CORRIDOR_WALL, TILE_SUB_TYPE.NORMAL);
+          }
+        });
+      }
+    });
   }
 
   addRoom (o) {
@@ -219,13 +322,13 @@ export class Dungeon {
     while (rooms.length < numRooms) {
       this.addRoom({
         x, y,
-        w: MIN_ROOM_WIDTH + this.random(MAX_ROOM_WIDTH),
-        h: MIN_ROOM_HEIGHT + this.random(MAX_ROOM_HEIGHT)
+        w: MIN_ROOM_WIDTH + this.randomInt(MAX_ROOM_WIDTH),
+        h: MIN_ROOM_HEIGHT + this.randomInt(MAX_ROOM_HEIGHT)
       });
     }
     while (tunnels.length < numTunnels) {
-      const room1 = rooms[this.random(rooms.length)];
-      const room2 = rooms[this.random(rooms.length)];
+      const room1 = rooms[this.randomInt(rooms.length)];
+      const room2 = rooms[this.randomInt(rooms.length)];
       const [sx, sy] = room1.center;
       const [ex, ey] = room2.center;
       this.tunnel({ sx, sy, ex, ey });

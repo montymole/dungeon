@@ -4,7 +4,6 @@ Timeline
 #TODO
 
 ## DUNGEON
--dungeon test (TEXMODE graphics output from api)
 -level generator based on   http://donjon.bin.sh/code/dungeon/
 -create level page w*h generate with randomSEED
 -when ITEMS done place random items

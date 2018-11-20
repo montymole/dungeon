@@ -45,6 +45,7 @@ export class Level extends THREE.Object3D {
       let tileMesh;
       switch (tile.type) {
         case TILE_TYPE.WALL:
+        case TILE_TYPE.CORRIDOR_WALL:
           switch (tile.subtype) {
             case TILE_SUB_TYPE.TOP_LEFT_CORNER:
             case TILE_SUB_TYPE.TOP_RIGHT_CORNER:
