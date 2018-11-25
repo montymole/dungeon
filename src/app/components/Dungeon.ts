@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as GLTFLoader from "three-gltf-loader";
+import { difference } from "ramda";
 global["THREE"] = THREE;
 
 import { TILE_TYPE, TILE_SUB_TYPE } from "../../dungeon/constants";
@@ -12,6 +13,8 @@ export class Dungeon extends ReactThree {
 
 class Dungeon3D extends THREE.Object3D {
   glb: any;
+  meshMap: any = {};
+  visibleMeshes: any = [];
   materials: any = {};
 
   constructor(props) {
@@ -79,12 +82,29 @@ class Dungeon3D extends THREE.Object3D {
         tileMesh.position.set(tile.x, 0.0, tile.y); // map x = x map y = z;
         tileMesh.castShadow = true; // default is false
         tileMesh.receiveShadow = true; // default is false
+        tileMesh.visible = false;
+        this.meshMap[tile.key] = tileMesh;
         this.add(tileMesh);
       }
     });
     if (world && world.scene) world.scene.add(this);
   }
-  update(props) {}
+  update(props) {
+    const { playerFov } = props;
+    if (playerFov) {
+      const visibleNow = [];
+      playerFov.forEach(key => {
+        if (this.meshMap[key]) {
+          visibleNow.push(key);
+          this.meshMap[key].visible = true;
+        }
+      });
+      difference(this.visibleMeshes, visibleNow).forEach(
+        key => (this.meshMap[key].visible = false)
+      );
+      this.visibleMeshes = visibleNow;
+    }
+  }
 
   // this is called every frame;
   renderAnimationFrame(clock) {}

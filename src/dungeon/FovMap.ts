@@ -1,4 +1,4 @@
-import { SEETHRU } from "./constants";
+import { SEETHRU, VIEW_RADIUS } from "./constants";
 
 export class FOV {
   tilemap: any;
@@ -6,7 +6,7 @@ export class FOV {
   constructor(tilemap) {
     this.tilemap = tilemap;
   }
-  fovPos(x, y, r) {
+  fovPos(x, y, r = VIEW_RADIUS) {
     if (!this.tilemap) return [];
     const k = `x${x}y${y}r${r}`;
     if (this.fovMaps[k]) {

@@ -8,12 +8,12 @@ import {
   RANDOM_SEED,
   ADJACENT
 } from "./constants";
-import { throws } from "assert";
 
 const MIN_ROOM_WIDTH = 6;
 const MIN_ROOM_HEIGHT = 6;
 const MAX_ROOM_WIDTH = 30;
 const MAX_ROOM_HEIGHT = 20;
+const MAX_NUM_ROOMS = 10;
 
 export class Tile {
   key: string;
@@ -352,7 +352,7 @@ export class Dungeon {
     return room;
   }
 
-  createArea(x: number, y: number, maxNumRooms: number = 10) {
+  createArea(x: number, y: number, maxNumRooms: number = MAX_NUM_ROOMS) {
     const { rooms, tunnels } = this;
     const numRooms = 1 + this.random(maxNumRooms);
     const numTunnels = numRooms;

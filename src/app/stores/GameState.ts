@@ -88,9 +88,9 @@ export class GameState {
     this.FOV = new FOV(dungeonMap.tiles);
     const firstRoom = dungeonMap.rooms[0];
     this.playerPosition = {
-      x: Math.round(firstRoom.x + firstRoom.w / 2),
-      y: 0,
-      z: Math.round(firstRoom.y + firstRoom.w / 2)
+      x: firstRoom.x + 2,
+      z: firstRoom.y + 2,
+      y: 0
     };
     this.tiles = Object.keys(dungeonMap.tiles).map(k => dungeonMap.tiles[k]);
   };

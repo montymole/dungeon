@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { World, Dungeon, Player, Hud, CSSActor } from "./";
+import { VIEW_RADIUS } from "../../dungeon/constants";
 
 @observer
 export class Game extends React.Component<any, any> {
@@ -31,6 +32,11 @@ export class Game extends React.Component<any, any> {
       cameraPosition,
       playerPosition
     } = gameState;
+    const playerFov =
+      FOV && FOV.fovPos(playerPosition.x, playerPosition.z, VIEW_RADIUS);
+    const visibleTiles =
+      playerFov &&
+      playerFov.map(k => dungeonMap && dungeonMap.tiles[k]).filter(t => t);
     return (
       <div>
         <World
@@ -40,7 +46,9 @@ export class Game extends React.Component<any, any> {
           width={1024}
           height={800}
         >
-          {tiles && tiles.length && <Dungeon world={world} tiles={tiles} />}
+          {tiles && tiles.length && (
+            <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
+          )}
           <Player world={world} position={playerPosition} />
           <CSSActor
             world={world}
@@ -63,22 +71,19 @@ export class Game extends React.Component<any, any> {
                   top: 250 - playerPosition.z * 8 + "px"
                 }}
               >
-                {FOV &&
-                  FOV.fovPos(playerPosition.x, playerPosition.z, 10)
-                    .map(k => dungeonMap && dungeonMap.tiles[k])
-                    .filter(t => t)
-                    .map(tile => (
-                      <div
-                        className="tile"
-                        key={tile.key}
-                        style={{
-                          left: tile.x * 8 + "px",
-                          top: tile.y * 8 + "px"
-                        }}
-                      >
-                        {tile.symbol}
-                      </div>
-                    ))}
+                {visibleTiles &&
+                  visibleTiles.map(tile => (
+                    <div
+                      className="tile"
+                      key={tile.key}
+                      style={{
+                        left: tile.x * 8 + "px",
+                        top: tile.y * 8 + "px"
+                      }}
+                    >
+                      {tile.symbol}
+                    </div>
+                  ))}
                 <div
                   className="tile"
                   key="player"

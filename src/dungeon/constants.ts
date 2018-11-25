@@ -9,13 +9,17 @@ export const TILE_TYPE = {
   STAIRS_UP: 6,
   STAIRS_DOWN: 7
 };
-
+// fov see thru (set here if doesnt block 100%)
 export const SEETHRU = [
   TILE_TYPE.EMPTY,
   TILE_TYPE.FLOOR,
   TILE_TYPE.DOOR,
-  TILE_TYPE.CORRIDOR
+  TILE_TYPE.CORRIDOR,
+  TILE_TYPE.STAIRS_UP,
+  TILE_TYPE.STAIRS_DOWN
 ];
+
+export const VIEW_RADIUS = 20;
 
 // subtypes
 export const TILE_SUB_TYPE = {

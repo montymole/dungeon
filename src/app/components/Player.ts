@@ -5,6 +5,7 @@ import * as TweenMax from "gsap/umd/TweenMax";
 
 import { ReactThree } from "./ReactThree";
 import { World } from "./World";
+import { VIEW_RADIUS } from "../../dungeon/constants";
 
 export class Player extends ReactThree {
   threeClass = Player3D;
@@ -15,11 +16,6 @@ class Player3D extends THREE.Object3D {
   light: THREE.PointLight;
   camera: THREE.Camera;
   controls: THREE.OrbitControls;
-  TORCHLIGHT_COLORS = [
-    new THREE.Color(0xffffff),
-    new THREE.Color(0xfffffe),
-    new THREE.Color(0xfffefa)
-  ];
 
   constructor(props) {
     super();
@@ -43,15 +39,15 @@ class Player3D extends THREE.Object3D {
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
-    this.light = new THREE.PointLight(this.TORCHLIGHT_COLORS[0], 3.5, 10, 6);
+    this.light = new THREE.PointLight(0xffffff, 3.5, VIEW_RADIUS, 10);
     this.light.position.set(0, 2, 0);
     this.light.castShadow = true;
     // shadow properties for the light
     this.light.shadow.mapSize.width = 512; // default
     this.light.shadow.mapSize.height = 512; // default
     this.light.shadow.camera.near = 1; // default 0.5
-    this.light.shadow.camera.far = 20; // default 500
-    /*
+    this.light.shadow.camera.far = VIEW_RADIUS; // default 500
+    /*w
     const helper = new THREE.CameraHelper(this.light.shadow.camera);
     world.scene.add(helper);
     */
@@ -80,11 +76,7 @@ class Player3D extends THREE.Object3D {
   // this is called every frame;
   renderAnimationFrame(now, delta) {
     // light
-    this.light.intensity = 4 + 0.1 * Math.sin(now * 0.02);
-    this.light.distance = this.light.intensity * 5;
-    /* this.light.color = this.TORCHLIGHT_COLORS[
-      Math.round(Math.random() * this.TORCHLIGHT_COLORS.length)
-    ];*/
+    this.light.intensity = 5 + 0.1 * Math.sin(now * 0.02);
     this.light.shadow.camera.far = this.light.distance;
     this.controls.update();
   }
