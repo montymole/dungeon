@@ -1,38 +1,44 @@
-import * as THREE from 'three';
-import * as CANNON from 'cannon';
-export class Actor3D extends THREE.Object3D {
-  mesh: any;            // mesh
-  material: any;        // material
-  body: any;            // physics body
-  shape: any;           // physics shape
+import * as THREE from "three";
+import * as CANNON from "cannon";
+import { ReactThree } from "./ReactThree";
+
+export class Actor extends ReactThree {
+  threeClass = Actor3D;
+}
+
+class Actor3D extends THREE.Object3D {
+  mesh: any; // mesh
+  material: any; // material
+  body: any; // physics body
+  shape: any; // physics shape
   constructor(props) {
     super();
     this.init(props);
     this.update(props);
   }
-  init (props) {
+  init(props) {
     const { instance, onCollide } = props;
     const {
       world,
-      mass = (instance && instance.mass),
-      scale = (instance && instance.scale),
+      mass = instance && instance.mass,
+      scale = instance && instance.scale,
       position = instance && instance.position,
       material = instance && instance.material
     } = props;
     let geometry;
-    let shape = (instance && instance.shape) || props.shape || 'CUBE';
+    let shape = (instance && instance.shape) || props.shape || "CUBE";
     // graphics
     if (material) {
       this.material = new THREE[material.shader](material.props);
     }
     switch (shape) {
-      case 'PLANE':
+      case "PLANE":
         geometry = new THREE.PlaneGeometry(10, 10, 64, 64);
         shape = new CANNON.Plane();
         this.mesh = new THREE.Mesh(geometry, this.material);
         this.mesh.scale.set(100, 100, 100);
         break;
-      case 'CUBE':
+      case "CUBE":
       default:
         geometry = new THREE.CubeGeometry(2, 2, 2);
         shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
@@ -54,8 +60,7 @@ export class Actor3D extends THREE.Object3D {
         }
       }
     }
-    if (scale)
-      this.scale.set(scale.x, scale.y, scale.z);
+    if (scale) this.scale.set(scale.x, scale.y, scale.z);
     this.add(this.mesh);
     // physics
     if (mass !== null) {
@@ -64,13 +69,12 @@ export class Actor3D extends THREE.Object3D {
         shape,
         position: new CANNON.Vec3(position.x, position.y, position.z)
       });
-      if (onCollide)
-        this.body.addEventListener('collide', onCollide);
+      if (onCollide) this.body.addEventListener("collide", onCollide);
       if (world && world.physics) world.physics.addBody(this.body);
     }
     if (world && world.scene) world.scene.add(this);
   }
-  update (props) {
+  update(props) {
     const { position, rotation } = props;
     if (position) {
       this.body.position.x = position.x;
@@ -84,7 +88,7 @@ export class Actor3D extends THREE.Object3D {
     }
   }
   // this is called every frame;
-  renderAnimationFrame (clock) {
+  renderAnimationFrame(clock) {
     this.position.x = this.body.position.x;
     this.position.y = this.body.position.y;
     this.position.z = this.body.position.z;

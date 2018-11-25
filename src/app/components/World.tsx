@@ -1,9 +1,9 @@
-import * as React from 'react';
-import * as THREE from 'three';
-import * as CANNON from 'cannon';
-global['THREE'] = THREE;
-import '../../../node_modules/three/examples/js/controls/OrbitControls';
-import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
+import * as React from "react";
+import * as THREE from "three";
+import * as CANNON from "cannon";
+global["THREE"] = THREE;
+
+import "../../../node_modules/three/examples/js/renderers/CSS3DRenderer";
 
 const fixedTimeStep = 1.0 / 60.0; // seconds
 export class World extends React.Component<any, any> {
@@ -12,14 +12,13 @@ export class World extends React.Component<any, any> {
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
   camera: THREE.Camera;
-  light: THREE.PointLight;
   ambientLight: THREE.AmbientLight;
-  controls: THREE.OrbitControls;
   css3DScene: THREE.Scene;
   css3Drenderer: THREE.CSS3DRenderer;
   raycaster: THREE.Raycaster;
   mouse3D: THREE.Vector3;
   physics: any;
+  cameraTarget: THREE.Vector3;
 
   constructor(props) {
     const { gravity } = props;
@@ -32,52 +31,54 @@ export class World extends React.Component<any, any> {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { onInit } = this.props;
     this.initWebGL(this.domRoot);
     this.initCSS3D(this.domRoot);
-    if (onInit) { onInit(this); }
+    if (onInit) {
+      onInit(this);
+    }
     this.renderAnimationFrame();
   }
 
-  initWorld (domRoot) {
+  initWorld(domRoot) {
     this.domRoot = domRoot;
   }
 
-  initWebGL (containerEl) {
+  initWebGL(containerEl) {
     const { width, height, camera } = this.props;
-    this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
+    this.renderer = new THREE.WebGLRenderer({
+      clearColor: 0x000000,
+      clearAlpha: 1,
+      antialias: true
+    });
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
-    this.renderer.domElement.style.position = 'absolute';
-    this.renderer.domElement.style.zIndex = '1';
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.domElement.style.position = "absolute";
+    this.renderer.domElement.style.zIndex = "1";
     containerEl.appendChild(this.renderer.domElement);
     this.scene = new THREE.Scene();
     // default camera
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     this.camera.position.set(camera.x, camera.y, camera.z);
+    this.cameraTarget = new THREE.Vector3(0, 0, 0);
     this.scene.add(this.camera);
+
     // add subtle blue ambient lighting
-    this.ambientLight = new THREE.AmbientLight(0x000080);
-    this.scene.add(this.ambientLight);
-    // lighting
-    this.light = new THREE.PointLight(0xffeedd, 5.5, 1000);
-    this.light.position.set(10, 10, 10);
-    this.light.castShadow = true;
-    this.scene.add(this.light);
-    // controls
-    this.controls = new THREE.OrbitControls(this.camera);
-    this.controls.target = new THREE.Vector3(0, 2, 0);
+    // this.ambientLight = new THREE.AmbientLight(0x000080);
+    // this.scene.add(this.ambientLight);
+
     return this.renderer.domElement;
   }
 
-  initCSS3D (containerEl) {
+  initCSS3D(containerEl) {
     const { width, height } = this.props;
     this.css3Drenderer = new THREE.CSS3DRenderer();
     this.css3Drenderer.setSize(width, height);
-    this.css3Drenderer.domElement.style.position = 'absolute';
-    this.css3Drenderer.domElement.style.top = '0';
-    this.css3Drenderer.domElement.style.zIndex = '2';
+    this.css3Drenderer.domElement.style.position = "absolute";
+    this.css3Drenderer.domElement.style.top = "0";
+    this.css3Drenderer.domElement.style.zIndex = "2";
     containerEl.appendChild(this.css3Drenderer.domElement);
     this.css3DScene = new THREE.Scene();
     return this.css3Drenderer.domElement;
@@ -98,29 +99,30 @@ export class World extends React.Component<any, any> {
     console.log('3D WORLD', mouse, intersections, this.scene);
   }
 */
-  renderAnimationFrame (now: number = 0) {
+  renderAnimationFrame(now: number = 0) {
     requestAnimationFrame(t => this.renderAnimationFrame(t));
     if (this.lastFrameTime) {
       const delta = (now - this.lastFrameTime) / 1000;
       this.physics.step(fixedTimeStep, delta, 10);
       this.css3DScene.children
         .filter((c: any) => c.renderAnimationFrame)
-        .forEach((c: any) => c.renderAnimationFrame(now));
+        .forEach((c: any) => c.renderAnimationFrame(now, delta));
       this.scene.children
         .filter((c: any) => c.renderAnimationFrame)
-        .forEach((c: any) => c.renderAnimationFrame(now));
+        .forEach((c: any) => c.renderAnimationFrame(now, delta));
     }
-    this.controls.update();
+    // this.controls.update();
+    this.camera.lookAt(this.cameraTarget);
     this.renderer.render(this.scene, this.camera);
     this.css3Drenderer.render(this.css3DScene, this.camera);
     this.lastFrameTime = now;
   }
 
-  render () {
+  render() {
     const { children, width, height } = this.props;
     return (
       <div
-        style={{ width: width + 'px', height: height + 'px' }}
+        style={{ width: width + "px", height: height + "px" }}
         className="world"
         ref={domRoot => this.initWorld(domRoot)}
       >

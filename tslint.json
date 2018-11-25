@@ -1,12 +1,8 @@
 {
-  "extends": [
-    "tslint-config-airbnb"
-  ],
+  "extends": ["tslint-config-airbnb"],
   "rules": {
-    "semicolon": [
-      true,
-      "always"
-    ],
+    "semicolon": [true, "always"],
+    "quotemark": [false, "single", "avoid-escape", "avoid-template"],
     "ter-arrow-parens": false,
     "no-increment-decrement": false,
     "max-line-length": 512,
@@ -14,8 +10,6 @@
     "space-before-function-paren": false,
     "import-name": false,
     "trailing-comma": false,
-    "member-ordering": [
-      "fields-first"
-    ]
+    "member-ordering": ["fields-first"]
   }
 }

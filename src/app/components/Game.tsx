@@ -1,30 +1,36 @@
-
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { World, Dungeon, Hud, CSSActor } from './';
+import * as React from "react";
+import { observer } from "mobx-react";
+import { World, Dungeon, Player, Hud, CSSActor } from "./";
 
 @observer
 export class Game extends React.Component<any, any> {
   tiles: any;
-  async componentWillMount () {
-    const seed = window.location.href.split('#')[1];
+  async componentWillMount() {
+    const seed = window.location.href.split("#")[1];
     const { gameState } = this.props;
     await gameState.createDungeonArea(seed);
     gameState.bindKeyboardEvents();
   }
 
-  async componentWillUnmount () {
+  async componentWillUnmount() {
     const { gameState } = this.props;
     gameState.unbindKeyboardEvents();
   }
 
-  saveWorld (world) {
+  saveWorld(world) {
     this.props.gameState.saveWorld(world);
   }
 
-  render () {
+  render() {
     const { gameState } = this.props;
-    const { world, dungeonMap, tiles, cameraPosition } = gameState;
+    const {
+      world,
+      dungeonMap,
+      tiles,
+      cameraPosition,
+      playerPosition
+    } = gameState;
+    console.log(playerPosition.x, playerPosition.z, playerPosition.y);
     return (
       <div>
         <World
@@ -32,9 +38,15 @@ export class Game extends React.Component<any, any> {
           gravity={{ x: 0, y: 0, z: -9.8 }}
           camera={cameraPosition}
           width={1024}
-          height={800}>
+          height={800}
+        >
           {tiles && tiles.length && <Dungeon world={world} tiles={tiles} />}
-          <CSSActor world={world} position={{ x: 0, y: 0, z: 0 }}>
+          <Player world={world} position={playerPosition} />
+          <CSSActor
+            world={world}
+            position={{ x: 0, y: -10, z: 0 }}
+            rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
+          >
             <div className="compass">
               <div className="n">N</div>
               <div className="e">E</div>
@@ -44,14 +56,42 @@ export class Game extends React.Component<any, any> {
             </div>
           </CSSActor>
           <Hud>
-
-            <div className="miniMap"><div>
-              {tiles && tiles.map((tile) => <div className="tile" key={tile.key} style={{ left: tile.x * 8 + 'px', top: tile.y * 8 + 'px' }}>{tile.symbol}</div>)}
-            </div></div>
+            <div className="miniMap">
+              <div
+                style={{
+                  left: 250 - playerPosition.x * 8 + "px",
+                  top: 250 - playerPosition.z * 8 + "px"
+                }}
+              >
+                {tiles &&
+                  tiles.map(tile => (
+                    <div
+                      className="tile"
+                      key={tile.key}
+                      style={{
+                        left: tile.x * 8 + "px",
+                        top: tile.y * 8 + "px"
+                      }}
+                    >
+                      {tile.symbol}
+                    </div>
+                  ))}
+                <div
+                  className="tile"
+                  key="player"
+                  style={{
+                    color: "red",
+                    left: playerPosition.x * 8 + "px",
+                    top: playerPosition.z * 8 + "px"
+                  }}
+                >
+                  @
+                </div>
+              </div>
+            </div>
           </Hud>
         </World>
-      </div >
+      </div>
     );
   }
 }
-
