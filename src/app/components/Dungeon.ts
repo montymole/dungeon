@@ -13,6 +13,7 @@ export class Dungeon extends ReactThree {
 
 class Dungeon3D extends THREE.Object3D {
   glb: any;
+  materials: any = {};
 
   constructor(props) {
     super();
@@ -30,10 +31,8 @@ class Dungeon3D extends THREE.Object3D {
   findMeshByName(name) {
     const SCALE = 0.01;
     const origMesh = this.glb.scene.children.find(c => c.name === name);
-    const geo = new THREE.Geometry().fromBufferGeometry(origMesh.geometry);
-    const material = origMesh.material;
-    const mesh = new THREE.Mesh(geo, material);
-    // mesh.rotation.x = 90 * (Math.PI / 180);
+    const mesh = origMesh.clone();
+    mesh.material = this.materials[name] || origMesh.material;
     mesh.scale.set(SCALE, SCALE, SCALE);
     return mesh;
   }
@@ -44,10 +43,12 @@ class Dungeon3D extends THREE.Object3D {
     if (!this.glb) {
       // load object data
       this.glb = await this.loadGlb(glbSrc);
-      console.log(this.glb);
+      this.materials.CORNER = this.materials.FLOOR = new THREE.MeshPhongMaterial(
+        { color: 0x202020 }
+      );
+      this.materials.WALL = new THREE.MeshPhongMaterial({ color: 0x606080 });
+      this.materials.DOOR = new THREE.MeshPhongMaterial({ color: 0x6060a0 });
     }
-    const material = new THREE.MeshPhongMaterial({ color: 0x808080 });
-    // const level = new THREE.Geometry();
     tiles.forEach(tile => {
       let tileMesh;
       switch (tile.type) {
@@ -81,14 +82,10 @@ class Dungeon3D extends THREE.Object3D {
         tileMesh.castShadow = true; // default is false
         tileMesh.receiveShadow = true; // default is false
         this.add(tileMesh);
-        // level.mergeMesh(tileMesh);
       }
     });
-    // level.mergeVertices();
-    //this.add(new THREE.Mesh(level, material));
     if (world && world.scene) world.scene.add(this);
   }
-
   update(props) {}
 
   // this is called every frame;

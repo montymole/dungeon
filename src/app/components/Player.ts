@@ -15,6 +15,11 @@ class Player3D extends THREE.Object3D {
   light: THREE.PointLight;
   camera: THREE.Camera;
   controls: THREE.OrbitControls;
+  TORCHLIGHT_COLORS = [
+    new THREE.Color(0xffffff),
+    new THREE.Color(0xfffffe),
+    new THREE.Color(0xfffefa)
+  ];
 
   constructor(props) {
     super();
@@ -38,8 +43,8 @@ class Player3D extends THREE.Object3D {
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
-    this.light = new THREE.PointLight(0xffffff, 3.5, 10, 6);
-    this.light.position.set(0, 1.2, 0);
+    this.light = new THREE.PointLight(this.TORCHLIGHT_COLORS[0], 3.5, 10, 6);
+    this.light.position.set(0, 2, 0);
     this.light.castShadow = true;
     // shadow properties for the light
     this.light.shadow.mapSize.width = 512; // default
@@ -51,12 +56,15 @@ class Player3D extends THREE.Object3D {
     world.scene.add(helper);
     */
     this.add(this.light);
-    // test graphic
-    const geometry = new THREE.BoxGeometry(0.5, 1.7, 0.5);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, 0.95, 0);
-    this.add(cube);
+    // test avatar (just cube)
+    const avatar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.2, 0.2, 1),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    );
+    avatar.castShadow = true; // default is false
+    avatar.receiveShadow = true; // default is false
+    avatar.position.set(0, 0.95, 0);
+    this.add(avatar);
     // add to scene
     world.scene.add(this);
   }
@@ -74,6 +82,9 @@ class Player3D extends THREE.Object3D {
     // light
     this.light.intensity = 3 + 0.1 * Math.sin(now * 0.02);
     this.light.distance = this.light.intensity * 5;
+    this.light.color = this.TORCHLIGHT_COLORS[
+      Math.round(Math.random() * this.TORCHLIGHT_COLORS.length)
+    ];
     this.light.shadow.camera.far = this.light.distance;
     this.controls.update();
   }
