@@ -38,14 +38,18 @@ class Player3D extends THREE.Object3D {
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
-    this.light = new THREE.PointLight(0xffeedd, 5.5, 1000);
+    this.light = new THREE.PointLight(0xffffff, 3.5, 10, 6);
     this.light.position.set(0, 1.2, 0);
     this.light.castShadow = true;
-    //Set up shadow properties for the light
+    // shadow properties for the light
     this.light.shadow.mapSize.width = 512; // default
     this.light.shadow.mapSize.height = 512; // default
     this.light.shadow.camera.near = 1; // default 0.5
-    this.light.shadow.camera.far = 40; // default 500
+    this.light.shadow.camera.far = 20; // default 500
+    /*
+    const helper = new THREE.CameraHelper(this.light.shadow.camera);
+    world.scene.add(helper);
+    */
     this.add(this.light);
     // test graphic
     const geometry = new THREE.BoxGeometry(0.5, 1.7, 0.5);
@@ -67,6 +71,10 @@ class Player3D extends THREE.Object3D {
 
   // this is called every frame;
   renderAnimationFrame(now, delta) {
+    // light
+    this.light.intensity = 3 + 0.1 * Math.sin(now * 0.02);
+    this.light.distance = this.light.intensity * 5;
+    this.light.shadow.camera.far = this.light.distance;
     this.controls.update();
   }
 }

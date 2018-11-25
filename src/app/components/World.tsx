@@ -64,7 +64,6 @@ export class World extends React.Component<any, any> {
     this.camera.position.set(camera.x, camera.y, camera.z);
     this.cameraTarget = new THREE.Vector3(0, 0, 0);
     this.scene.add(this.camera);
-
     // add subtle blue ambient lighting
     // this.ambientLight = new THREE.AmbientLight(0x000080);
     // this.scene.add(this.ambientLight);
