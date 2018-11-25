@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { World, Dungeon, Player, Hud, CSSActor } from "./";
+import { World, Dungeon, Player, Hud, MiniMap, CSSActor } from "./";
 import { VIEW_RADIUS } from "../../dungeon/constants";
 
 @observer
@@ -50,11 +50,23 @@ export class Game extends React.Component<any, any> {
             <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
           )}
           <Player world={world} position={playerPosition} />
-          <CSSActor
-            world={world}
-            position={{ x: 0, y: -10, z: 0 }}
-            rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
-          >
+          {dungeonMap &&
+            dungeonMap.rooms.map(room => (
+              <CSSActor
+                key={room.id}
+                world={world}
+                position={{
+                  x: room.x + room.w / 2,
+                  z: room.y + room.h / 2,
+                  y: 2
+                }}
+                rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
+              >
+                <h2>Room {room.id}</h2>
+              </CSSActor>
+            ))}
+
+          <Hud>
             <div className="compass">
               <div className="n">N</div>
               <div className="e">E</div>
@@ -62,41 +74,10 @@ export class Game extends React.Component<any, any> {
               <div className="s">S</div>
               <h1>{dungeonMap && dungeonMap.seed}</h1>
             </div>
-          </CSSActor>
-          <Hud>
-            <div className="miniMap">
-              <div
-                style={{
-                  left: 250 - playerPosition.x * 8 + "px",
-                  top: 250 - playerPosition.z * 8 + "px"
-                }}
-              >
-                {visibleTiles &&
-                  visibleTiles.map(tile => (
-                    <div
-                      className="tile"
-                      key={tile.key}
-                      style={{
-                        left: tile.x * 8 + "px",
-                        top: tile.y * 8 + "px"
-                      }}
-                    >
-                      {tile.symbol}
-                    </div>
-                  ))}
-                <div
-                  className="tile"
-                  key="player"
-                  style={{
-                    color: "red",
-                    left: playerPosition.x * 8 + "px",
-                    top: playerPosition.z * 8 + "px"
-                  }}
-                >
-                  @
-                </div>
-              </div>
-            </div>
+            <MiniMap
+              playerPosition={playerPosition}
+              visibleTiles={visibleTiles}
+            />
           </Hud>
         </World>
       </div>

@@ -1,95 +1,97 @@
-
-@import url('https://fonts.googleapis.com/css?family=Teko:600');
-$font-stack: 'Teko', sans-serif;
+@import url("https://fonts.googleapis.com/css?family=Nova+Mono");
+$font-stack: "Nova Mono", monospace;
 $bg: #000;
 $c1: #fff;
 $c2: #060;
 $c3: #085;
 $c4: #0a8;
 * {
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 
 .miniMap {
-  >div {
-    position:relative;
-    top:150px;
-    left:150px;
+  > div {
+    position: relative;
+    top: 150px;
+    left: 150px;
     .tile {
-      position:absolute;
+      position: absolute;
     }
   }
   position: fixed;
-  bottom:8px;
-  right:8px;
-  zoom:0.5;
-  opacity:0.7;
-  width:600px;
-  height:600px;
+  bottom: 8px;
+  right: 8px;
+  zoom: 0.5;
+  opacity: 0.7;
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
   overflow: hidden;
-  background-color:#030;
-  border:solid 1px #fff;
+  background-color: #030;
+  border: solid 1px #fff;
 }
 
 .compass {
-  width:200px;
-  height:200px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  border:solid 2px #fff;
-  position:relative;
+  border: solid 2px #fff;
+  position: relative;
   h1 {
-    position:absolute;
-    top:70px;
+    position: absolute;
+    top: 70px;
     text-align: center;
-    width:200px;
+    width: 200px;
   }
-  .n,.s,.w,.e {
-    position:absolute;
-    font-size:30px;
-    color:#aaa;
+  .n,
+  .s,
+  .w,
+  .e {
+    position: absolute;
+    font-size: 30px;
+    color: #aaa;
   }
   .n {
-    left:0;
-    width:200px;
+    left: 0;
+    width: 200px;
     text-align: center;
   }
   .s {
-    bottom:0;
-    width:200px;
+    bottom: 0;
+    width: 200px;
     text-align: center;
   }
   .w {
-    top:70px;
-    left:0;
+    top: 70px;
+    left: 0;
   }
   .e {
-    top:70px;
-    right:0;
+    top: 70px;
+    right: 0;
   }
 }
 
 .world {
   position: relative;
-  z-Index: 0;
-  border:solid 1px #fff;
-  margin:auto;
+  z-index: 0;
+  border: solid 1px #fff;
+  margin: auto;
 }
 
 .hud {
-  position:absolute;
-  top:0;
-  left:0;
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 10;
 }
 
 body {
-  background-color:$bg;
+  background-color: $bg;
   color: $c1;
   font: 100% $font-stack;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 
 a {
@@ -97,14 +99,19 @@ a {
 }
 
 h1 {
-  text-shadow: 2px 2px #ff0000;
+  text-shadow: 1px 1px #000000;
+}
+
+h2 {
+  font-size: 14aapx;
+  opacity: 0.5;
 }
 
 .row {
 }
 
 .col {
-  display:inline-block;
+  display: inline-block;
 }
 
 .menu {
@@ -113,42 +120,42 @@ h1 {
   li {
     display: inline-block;
     a {
-      display:block;
+      display: block;
       text-decoration: none;
-      padding:.2em 1em;
-      font-size:1em;
+      padding: 0.2em 1em;
+      font-size: 1em;
       &:hover {
-        background-color:$c1;
-        color:$c2;
+        background-color: $c1;
+        color: $c2;
       }
     }
   }
 }
 
 button {
-  padding:.2em 1em;
+  padding: 0.2em 1em;
   font: 100% $font-stack;
-  color:$c1;
-  background-color:$c3;
+  color: $c1;
+  background-color: $c3;
   border: none;
   &:focus {
-    background-color:$c4;
-    outline:none;  
+    background-color: $c4;
+    outline: none;
   }
 }
 
 .showkeys {
-  position:fixed;
-  bottom:5px;
-  left:0;
-  right:0;
+  position: fixed;
+  bottom: 5px;
+  left: 0;
+  right: 0;
   text-align: center;
   h2 {
-    margin:auto 5px;
-    padding:0.1em 1em;
-    color:$c2;
-    border:solid 1px $c2;
+    margin: auto 5px;
+    padding: 0.1em 1em;
+    color: $c2;
+    border: solid 1px $c2;
     text-align: center;
-    display:inline-block;
+    display: inline-block;
   }
 }
