@@ -56,16 +56,22 @@ export class Game extends React.Component<any, any> {
                 key={room.id}
                 world={world}
                 position={{
-                  x: room.x + room.w / 2,
-                  z: room.y + room.h / 2,
+                  x: room.x - 1 + Math.round(room.w / 2),
+                  z: room.y - 1 + Math.round(room.h / 2),
                   y: 2
                 }}
                 rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
               >
-                <h2>Room {room.id}</h2>
+                <h2
+                  style={{
+                    width: room.w * 10 + "px",
+                    height: room.h * 10 + "px"
+                  }}
+                >
+                  Room {room.id}
+                </h2>
               </CSSActor>
             ))}
-
           <Hud>
             <div className="compass">
               <div className="n">N</div>
