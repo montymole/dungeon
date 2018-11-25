@@ -27,10 +27,10 @@ export class Game extends React.Component<any, any> {
       world,
       dungeonMap,
       tiles,
+      FOV,
       cameraPosition,
       playerPosition
     } = gameState;
-    console.log(playerPosition.x, playerPosition.z, playerPosition.y);
     return (
       <div>
         <World
@@ -63,19 +63,22 @@ export class Game extends React.Component<any, any> {
                   top: 250 - playerPosition.z * 8 + "px"
                 }}
               >
-                {tiles &&
-                  tiles.map(tile => (
-                    <div
-                      className="tile"
-                      key={tile.key}
-                      style={{
-                        left: tile.x * 8 + "px",
-                        top: tile.y * 8 + "px"
-                      }}
-                    >
-                      {tile.symbol}
-                    </div>
-                  ))}
+                {FOV &&
+                  FOV.fovPos(playerPosition.x, playerPosition.z, 10)
+                    .map(k => dungeonMap && dungeonMap.tiles[k])
+                    .filter(t => t)
+                    .map(tile => (
+                      <div
+                        className="tile"
+                        key={tile.key}
+                        style={{
+                          left: tile.x * 8 + "px",
+                          top: tile.y * 8 + "px"
+                        }}
+                      >
+                        {tile.symbol}
+                      </div>
+                    ))}
                 <div
                   className="tile"
                   key="player"

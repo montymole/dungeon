@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import * as GLTFLoader from "three-gltf-loader";
 global["THREE"] = THREE;
-import "three/examples/js/utils/BufferGeometryUtils";
 
 import { TILE_TYPE, TILE_SUB_TYPE } from "../../dungeon/constants";
 
@@ -39,7 +38,6 @@ class Dungeon3D extends THREE.Object3D {
 
   async init(props) {
     const { glbSrc = "/gitf/test.glb", tiles, world } = props;
-
     if (!this.glb) {
       // load object data
       this.glb = await this.loadGlb(glbSrc);

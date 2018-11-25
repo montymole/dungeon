@@ -1,4 +1,5 @@
 import { observable, action, runInAction } from "mobx";
+import { FOV } from "../../dungeon/FovMap";
 import { TILE_TYPE, TILE_SUB_TYPE } from "../../dungeon/constants";
 
 export class GameState {
@@ -14,6 +15,8 @@ export class GameState {
   @observable cameraPosition: any = { x: 0, y: 0, z: 0 };
 
   @observable playerPosition: any = { x: 0, y: 0, z: 0 };
+
+  @observable FOV: any;
 
   keyDownListener: any;
   keyUpListener: any;
@@ -82,6 +85,7 @@ export class GameState {
       headers: { "Content-Type": "application/json" }
     })).json();
     this.dungeonMap = dungeonMap;
+    this.FOV = new FOV(dungeonMap.tiles);
     const firstRoom = dungeonMap.rooms[0];
     this.playerPosition = {
       x: Math.round(firstRoom.x + firstRoom.w / 2),

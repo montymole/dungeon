@@ -80,11 +80,11 @@ class Player3D extends THREE.Object3D {
   // this is called every frame;
   renderAnimationFrame(now, delta) {
     // light
-    this.light.intensity = 3 + 0.1 * Math.sin(now * 0.02);
+    this.light.intensity = 4 + 0.1 * Math.sin(now * 0.02);
     this.light.distance = this.light.intensity * 5;
-    this.light.color = this.TORCHLIGHT_COLORS[
+    /* this.light.color = this.TORCHLIGHT_COLORS[
       Math.round(Math.random() * this.TORCHLIGHT_COLORS.length)
-    ];
+    ];*/
     this.light.shadow.camera.far = this.light.distance;
     this.controls.update();
   }
