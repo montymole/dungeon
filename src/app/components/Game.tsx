@@ -68,7 +68,7 @@ export class Game extends React.Component<any, any> {
                     height: room.h * 10 + "px"
                   }}
                 >
-                  Room {room.id}
+                  {room.name}
                 </h2>
               </CSSActor>
             ))}

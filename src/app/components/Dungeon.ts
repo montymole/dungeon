@@ -34,7 +34,8 @@ class Dungeon3D extends THREE.Object3D {
     const SCALE = 0.01;
     const origMesh = this.glb.scene.children.find(c => c.name === name);
     const mesh = origMesh.clone();
-    mesh.material = this.materials[name] || origMesh.material;
+    console.log(mesh.material);
+    // mesh.material = this.materials[name] || origMesh.material;
     mesh.scale.set(SCALE, SCALE, SCALE);
     return mesh;
   }

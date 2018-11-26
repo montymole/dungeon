@@ -8,6 +8,7 @@ import {
   RANDOM_SEED,
   ADJACENT
 } from "./constants";
+import NameGenerator from "./NameGenerator";
 
 const MIN_ROOM_WIDTH = 6;
 const MIN_ROOM_HEIGHT = 6;
@@ -45,15 +46,17 @@ export class Room {
   y: number;
   w: number;
   h: number;
+  name: string;
   stairsUp: Tile;
   stairsDown: Tile;
   constructor(o) {
-    const { id, x, y, w, h } = o;
+    const { id, x, y, w, h, name } = o;
     this.id = id;
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
+    this.name = name;
   }
   get center() {
     return [this.centerX, this.centerY];
@@ -72,10 +75,12 @@ export class Dungeon {
   rooms: Room[] = [];
   tunnels: any = [];
   random: any;
+  nameGenerator: any;
 
   constructor(seed = RANDOM_SEED) {
     this.seed = seed;
     this.random = new randomSeed(this.seed);
+    this.nameGenerator = new NameGenerator(this.seed);
   }
 
   rollChance(c: number) {
@@ -270,11 +275,20 @@ export class Dungeon {
     });
   }
 
+  roomName() {}
+
   addRoom(o) {
     const { x, y, w, h } = o;
     const MARGIN = 1;
     const id = this.rooms.length;
-    const room = new Room({ id, x, y, w, h });
+    const room = new Room({
+      id,
+      x,
+      y,
+      w,
+      h,
+      name: this.nameGenerator.roomName
+    });
     this.rooms.push(room);
     // check area overlap
     let overlap;
