@@ -1,7 +1,10 @@
 import * as randomSeed from "random-seed";
 import { RANDOM_SEED } from "./constants";
 
+const RN0 = ["", "the", "el"];
+
 const RN1 = [
+  "shaft",
   "room",
   "hall",
   "chamber",
@@ -18,23 +21,28 @@ const RN1 = [
   "birth",
   "oasis",
   "shop",
-  "ruin"
-];
-const RN2 = [
-  "in red",
-  "in blue",
-  "of orc",
-  "of darkness",
-  "of goblins",
-  "of horror",
-  "of echoes",
-  "of death",
-  "of blood",
-  "of massacre",
-  "of wonder",
-  "of pain",
-  "of realms",
-  "of terror"
+  "ruin",
+  "gydfydrr",
+  "wrynntwyh",
+  "red",
+  "blue",
+  "blackness",
+  "oro",
+  "darkness",
+  "goblins",
+  "horror",
+  "echoes",
+  "death",
+  "blood",
+  "massacre",
+  "wonder",
+  "pain",
+  "realms",
+  "terror",
+  "eszelarion",
+  "gold",
+  "silver",
+  "rock"
 ];
 
 export default class {
@@ -50,9 +58,14 @@ export default class {
   capFirst(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
+  word(a) {
+    return a[this.randomInt(a.length)];
+  }
   get roomName() {
     return this.capFirst(
-      `${RN1[this.randomInt(RN1.length)]} ${RN2[this.randomInt(RN2.length)]}`
+      `${this.word(RN0)} ${this.word(RN1)} of ${this.word(RN0)} ${this.word(
+        RN1
+      )}`.trim()
     );
   }
 }

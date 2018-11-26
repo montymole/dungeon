@@ -39,7 +39,7 @@ class Player3D extends THREE.Object3D {
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
-    this.light = new THREE.PointLight(0xffffff, 3.5, VIEW_RADIUS, 10);
+    this.light = new THREE.PointLight(0xffffff, 3.5, VIEW_RADIUS, 4);
     this.light.position.set(0, 2, 0);
     this.light.castShadow = true;
     // shadow properties for the light
@@ -76,7 +76,7 @@ class Player3D extends THREE.Object3D {
   // this is called every frame;
   renderAnimationFrame(now, delta) {
     // light
-    this.light.intensity = 5 + 0.1 * Math.sin(now * 0.02);
+    this.light.intensity = 6 + 0.1 * Math.sin(now * 0.02);
     this.light.shadow.camera.far = this.light.distance;
     this.controls.update();
   }
