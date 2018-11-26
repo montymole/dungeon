@@ -1,21 +1,25 @@
-# Timeline
-
-#TODO
+# TODO
 
 ## DUNGEON
 
--level generator based on http://donjon.bin.sh/code/dungeon/
--create level page w\*h generate with randomSEED
--when ITEMS done place random items
--maze room http://www.roguebasin.roguelikedevelopment.org/index.php?title=Simple_maze#Maze_Generator_in_Visual_Basic_6
+- add static light sources and fov to them
+
+## DUNGEON GEN
+
+- better generator
 
 ## PLAYER
 
-- better camera orbit controls
+- player facing direction
+- torch vs lamp mode
+- directional fov
+- switch to better camera orbit controls
+- arrows => relative direction keys
+- awds => rotate, forward backward  shift+ad strafe
 
 ## ITEMS
 
-- TREASURE CHEST, GOLD, FOOD
+- add some items and item seeding
 
 ## MONSTERS
 
