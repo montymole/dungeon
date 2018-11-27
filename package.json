@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Procedural explorable dungeons",
   "keywords": [
     "express",
