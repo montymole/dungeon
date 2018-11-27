@@ -18,6 +18,7 @@
     "devserver": "clear ; nodemon --watch",
     "dev": "clear; webpack --watch",
     "clean": "rm -rf dist",
+    "push": "npm version patch; git add -A; git commit -m 'v'; git push origin dungeon",
     "start": "node dist/server",
     "init": "knex --knexfile ./src/knexfile.ts migrate:latest ",
     "lint": "tslint 'src/**/*.ts?(x)' -t verbose",
