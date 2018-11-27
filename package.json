@@ -1,7 +1,7 @@
 {
   "name": "timeline",
   "version": "1.0.3",
-  "description": "timeline tool",
+  "description": "Procedural explorable dungeons",
   "keywords": [
     "express",
     "sql",
@@ -10,7 +10,9 @@
     "objection",
     "rest",
     "api",
-    "boilerplate"
+    "threejs",
+    "mobx",
+    "FMOD"
   ],
   "main": "dist/server",
   "scripts": {
