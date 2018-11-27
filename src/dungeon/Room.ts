@@ -1,3 +1,5 @@
+
+import { pick } from "ramda";
 import Tile from "./Tile";
 import { TILE_TYPE, TILE_SUB_TYPE } from "./constants";
 import { scan } from "./utils";
@@ -5,6 +7,9 @@ import Procedural from "./Procedural";
 import Item from "./Item";
 
 export default class Room extends Procedural {
+  static PUBLIC = [
+    'id', 'x', 'y', 'w', 'h', 'name', 'stairsUp', 'stairsDown', 'items', 'tiles'
+  ];
   id: number;
   x: number;
   y: number;
@@ -15,7 +20,10 @@ export default class Room extends Procedural {
   stairsDown: Tile;
   tiles: Tile[] = [];
   items: Item[] = [];
-  dungeon: any;
+  private dungeon: any;
+  toJSON () {
+    return pick(Room.PUBLIC, this);
+  }
   constructor(o) {
     super(o.seed); // get seed from parent
     const { id, x, y, w, h, name, dungeon } = o;
@@ -121,6 +129,7 @@ export default class Room extends Procedural {
       const floor = this.floorTiles[this.randomInt(this.floorTiles.length)];
       this.items.push(new Item({
         seed: this.seed + this.items.length,
+        id: this.id * 1000 + this.items.length,
         x: floor.x, y: floor.y
       }));
       addedItems++;

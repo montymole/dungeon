@@ -1,42 +1,39 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { World, Dungeon, Player, Hud, MiniMap, CSSActor } from "./";
+import { World, Dungeon, Player, Item, Hud, MiniMap, CSSActor } from "./";
 import { VIEW_RADIUS } from "../../dungeon/constants";
 
 @observer
 export class Game extends React.Component<any, any> {
   tiles: any;
-  async componentWillMount() {
+  async componentWillMount () {
     const seed = window.location.href.split("#")[1];
     const { gameState } = this.props;
     await gameState.createDungeonArea(seed);
     gameState.bindKeyboardEvents();
   }
 
-  async componentWillUnmount() {
+  async componentWillUnmount () {
     const { gameState } = this.props;
     gameState.unbindKeyboardEvents();
   }
 
-  saveWorld(world) {
+  saveWorld (world) {
     this.props.gameState.saveWorld(world);
   }
 
-  render() {
+  render () {
     const { gameState } = this.props;
     const {
       world,
       dungeonMap,
       tiles,
-      FOV,
+      visibleTiles,
+      visibleItems,
+      playerFov,
       cameraPosition,
       playerPosition
     } = gameState;
-    const playerFov =
-      FOV && FOV.fovPos(playerPosition.x, playerPosition.z, VIEW_RADIUS);
-    const visibleTiles =
-      playerFov &&
-      playerFov.map(k => dungeonMap && dungeonMap.tiles[k]).filter(t => t);
     return (
       <div>
         <World
@@ -49,6 +46,12 @@ export class Game extends React.Component<any, any> {
           {tiles && tiles.length && (
             <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
           )}
+          {visibleItems && visibleItems.map(item => (
+            <CSSActor key={item.id} world={world} position={{ x: item.x, z: item.y, y: 2 }} rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}>
+              <small>{item.symbol}</small>
+              <Item key={item.id} world={world} position={{ x: item.x, z: item.y, y: 0.15 }} />
+            </CSSActor>
+          ))}
           <Player world={world} position={playerPosition} />
           {dungeonMap &&
             dungeonMap.rooms.map(room => (

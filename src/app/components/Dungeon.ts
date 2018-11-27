@@ -23,24 +23,23 @@ class Dungeon3D extends THREE.Object3D {
     this.update(props);
   }
 
-  async loadGlb(path) {
+  async loadGlb (path) {
     const loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
       loader.load(path, resolve);
     });
   }
 
-  findMeshByName(name) {
+  findMeshByName (name) {
     const SCALE = 0.01;
     const origMesh = this.glb.scene.children.find(c => c.name === name);
     const mesh = origMesh.clone();
-    console.log(mesh.material);
     // mesh.material = this.materials[name] || origMesh.material;
     mesh.scale.set(SCALE, SCALE, SCALE);
     return mesh;
   }
 
-  async init(props) {
+  async init (props) {
     const { glbSrc = "/gitf/test.glb", tiles, world } = props;
     if (!this.glb) {
       // load object data
@@ -90,7 +89,7 @@ class Dungeon3D extends THREE.Object3D {
     });
     if (world && world.scene) world.scene.add(this);
   }
-  update(props) {
+  update (props) {
     const { playerFov } = props;
     if (playerFov) {
       const visibleNow = [];
@@ -108,5 +107,5 @@ class Dungeon3D extends THREE.Object3D {
   }
 
   // this is called every frame;
-  renderAnimationFrame(clock) {}
+  renderAnimationFrame (clock) { }
 }

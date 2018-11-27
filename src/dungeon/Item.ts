@@ -3,6 +3,7 @@ import { ITEMS } from "./constants";
 import NameGenerator from './NameGenerator';
 
 export default class Item extends Procedural {
+  id: number;
   x: number;
   y: number;
   mass: number;
@@ -14,7 +15,8 @@ export default class Item extends Procedural {
 
   constructor(o) {
     super(o.seed);
-    const { x, y } = o;
+    const { x, y, id } = o;
+    this.id = id;
     this.x = x;
     this.y = y;
     this.randomItemClass();

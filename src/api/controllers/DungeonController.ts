@@ -1,6 +1,6 @@
 
 import { BaseController } from './classes';
-import { Dungeon, Tile } from '../../dungeon/DungeonGenerator';
+import { Dungeon } from '../../dungeon/DungeonGenerator';
 
 const dungeons = {};
 

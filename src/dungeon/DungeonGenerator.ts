@@ -98,7 +98,7 @@ export class Dungeon extends Procedural {
         tiles[k] = tile;
       }
     });
-    return { seed, rooms, corridors, tiles };
+    return { seed, rooms, tiles };
   }
 
   toString (x: number, y: number, w: number, h: number) {

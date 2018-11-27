@@ -3,8 +3,8 @@ import { TILE_TYPE, TILE_SUB_TYPE, ADJACENT } from "./constants";
 import Procedural from "./Procedural";
 
 export default class Corridor extends Procedural {
-  dungeon: any;
-  tiles: Tile[] = [];
+  private dungeon: any;
+  private tiles: Tile[] = [];
   constructor(o) {
     super(o.seed);
     const { sx, sy, ex, ey, dungeon } = o;
