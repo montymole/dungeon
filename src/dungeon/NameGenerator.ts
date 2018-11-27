@@ -1,4 +1,4 @@
-import * as randomSeed from "random-seed";
+import Procedural from "./Procedural";
 import { RANDOM_SEED } from "./constants";
 
 const RN0 = ["", "the", "el"];
@@ -45,27 +45,32 @@ const RN1 = [
   "rock"
 ];
 
-export default class {
-  seed: string;
-  random: any;
-  constructor(seed = RANDOM_SEED) {
-    this.seed = seed;
-    this.random = new randomSeed(this.seed);
-  }
-  randomInt(n) {
-    return Math.round(this.random(n));
-  }
-  capFirst(s) {
+const SW1 = [
+  "sword",
+  "dagger",
+  "rapier"
+];
+
+export default class NameGenerator extends Procedural {
+  capFirst (s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
-  word(a) {
+  word (a) {
     return a[this.randomInt(a.length)];
   }
-  get roomName() {
+  get roomName () {
     return this.capFirst(
       `${this.word(RN0)} ${this.word(RN1)} of ${this.word(RN0)} ${this.word(
         RN1
       )}`.trim()
     );
   }
+  get swordName () {
+    return this.capFirst(
+      `${this.word(RN0)} ${this.word(SW1)} of ${this.word(RN0)} ${this.word(
+        RN1
+      )}`.trim()
+    );
+  }
+
 }

@@ -65,3 +65,28 @@ export const ROLL = {
 };
 
 export const RANDOM_SEED = "DUNGEON";
+
+
+export const ITEMS = {
+  COPPER_COIN: {
+    value: 0.1,
+    mass: 0.1,
+    symbol: '¢'
+  },
+  SILVER_COIN: {
+    value: 0.25,
+    mass: 0.1,
+    symbol: '£'
+  },
+  GOLD_COIN: {
+    value: 1,
+    mass: 0.1,
+    symbol: '$'
+  },
+  SWORD: {
+    value: 10,
+    mass: 5,
+    unique: 'sword',
+    symbol: 'W'
+  },
+}
