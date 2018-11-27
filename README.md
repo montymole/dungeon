@@ -4,9 +4,12 @@
 
 - add static light sources and fov to them
 
+
 ## DUNGEON GEN
 
-- better generator
+- more Corridor and Room types
+- api save dungeon seeds
+- dungeon seeding tool to pick best seeds
 
 ## PLAYER
 
@@ -17,13 +20,16 @@
 - arrows => relative direction keys
 - awds => rotate, forward backward  shift+ad strafe
 
-## ITEMS
+## ITEMS 
 
-- add some items and item seeding
+- item visibilty FOV + ROOM
+- stack and collect items -> player/monster/item inventory
+- api save item states (have items removed from room inventory)
+- staircase functionality
 
 ## MONSTERS
 
-- generic monster
+- generic monster class
 
 ## gameplay
 
@@ -36,7 +42,6 @@
 ## GRAPHICS
 
 - better basic level tiles
-  -- texturemapped level tiles
   -- DOOR subtypes open, closed, doorway
   --- animated door / close open
   -- CORNER, WALL, FLOOR random variations
