@@ -20,7 +20,7 @@
     "dev": "clear; webpack --watch",
     "clean": "rm -rf dist",
     "push": "git add -A; git commit -m 'v'; npm version patch; git push origin dungeon",
-    "start": "node dist/server",
+    "start": "node server",
     "init": "knex --knexfile ./src/knexfile.ts migrate:latest ",
     "lint": "tslint 'src/**/*.ts?(x)' -t verbose",
     "test": "mocha test/**/**.spec.js",

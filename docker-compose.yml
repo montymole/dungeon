@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  # This MariaDB container can be used as development database
+
   mariadb:
     image: "mariadb"
     environment:
@@ -15,18 +15,8 @@ services:
     ports:
       - "6379:6379"
 
-  node_install:
-    image: "BASE"
-
-  node_base:
-    image: "INSTALL"
-    depends_on: 
-      - "node_install"
-
   node:
-    image: "SERVER"
-    depends_on: 
-      - "node_base"
+    build: .
     ports:
       - "8080:8080"
 
