@@ -1,6 +1,6 @@
 {
   "name": "Dungeon",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Procedural explorable dungeons",
   "keywords": [
     "express",
