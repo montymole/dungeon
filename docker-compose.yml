@@ -4,6 +4,8 @@ services:
 
   mariadb:
     image: "mariadb"
+    networks:
+      - no-internet
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=timeline
@@ -12,11 +14,32 @@ services:
 
   redis:
     image: "redis:alpine"
+    networks:
+      - no-internet
     ports:
       - "6379:6379"
 
   node:
     build: .
+    networks:
+      - no-internet
     ports:
       - "8080:8080"
 
+  nginx:
+    build: ./nginx
+    networks:
+      - no-internet
+      - internet
+    depends_on:
+      - node
+    ports:
+      - '8282:8282'
+
+
+networks:
+  no-internet:
+    driver: bridge
+    internal: true
+  internet:
+    driver: bridge

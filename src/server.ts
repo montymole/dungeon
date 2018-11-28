@@ -43,12 +43,11 @@ const redisStore = Redis(session);
 
 app.use(session({
   store: new redisStore(options),
-  secret: 'MyCookieSecret1234',  // change this
+  secret: 'machne#elf',  // change this
   cookie: {},
   resave: true,
   saveUninitialized: true,
 }));
-
 
 // add api to paths
 app.use('/', api({ knex, config: configJson }));
