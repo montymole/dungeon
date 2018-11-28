@@ -1,22 +1,23 @@
-FROM node:8.5.0
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-# For npm@5 or later, copy package-lock.json as well
-COPY package.json package-lock.json ./
-RUN npm install
-
-# Bundle app source
+# "bare" base image with just our source files
+# which only has Node runtime - not even NPM!
+FROM mhart/alpine-node:base-6 as BASE
+WORKDIR /dist
 COPY . .
 
-# Expose the port
-EXPOSE 8080
+# test image installs development dependencies
+# and runs testing commands
+# derived from Node image that _includes_ NPM
+FROM mhart/alpine-node:6 as INSTALL
+RUN apk update && apk upgrade && \
+  apk add --no-cache bash git openssh
+WORKDIR /dist
+# Copy files _from_ BASE
+# To avoid accidentally creating different
+# testing environment from production
+COPY --from=BASE /dist .
+RUN npm i --only=prod
 
-# Compile typescript
-RUN npm install -g typescript
-RUN npm run build
-
-# Start the app
-ENTRYPOINT ["/usr/local/bin/npm", "start"]
+# final production image
+FROM BASE as SERVER
+EXPOSE 1337
+CMD ["node", "server.js"]

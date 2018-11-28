@@ -1,3 +1,6 @@
+# Minimal server env
+
+
 # TODO
 
 ## DUNGEON
