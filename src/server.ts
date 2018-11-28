@@ -60,7 +60,7 @@ app.use(DOWNLOAD_PATH, express.static(BINARY_SAVE_PATH));
 
 console.log('Running in :', environment);
 server.listen(process.env.PORT || configJson.port, () => {
-  console.log(`Started on port ${server.address().port} time : ${new Date()}`);
+  console.log(`Started on port ${server.address()['port']} time : ${new Date()}`);
 });
 
 export { server };
