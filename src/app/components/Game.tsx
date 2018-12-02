@@ -6,23 +6,23 @@ import { VIEW_RADIUS } from "../../dungeon/constants";
 @observer
 export class Game extends React.Component<any, any> {
   tiles: any;
-  async componentWillMount () {
+  async componentWillMount() {
     const seed = window.location.href.split("#")[1];
     const { gameState } = this.props;
     await gameState.createDungeonArea(seed);
     gameState.bindKeyboardEvents();
   }
 
-  async componentWillUnmount () {
+  async componentWillUnmount() {
     const { gameState } = this.props;
     gameState.unbindKeyboardEvents();
   }
 
-  saveWorld (world) {
+  saveWorld(world) {
     this.props.gameState.saveWorld(world);
   }
 
-  render () {
+  render() {
     const { gameState } = this.props;
     const {
       world,
@@ -40,18 +40,28 @@ export class Game extends React.Component<any, any> {
           onInit={world => this.saveWorld(world)}
           gravity={{ x: 0, y: 0, z: -9.8 }}
           camera={cameraPosition}
-          width={1024}
-          height={800}
+          width={window.innerWidth}
+          height={window.innerHeight}
         >
           {tiles && tiles.length && (
             <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
           )}
-          {visibleItems && visibleItems.map(item => (
-            <CSSActor key={item.id} world={world} position={{ x: item.x, z: item.y, y: 2 }} rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}>
-              <small>{item.symbol}</small>
-              <Item key={item.id} world={world} position={{ x: item.x, z: item.y, y: 0.15 }} />
-            </CSSActor>
-          ))}
+          {visibleItems &&
+            visibleItems.map(item => (
+              <CSSActor
+                key={item.id}
+                world={world}
+                position={{ x: item.x, z: item.y, y: 2 }}
+                rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
+              >
+                <small>{item.symbol}</small>
+                <Item
+                  key={item.id}
+                  world={world}
+                  position={{ x: item.x, z: item.y, y: 0.15 }}
+                />
+              </CSSActor>
+            ))}
           <Player world={world} position={playerPosition} />
           {dungeonMap &&
             dungeonMap.rooms.map(room => (
