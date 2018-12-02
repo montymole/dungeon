@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Nova+Mono");
+
 $font-stack: "Nova Mono", monospace;
 $bg: #000;
 $c1: #fff;
@@ -9,28 +10,7 @@ $c4: #0a8;
   margin: 0;
   padding: 0;
 }
-
-.miniMap {
-  > div {
-    position: relative;
-    top: 150px;
-    left: 150px;
-    .tile {
-      position: absolute;
-    }
-  }
-  position: fixed;
-  bottom: 8px;
-  right: 8px;
-  zoom: 0.5;
-  opacity: 0.7;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #030;
-  border: solid 1px #fff;
-}
+@import "minimap.scss";
 
 .compass {
   width: 200px;

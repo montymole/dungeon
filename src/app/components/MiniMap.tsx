@@ -1,5 +1,7 @@
 import * as React from "react";
 
+const SIZE = 32;
+
 export class MiniMap extends React.Component<any, any> {
   render() {
     const { playerPosition, visibleTiles } = this.props;
@@ -7,30 +9,28 @@ export class MiniMap extends React.Component<any, any> {
       <div className="miniMap">
         <div
           style={{
-            left: 250 - playerPosition.x * 8 + "px",
-            top: 250 - playerPosition.z * 8 + "px"
+            left: 250 - playerPosition.x * SIZE + "px",
+            top: 250 - playerPosition.z * SIZE + "px"
           }}
         >
           {visibleTiles &&
             visibleTiles.map(tile => (
               <div
-                className="tile"
+                className={`tile type${tile.type}subtype${tile.subtype}`}
                 key={tile.key}
                 style={{
-                  left: tile.x * 8 + "px",
-                  top: tile.y * 8 + "px"
+                  left: tile.x * SIZE + "px",
+                  top: tile.y * SIZE + "px"
                 }}
-              >
-                {tile.symbol}
-              </div>
+              />
             ))}
           <div
-            className="tile"
+            className={`tile player`}
             key="player"
             style={{
               color: "red",
-              left: playerPosition.x * 8 + "px",
-              top: playerPosition.z * 8 + "px"
+              left: playerPosition.x * SIZE + "px",
+              top: playerPosition.z * SIZE + "px"
             }}
           >
             @

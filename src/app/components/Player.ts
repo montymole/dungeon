@@ -21,7 +21,7 @@ class Player3D extends THREE.Object3D {
     this.init(props);
     this.update(props);
   }
-  init (props) {
+  init(props) {
     const { world, position } = props;
     const { x, y, z } = position;
     this.world = world;
@@ -63,17 +63,17 @@ class Player3D extends THREE.Object3D {
     // add to scene
     world.scene.add(this);
   }
-  update (props) {
+  update(props) {
     const { position } = props;
     if (position) this.moveTo(position);
   }
-  moveTo (position) {
+  moveTo(position) {
     // https://greensock.com/docs/TweenMax/TweenMax()
     TweenMax.to(this.position, 0.5, position);
   }
 
   // this is called every frame;
-  renderAnimationFrame (now, delta) {
+  renderAnimationFrame(now, delta) {
     // light
     this.light.intensity = 6 + 0.1 * Math.sin(now * 0.02);
     this.light.shadow.camera.far = this.light.distance;

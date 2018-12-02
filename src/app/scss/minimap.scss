@@ -1,0 +1,69 @@
+$s: 32px;
+.tile {
+  background-image: url("/png/tiles32.png");
+  background-repeat: no-repeat;
+  width: $s;
+  height: $s;
+  display: inline-block;
+  overflow: hidden;
+  background-position: (-36 * $s) (-36 * $s);
+}
+.player {
+  background-position: (-2 * $s) (-1 * $s);
+}
+.type2subtype1 {
+  //wall --
+  background-position: (-12 * $s) (-21 * $s);
+}
+.type2subtype2 {
+  //walll
+  background-position: (-11 * $s) (-21 * $s);
+}
+.type2subtype3 {
+  //corner
+  background-position: (-13 * $s) (-21 * $s);
+}
+.type2subtype4 {
+  //corner
+  background-position: (-14 * $s) (-21 * $s);
+}
+.type2subtype5 {
+  //corner
+  background-position: (-15 * $s) (-21 * $s);
+}
+.type2subtype6 {
+  //corner
+  background-position: (-16 * $s) (-21 * $s);
+}
+.type1subtype0 {
+  background-position: (-36 * $s) (-36 * $s);
+}
+.type3subtype1 {
+  //door
+  background-position: (-24 * $s) (-21 * $s);
+}
+.type3subtype2 {
+  //door
+  background-position: (-23 * $s) (-21 * $s);
+}
+.miniMap {
+  > div {
+    position: relative;
+    top: 150px;
+    left: 150px;
+    .tile {
+      position: absolute;
+    }
+  }
+  position: fixed;
+  bottom: 8px;
+  right: 8px;
+  zoom: 0.5;
+  opacity: 0.7;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #030;
+  border: solid 1px #fff;
+}
