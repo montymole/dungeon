@@ -83,11 +83,15 @@ h1 {
 
 h2 {
   border: solid 1px #0a8;
+  cursor: pointer;
   color: #0a8;
   display: block;
   text-align: center;
   font-size: 12px;
   opacity: 0.2;
+  &:hover {
+    opacity: 0.6;
+  }
 }
 
 .row {

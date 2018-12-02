@@ -22,6 +22,13 @@ export class Game extends React.Component<any, any> {
     this.props.gameState.saveWorld(world);
   }
 
+  synthVoice(text) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance();
+    utterance.text = text;
+    synth.speak(utterance);
+  }
+
   render() {
     const { gameState } = this.props;
     const {
@@ -76,6 +83,7 @@ export class Game extends React.Component<any, any> {
                 rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
               >
                 <h2
+                  onClick={() => this.synthVoice(room.name)}
                   style={{
                     width: room.w * 10 + "px",
                     height: room.h * 10 + "px"
