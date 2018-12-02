@@ -1,6 +1,6 @@
 import * as THREE from "three";
 global["THREE"] = THREE;
-import "../../../node_modules/three/examples/js/controls/OrbitControls";
+import "../../../node_modules/three/examples/js/controls/TrackballControls";
 import * as TweenMax from "gsap/umd/TweenMax";
 
 import { ReactThree } from "./ReactThree";
@@ -14,7 +14,7 @@ class Player3D extends THREE.Object3D {
   world: World;
   light: THREE.PointLight;
   camera: THREE.Camera;
-  controls: THREE.OrbitControls;
+  controls: THREE.TrackballControls;
 
   constructor(props) {
     super();
@@ -35,7 +35,11 @@ class Player3D extends THREE.Object3D {
     world.cameraTarget = this.position;
     this.add(this.camera);
     // controls
-    this.controls = new THREE.OrbitControls(this.camera);
+    this.controls = new THREE.TrackballControls(this.camera);
+    this.controls.noZoom = true;
+    this.controls.noPan = true;
+    this.controls.keys = [65, 83, 68];
+    // this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
     this.light = new THREE.PointLight(0xffffff, 3.5, VIEW_RADIUS, 4);
