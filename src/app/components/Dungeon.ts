@@ -92,7 +92,6 @@ class Dungeon3D extends THREE.Object3D {
     if (world && world.scene) world.scene.add(this);
   }
   destroy () {
-    console.log('destroy', this);
     this.world.scene.remove(this);
   }
   update (props) {

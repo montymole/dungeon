@@ -34,7 +34,9 @@ export abstract class ReactThree extends React.Component<any, any> {
       <div ref={element => {
         if (element) {
           if (element.parentElement) {
+            // override functions to prevent crash
             element.parentElement.removeChild = function (n: any) { return this }
+            element.parentElement.insertBefore = function (n: any) { return this }
           }
           this.element = element;
         }
