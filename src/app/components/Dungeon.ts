@@ -12,6 +12,7 @@ export class Dungeon extends ReactThree {
 }
 
 class Dungeon3D extends THREE.Object3D {
+  world: any;
   glb: any;
   meshMap: any = {};
   visibleMeshes: any = [];
@@ -87,7 +88,12 @@ class Dungeon3D extends THREE.Object3D {
         this.add(tileMesh);
       }
     });
+    this.world = world;
     if (world && world.scene) world.scene.add(this);
+  }
+  destroy () {
+    console.log('destroy', this);
+    this.world.scene.remove(this);
   }
   update (props) {
     const { playerFov } = props;

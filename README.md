@@ -3,9 +3,11 @@
 
 # TODO
 
+
 ## DUNGEON
 
 - add static light sources and fov to them
+- bug: clean exit old dungeon -> generate new
 
 
 ## DUNGEON GEN

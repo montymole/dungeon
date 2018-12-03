@@ -32,15 +32,19 @@ export class GameState {
     let y = this.playerPosition.z;
     switch (event.code) {
       case "KeyA":
+      case "ArrowLeft":
         x--;
         break;
       case "KeyD":
+      case "ArrowRight":
         x++;
         break;
       case "KeyW":
+      case "ArrowUp":
         y--;
         break;
       case "KeyS":
+      case "ArrowDown":
         y++;
         break;
       default:
@@ -89,6 +93,10 @@ export class GameState {
   }
 
   @action("create dungeon area") getDungeon = async (seed, save = false) => {
+    // nullify old data
+    this.tiles = null;
+    this.items = null;
+    this.dungeonMap = null;
     const dungeonMap = await (await fetch("/dungeon", {
       method: "post",
       body: JSON.stringify({

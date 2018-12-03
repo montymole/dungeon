@@ -37,6 +37,8 @@ class Player3D extends THREE.Object3D {
     // controls
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
+    this.controls.enablePan = false;
+    this.controls.keys = null;
     // lighting
     this.light = new THREE.PointLight(0xffffff, 3.5, VIEW_RADIUS, 4);
     this.light.position.set(0, 2, 0);
@@ -61,7 +63,11 @@ class Player3D extends THREE.Object3D {
     avatar.position.set(0, 0.95, 0);
     this.add(avatar);
     // add to scene
+    this.world = world;
     world.scene.add(this);
+  }
+  destroy () {
+    this.world.scene.remove(this);
   }
   update (props) {
     const { position } = props;

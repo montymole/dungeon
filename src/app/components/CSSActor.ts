@@ -12,6 +12,7 @@ const SCALE = 0.1;
 const CANNON_SCALE = 0.01;
 
 class CSSActor3D extends THREE.CSS3DObject {
+  world: any; // this world
   body: any; // physics body
   constructor(props) {
     super(props.element);
@@ -19,7 +20,7 @@ class CSSActor3D extends THREE.CSS3DObject {
     this.init(props);
     this.update(props);
   }
-  init(props) {
+  init (props) {
     const { world, mass = 0, position, onCollide } = props;
     // physics
     this.body = new CANNON.Body({
@@ -29,11 +30,20 @@ class CSSActor3D extends THREE.CSS3DObject {
         new CANNON.Vec3(CANNON_SCALE, CANNON_SCALE, CANNON_SCALE)
       )
     });
+    this.world = world;
     if (onCollide) this.body.addEventListener("collide", onCollide);
     if (world && world.physics) world.physics.addBody(this.body);
     if (world && world.scene) world.css3DScene.add(this);
   }
-  update(props) {
+  destroy () {
+    try {
+      this.world.physics.remove(this.body);
+      this.world.css3DScene.remove(this);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  update (props) {
     const { position, rotation } = props;
     if (position) {
       this.body.position.x = position.x;
@@ -46,7 +56,7 @@ class CSSActor3D extends THREE.CSS3DObject {
       this.rotation.z = rotation.z;
     }
   }
-  renderAnimationFrame(clock) {
+  renderAnimationFrame (clock) {
     this.position.x = this.body.position.x;
     this.position.y = this.body.position.y;
     this.position.z = this.body.position.z;

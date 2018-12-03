@@ -9,9 +9,12 @@ export class Game extends React.Component<any, any> {
   async componentWillMount () {
     const { gameState } = this.props;
     await gameState.listSavedDungeons();
-    const seed = gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
-    if (seed)
-      await gameState.getDungeon(seed)
+    const newSeed = window.location.href.split("#")[1];
+    const oldSeed = gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
+    if (newSeed)
+      await gameState.getDungeon(newSeed, true); // create from seeed
+    else if (oldSeed)
+      await gameState.getDungeon(oldSeed); //old seed
     else
       await gameState.getDungeon('ROGUE', true); // create initial dungeon
     gameState.bindKeyboardEvents();
@@ -22,8 +25,20 @@ export class Game extends React.Component<any, any> {
     gameState.unbindKeyboardEvents();
   }
 
+  async createDungeon (seed) {
+    const { gameState } = this.props;
+    await gameState.getDungeon(seed);
+  }
+
   saveWorld (world) {
     this.props.gameState.saveWorld(world);
+  }
+
+  synthVoice (text) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance();
+    utterance.text = text;
+    synth.speak(utterance);
   }
 
   render () {
@@ -45,23 +60,33 @@ export class Game extends React.Component<any, any> {
           onInit={world => this.saveWorld(world)}
           gravity={{ x: 0, y: 0, z: -9.8 }}
           camera={cameraPosition}
-          width={1024}
-          height={800}
+          width={window.innerWidth}
+          height={window.innerHeight}
         >
           {tiles && tiles.length && (
             <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
           )}
-          {visibleItems && visibleItems.map(item => (
-            <CSSActor key={item.id} world={world} position={{ x: item.x, z: item.y, y: 2 }} rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}>
-              <small>{item.symbol}</small>
-              <Item key={item.id} world={world} position={{ x: item.x, z: item.y, y: 0.15 }} />
-            </CSSActor>
-          ))}
+          {visibleItems &&
+            visibleItems.map(item => (
+              <CSSActor
+                key={item.id}
+                world={world}
+                position={{ x: item.x, z: item.y, y: 2 }}
+                rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
+              >
+                <small>{item.symbol}</small>
+                <Item
+                  key={item.id}
+                  world={world}
+                  position={{ x: item.x, z: item.y, y: 0.15 }}
+                />
+              </CSSActor>
+            ))}
           <Player world={world} position={playerPosition} />
           {dungeonMap &&
             dungeonMap.rooms.map(room => (
               <CSSActor
-                key={room.id}
+                key={`r_${room.id}`}
                 world={world}
                 position={{
                   x: room.x - 1 + Math.round(room.w / 2),
@@ -71,6 +96,7 @@ export class Game extends React.Component<any, any> {
                 rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
               >
                 <h2
+                  onClick={() => this.synthVoice(room.name)}
                   style={{
                     width: room.w * 10 + "px",
                     height: room.h * 10 + "px"
@@ -87,10 +113,10 @@ export class Game extends React.Component<any, any> {
               <div className="w">W</div>
               <div className="s">S</div>
               <h1>{dungeonMap && dungeonMap.seed}</h1>
-              <ul>
-                {dungeons && dungeons.map((d) => <li key={d.id}>{d.seed} {d.name}</li>)}
-              </ul>
             </div>
+            <ul className="dungeonMenu">
+              {dungeons && dungeons.map((d) => <li key={d.id} onClick={() => this.createDungeon(d.seed)}>{d.name}</li>)}
+            </ul>
             <MiniMap
               playerPosition={playerPosition}
               visibleTiles={visibleTiles}

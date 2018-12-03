@@ -5,13 +5,22 @@ export abstract class ReactThree extends React.Component<any, any> {
   threeClass: any;
   hasElement: boolean = false;
   element: HTMLElement;
-  componentDidMount() {
+
+  componentDidMount () {
     this.init();
   }
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.init();
   }
-  init() {
+  componentWillUnmount () {
+    if (this.obj3d && this.obj3d.destroy) {
+      if (this.element) this.element.remove();
+      this.obj3d.destroy();
+      delete this.obj3d;
+      delete this.element;
+    }
+  }
+  init () {
     const { world } = this.props;
     const { element } = this;
     if (!this.obj3d && world) {
@@ -20,9 +29,17 @@ export abstract class ReactThree extends React.Component<any, any> {
       if (this.obj3d && this.obj3d.update) this.obj3d.update({ ...this.props });
     }
   }
-  render() {
+  render () {
     return this.hasElement ? (
-      <div ref={element => (this.element = element)}>{this.props.children}</div>
+      <div ref={element => {
+        if (element) {
+          if (element.parentElement) {
+            element.parentElement.removeChild = function (n: any) { return this }
+          }
+          this.element = element;
+        }
+      }
+      }> {this.props.children}</div >
     ) : null;
   }
 }
