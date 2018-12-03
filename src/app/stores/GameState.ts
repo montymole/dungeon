@@ -7,6 +7,7 @@ export class GameState {
   @observable fetching;
   @observable world;
 
+  @observable dungeons: any[] = [];
   @observable dungeonMap;
   @observable tiles;
   @observable materials: any[] = [];
@@ -87,12 +88,12 @@ export class GameState {
     this.visibleItems = this.items;
   }
 
-  @action("create dungeon area") createDungeonArea = async seed => {
-    this.fetching = true;
+  @action("create dungeon area") getDungeon = async (seed, save = false) => {
     const dungeonMap = await (await fetch("/dungeon", {
       method: "post",
       body: JSON.stringify({
         seed,
+        save,
         x: -50,
         y: -50,
         w: 250,
@@ -102,6 +103,7 @@ export class GameState {
     })).json();
     this.dungeonMap = dungeonMap;
     this.items = flatten(dungeonMap.rooms.map(r => r.items));
+
     this.FOV = new FOV(dungeonMap.tiles);
     const firstRoom = dungeonMap.rooms[0];
     this.playerPosition = {
@@ -111,6 +113,10 @@ export class GameState {
     };
     this.updateFieldOfView();
     this.tiles = Object.keys(dungeonMap.tiles).map(k => dungeonMap.tiles[k]);
+  }
+
+  @action("list saved dungeons") listSavedDungeons = async () => {
+    this.dungeons = await (await fetch("/dungeons", { method: "get" })).json();
   }
 
   @action("load all materials") loadMaterials = async () => {

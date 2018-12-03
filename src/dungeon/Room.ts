@@ -20,7 +20,7 @@ export default class Room extends Procedural {
   stairsDown: Tile;
   tiles: Tile[] = [];
   items: Item[] = [];
-  private dungeon: any;
+  dungeon: any;
   toJSON () {
     return pick(Room.PUBLIC, this);
   }
@@ -127,11 +127,13 @@ export default class Room extends Procedural {
     let addedItems = 0;
     while (addedItems < numItemsToAdd) {
       const floor = this.floorTiles[this.randomInt(this.floorTiles.length)];
-      this.items.push(new Item({
-        seed: this.seed + this.items.length,
-        id: this.id * 1000 + this.items.length,
-        x: floor.x, y: floor.y
-      }));
+      if (floor) {
+        this.items.push(new Item({
+          seed: this.seed + this.items.length,
+          id: this.id * 1000 + this.items.length,
+          x: floor.x, y: floor.y
+        }));
+      }
       addedItems++;
     }
   }

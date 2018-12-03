@@ -2,13 +2,14 @@ const MIN_ROOM_WIDTH = 6;
 const MIN_ROOM_HEIGHT = 6;
 const MAX_ROOM_WIDTH = 30;
 const MAX_ROOM_HEIGHT = 20;
-const MIN_NUM_ROOMS = 3;
-const MAX_NUM_ROOMS = 24;
+const MIN_NUM_ROOMS = 1;
+const MAX_NUM_ROOMS = 12;
 
 import { TILE_TYPE, SYMBOLS, } from "./constants";
 import NameGenerator from "./NameGenerator";
 import Tile from "./Tile";
 import Room from "./Room";
+import Maze from "./Maze";
 import Corridor from "./Corridor";
 import Procedural from "./Procedural";
 import { scan } from "./utils";
@@ -38,9 +39,14 @@ export class Dungeon extends Procedural {
     return overlaps;
   }
 
+  testMaze (x, y, w, h) {
+    new Maze({ x, y, w, h, id: 1, seed: this.seed, dungeon: this, name: 'maze' });
+  }
+
+
   createArea (x: number, y: number, maxNumRooms: number = MAX_NUM_ROOMS, precalculatedFOV: boolean = false) {
     const { rooms, corridors } = this;
-    const numRooms = MIN_NUM_ROOMS + this.random(maxNumRooms);
+    const numRooms = MIN_NUM_ROOMS + this.randomInt(maxNumRooms);
     const numCorridors = numRooms;
     while (rooms.length < numRooms) {
       rooms.push(

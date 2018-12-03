@@ -7,9 +7,13 @@ import { VIEW_RADIUS } from "../../dungeon/constants";
 export class Game extends React.Component<any, any> {
   tiles: any;
   async componentWillMount () {
-    const seed = window.location.href.split("#")[1];
     const { gameState } = this.props;
-    await gameState.createDungeonArea(seed);
+    await gameState.listSavedDungeons();
+    const seed = gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
+    if (seed)
+      await gameState.getDungeon(seed)
+    else
+      await gameState.getDungeon('ROGUE', true); // create initial dungeon
     gameState.bindKeyboardEvents();
   }
 
@@ -26,6 +30,7 @@ export class Game extends React.Component<any, any> {
     const { gameState } = this.props;
     const {
       world,
+      dungeons,
       dungeonMap,
       tiles,
       visibleTiles,
@@ -82,6 +87,9 @@ export class Game extends React.Component<any, any> {
               <div className="w">W</div>
               <div className="s">S</div>
               <h1>{dungeonMap && dungeonMap.seed}</h1>
+              <ul>
+                {dungeons && dungeons.map((d) => <li key={d.id}>{d.seed} {d.name}</li>)}
+              </ul>
             </div>
             <MiniMap
               playerPosition={playerPosition}

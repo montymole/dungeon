@@ -4,7 +4,8 @@ export const TABLES = {
   VECTORS: 'vector',
   OBJECTS: 'object',
   INSTANCES: 'instace',
-  BINARIES: 'binaries'
+  BINARIES: 'binaries',
+  DUNGEONS: 'dungeon'
 };
 
 // binary file settings
