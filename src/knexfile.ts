@@ -3,10 +3,10 @@ const config = {
   development: {
     client: 'mysql',
     connection: {
-      host: '127.0.0.1',
+      host: process.env.DB_HOST || 'localhost',
       user: 'root',
       password: '',
-      database: 'timeline_dev',
+      database: process.env.DATABASE || 'dungeon',
     },
     migrations: {
       directory: './migrations',
@@ -25,10 +25,10 @@ const config = {
   production: {
     client: 'mysql',
     connection: {
-      host: 'mariadb',
+      host: process.env.DB_HOST || 'mariadb',
       user: 'root',
       password: '',
-      database: 'timeline',
+      database: process.env.DATABASE || 'dungeon',
     },
     migrations: {
       directory: './migrations',

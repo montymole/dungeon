@@ -1,4 +1,4 @@
-version: '2'
+version: '3.1'
 
 services:
 
@@ -6,9 +6,6 @@ services:
     image: "mariadb"
     networks:
       - no-internet
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_DATABASE=timeline
     ports:
       - '3306:3306'
 
@@ -23,6 +20,11 @@ services:
     build: .
     networks:
       - no-internet
+    environment:
+      ENVIRONMENT: production
+      DB_HOST: mariadb
+      DATABASE: dungeon
+      REDIS_HOST: redis
     ports:
       - "8080:8080"
 

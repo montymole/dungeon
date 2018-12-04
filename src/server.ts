@@ -14,12 +14,17 @@ import configJson from './config.json';
 import * as Redis from 'connect-redis';
 import { DOWNLOAD_PATH, BINARY_SAVE_PATH } from './constants';
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = process.env.ENVIRONMENT || 'development';
+
 const app = express();
 const server = http.createServer(app);
 
 // create knex connection
 const knex = Knex(knexfile[environment]);
+
+console.log('--------------------------------------------');
+console.log(environment, knexfile[environment]);
+console.log('--------------------------------------------');
 
 // add crossdomain headers
 app.use(cors({ exposedHeaders: configJson.corsHeaders }));
@@ -35,7 +40,7 @@ app.use(helmet());
 
 // redis settings here
 const options: Redis.RedisStoreOptions = {
-  host: 'localhost',
+  host: process.env.REDIS_HOST || 'localhost',
 };
 
 const redisStore = Redis(session);
