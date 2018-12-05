@@ -62,6 +62,7 @@
     "connect-redis": "^3.4.0",
     "cors": "2.8.5",
     "css-loader": "1.0.1",
+    "easystarjs": "^0.4.3",
     "es6-tween": "^5.3.1",
     "event-stream": "3.3.4",
     "express": "4.16.4",

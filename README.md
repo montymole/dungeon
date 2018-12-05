@@ -18,6 +18,7 @@
 
 ## PLAYER
 
+- click pathfinder, (only visible area)
 - player facing direction
 - torch vs lamp mode
 - directional fov
