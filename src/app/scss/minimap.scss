@@ -11,40 +11,38 @@ $s: 32px;
 .player {
   background-position: (-2 * $s) (-1 * $s);
 }
-.type2subtype1 {
-  //wall --
+.WALL.HORIZONTAL {
   background-position: (-12 * $s) (-21 * $s);
 }
-.type2subtype2 {
-  //walll
+.WALL.VERTICAL {
   background-position: (-11 * $s) (-21 * $s);
 }
-.type2subtype3 {
-  //corner
+.WALL.TOP_LEFT_CORNER {
   background-position: (-13 * $s) (-21 * $s);
 }
-.type2subtype4 {
-  //corner
+.WALL.TOP_RIGHT_CORNER {
   background-position: (-14 * $s) (-21 * $s);
 }
-.type2subtype5 {
-  //corner
+.WALL.BOTTOM_LEFT_CORNER {
   background-position: (-15 * $s) (-21 * $s);
 }
-.type2subtype6 {
-  //corner
+.WALL.BOTTOM_RIGHT_CORNER {
   background-position: (-16 * $s) (-21 * $s);
 }
-.type1subtype0 {
+.FLOOR.NORMAL {
   background-position: (-36 * $s) (-36 * $s);
 }
-.type3subtype1 {
-  //door
+.DOOR.HORIZONTAL {
   background-position: (-24 * $s) (-21 * $s);
 }
-.type3subtype2 {
-  //door
+.DOOR.VERTICAL {
   background-position: (-23 * $s) (-21 * $s);
+}
+.STAIRS_UP {
+  background-position: (-33 * $s) (-21 * $s);
+}
+.STAIRS_DOWN {
+  background-position: (-34 * $s) (-21 * $s);
 }
 .miniMap {
   > div {
