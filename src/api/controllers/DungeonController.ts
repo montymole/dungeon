@@ -1,11 +1,10 @@
-
-import { BaseController } from './classes';
-import { Dungeon } from '../../dungeon/DungeonGenerator';
-import { DungeonSave } from '../models/DungeonSave';
+import { BaseController } from "./classes";
+import { Dungeon } from "../../dungeon/DungeonGenerator";
+import { DungeonSave } from "../models/DungeonSave";
 
 const dungeons = {};
 
-function getDungeon (seed = 'ROGUE') {
+function getDungeon(seed = "ROGUE") {
   if (!dungeons[seed]) {
     dungeons[seed] = new Dungeon(seed);
     dungeons[seed].createArea(1, 10, 7);
@@ -14,20 +13,29 @@ function getDungeon (seed = 'ROGUE') {
 }
 
 export class RevealArea extends BaseController {
-  static routes = ['POST /dungeon'];
-  async response () {
+  static routes = ["POST /dungeon"];
+  async response() {
     const { x, y, w, h, seed, save, name } = this.params;
     const dungeon = getDungeon(seed);
     if (save) {
-      await DungeonSave.createOrUpdate({ seed, name: name || seed });
+      try {
+        await DungeonSave.createOrUpdate({ seed, name: name || seed });
+      } catch (error) {
+        console.error("no db?");
+      }
     }
     return dungeon.getArea(x, y, w, h);
   }
 }
 
 export class SavedDungeons extends BaseController {
-  static routes = ['GET /dungeons'];
-  async response () {
-    return await DungeonSave.query();
+  static routes = ["GET /dungeons"];
+  async response() {
+    try {
+      return await DungeonSave.query();
+    } catch (error) {
+      console.error("no db?");
+      return Object.keys(dungeons).map((k, i) => ({ id: i, seed: k, name: k }));
+    }
   }
 }

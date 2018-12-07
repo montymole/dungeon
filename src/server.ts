@@ -9,7 +9,6 @@ import * as helmet from "helmet";
 import * as Knex from "knex";
 import * as knexfile from "./knexfile";
 import api from "./api/api";
-import configJson from "./config.json";
 import { DOWNLOAD_PATH, BINARY_SAVE_PATH } from "./constants";
 
 const environment = process.env.ENVIRONMENT || "development";
@@ -46,7 +45,9 @@ app.use(DOWNLOAD_PATH, express.static(BINARY_SAVE_PATH));
 
 console.log("Running in :", environment);
 server.listen(process.env.PORT || 8080, () => {
-  console.log(`Started on port ${server.address()["port"]} time : ${new Date()}`);
+  console.log(
+    `Started on port ${server.address()["port"]} time : ${new Date()}`
+  );
 });
 
 export { server };

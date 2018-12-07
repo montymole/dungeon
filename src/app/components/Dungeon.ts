@@ -1,56 +1,20 @@
-import * as THREE from "three";
-import * as GLTFLoader from "three-gltf-loader";
 import { difference } from "ramda";
-global["THREE"] = THREE;
-
 import { TILE_TYPE, TILE_SUB_TYPE } from "../../dungeon/constants";
-
-import { ReactThree } from "./ReactThree";
+import { ReactThree, ThreeObj } from "./ReactThree";
 
 export class Dungeon extends ReactThree {
   threeClass = Dungeon3D;
 }
 
-class Dungeon3D extends THREE.Object3D {
-  world: any;
-  glb: any;
+class Dungeon3D extends ThreeObj {
   meshMap: any = {};
   visibleMeshes: any = [];
   materials: any = {};
 
-  constructor(props) {
-    super();
-    this.init(props);
-    this.update(props);
-  }
-
-  async loadGlb (path) {
-    const loader = new GLTFLoader();
-    return new Promise((resolve, reject) => {
-      loader.load(path, resolve);
-    });
-  }
-
-  findMeshByName (name) {
-    const SCALE = 0.01;
-    const origMesh = this.glb.scene.children.find(c => c.name === name);
-    const mesh = origMesh.clone();
-    // mesh.material = this.materials[name] || origMesh.material;
-    mesh.scale.set(SCALE, SCALE, SCALE);
-    return mesh;
-  }
-
-  async init (props) {
-    const { glbSrc = "/gitf/test.glb", tiles, world } = props;
-    if (!this.glb) {
-      // load object data
-      this.glb = await this.loadGlb(glbSrc);
-      this.materials.CORNER = this.materials.FLOOR = new THREE.MeshPhongMaterial(
-        { color: 0x202020 }
-      );
-      this.materials.WALL = new THREE.MeshPhongMaterial({ color: 0x606080 });
-      this.materials.DOOR = new THREE.MeshPhongMaterial({ color: 0x6060a0 });
-    }
+  async init(props) {
+    this.glbSrc = "/gitf/test.glb";
+    await super.init(props);
+    const { tiles } = props;
     tiles.forEach(tile => {
       let tileMesh;
       switch (tile.type) {
@@ -88,13 +52,9 @@ class Dungeon3D extends THREE.Object3D {
         this.add(tileMesh);
       }
     });
-    this.world = world;
-    if (world && world.scene) world.scene.add(this);
   }
-  destroy () {
-    this.world.scene.remove(this);
-  }
-  update (props) {
+
+  update(props) {
     const { playerFov } = props;
     if (playerFov) {
       const visibleNow = [];
@@ -110,7 +70,4 @@ class Dungeon3D extends THREE.Object3D {
       this.visibleMeshes = visibleNow;
     }
   }
-
-  // this is called every frame;
-  renderAnimationFrame (clock) { }
 }

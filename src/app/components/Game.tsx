@@ -6,42 +6,42 @@ import { VIEW_RADIUS } from "../../dungeon/constants";
 @observer
 export class Game extends React.Component<any, any> {
   tiles: any;
-  async componentWillMount () {
+  async componentWillMount() {
     const { gameState } = this.props;
     await gameState.listSavedDungeons();
     const newSeed = window.location.href.split("#")[1];
-    const oldSeed = gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
-    if (newSeed)
-      await gameState.getDungeon(newSeed, true); // create from seeed
-    else if (oldSeed)
-      await gameState.getDungeon(oldSeed); //old seed
-    else
-      await gameState.getDungeon('ROGUE', true); // create initial dungeon
+    const oldSeed =
+      gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
+    if (newSeed) await gameState.getDungeon(newSeed, true);
+    // create from seeed
+    else if (oldSeed) await gameState.getDungeon(oldSeed);
+    // old seed
+    else await gameState.getDungeon("ROGUE", true); // create initial dungeon
     gameState.bindKeyboardEvents();
   }
 
-  async componentWillUnmount () {
+  async componentWillUnmount() {
     const { gameState } = this.props;
     gameState.unbindKeyboardEvents();
   }
 
-  async createDungeon (seed) {
+  async createDungeon(seed) {
     const { gameState } = this.props;
     await gameState.getDungeon(seed);
   }
 
-  saveWorld (world) {
+  saveWorld(world) {
     this.props.gameState.saveWorld(world);
   }
 
-  synthVoice (text) {
+  synthVoice(text) {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance();
     utterance.text = text;
     synth.speak(utterance);
   }
 
-  render () {
+  render() {
     const { gameState } = this.props;
     const {
       world,
@@ -115,7 +115,12 @@ export class Game extends React.Component<any, any> {
               <h1>{dungeonMap && dungeonMap.seed}</h1>
             </div>
             <ul className="dungeonMenu">
-              {dungeons && dungeons.map((d) => <li key={d.id} onClick={() => this.createDungeon(d.seed)}>{d.name}</li>)}
+              {dungeons &&
+                dungeons.map(d => (
+                  <li key={d.id} onClick={() => this.createDungeon(d.seed)}>
+                    {d.name}
+                  </li>
+                ))}
             </ul>
             <MiniMap
               playerPosition={playerPosition}
