@@ -27,7 +27,7 @@ export class World extends React.Component<any, any> {
       // Setup our world
       this.physics = new CANNON.World();
       if (gravity) this.physics.gravity.set(gravity.x, gravity.y, gravity.z);
-      this.raycaster = new THREE.Raycaster();
+      //this.raycaster = new THREE.Raycaster();
     }
   }
 
@@ -79,21 +79,6 @@ export class World extends React.Component<any, any> {
     return this.css3Drenderer.domElement;
   }
 
-  /*
-  onWorldClick (e) {
-    const { width, height } = this.props;
-    const mouse = {
-      x: (e.clientX / width) * 2 - 1,
-      y: -(e.clientY / height) * 2 + 1,
-      z: 0.5
-    };
-    // update the picking ray with the camera and mouse position
-    this.raycaster.setFromCamera(mouse, this.camera);
-    // calculate objects intersecting the picking ray
-    const intersections = this.raycaster.intersectObjects(this.scene.children, true);
-    console.log('3D WORLD', mouse, intersections, this.scene);
-  }
-*/
   renderAnimationFrame(now: number = 0) {
     requestAnimationFrame(t => this.renderAnimationFrame(t));
     if (this.lastFrameTime) {
@@ -117,7 +102,7 @@ export class World extends React.Component<any, any> {
     const { children, width, height } = this.props;
     return (
       <div
-        style={{ width: width + "px", height: height + "px" }}
+        style={{ width: `${width}px`, height: `${height}px` }}
         className="world"
         ref={domRoot => this.initWorld(domRoot)}
       >

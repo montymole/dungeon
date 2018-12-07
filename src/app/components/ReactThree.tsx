@@ -84,11 +84,15 @@ export abstract class ThreeObj extends THREE.Object3D {
   }
 
   findMeshByName(name) {
-    const SCALE = 0.01;
-    const origMesh = this.glb.scene.children.find(c => c.name === name);
-    const mesh = origMesh.clone();
-    mesh.scale.set(SCALE, SCALE, SCALE);
-    return mesh;
+    try {
+      const SCALE = 0.01;
+      const origMesh = this.glb.scene.children.find(c => c.name === name);
+      const mesh = origMesh.clone();
+      mesh.scale.set(SCALE, SCALE, SCALE);
+      return mesh;
+    } catch (error) {
+      return null;
+    }
   }
 
   async init(props) {
