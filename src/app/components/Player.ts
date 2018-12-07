@@ -38,7 +38,7 @@ class Player3D extends THREE.Object3D {
     this.controls = new THREE.TrackballControls(this.camera);
     this.controls.noZoom = true;
     this.controls.noPan = true;
-    this.controls.keys = [65, 83, 68];
+    this.controls.keys = [];
     // this.controls = new THREE.OrbitControls(this.camera);
     this.controls.target = this.position;
     // lighting
