@@ -56,8 +56,10 @@ class Dungeon3D extends ThreeObj {
     });
   }
 
-  initPhysics(dungeonMap) {
+  async initPhysics(dungeonMap) {
     const { world } = this;
+    // reinit world physics to clear all old bodies
+    world.initPhysics();
     // create physics floor
     const floor = new CANNON.Body({
       mass: 0, // mass
@@ -134,16 +136,16 @@ class Dungeon3D extends ThreeObj {
 
   async init(props) {
     this.glbSrc = "/gitf/test.glb";
-    await super.init(props);
     this.seed = props.dungeonMap.seed;
+    await super.init(props);
     this.initGraphics(props.dungeonMap);
     // TODO init physics only for the active room
     // TODO removePhysics from not active rooms
-    this.initPhysics(props.dungeonMap);
+    console.log("pass", props, props.dungeonMap.seed);
+    await this.initPhysics(props.dungeonMap);
   }
 
   destroy() {
-    //TODO destroy phys bodies from world.physics
     this.world.scene.remove(this);
   }
 
@@ -152,7 +154,7 @@ class Dungeon3D extends ThreeObj {
       await this.init(props);
     }
     const { playerFov } = props;
-    if (playerFov) {
+    if (playerFov && this.meshMap) {
       const visibleNow = [];
       playerFov.forEach(key => {
         if (this.meshMap[key]) {

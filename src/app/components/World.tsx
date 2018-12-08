@@ -15,19 +15,13 @@ export class World extends React.Component<any, any> {
   ambientLight: THREE.AmbientLight;
   css3DScene: THREE.Scene;
   css3Drenderer: THREE.CSS3DRenderer;
-  raycaster: THREE.Raycaster;
-  mouse3D: THREE.Vector3;
-  physics: any;
+  physics: CANNON.World;
   cameraTarget: THREE.Vector3;
 
   constructor(props) {
-    const { gravity } = props;
     super(props);
     if (!this.physics) {
-      // Setup our world
-      this.physics = new CANNON.World();
-      if (gravity) this.physics.gravity.set(gravity.x, gravity.y, gravity.z);
-      //this.raycaster = new THREE.Raycaster();
+      this.initPhysics();
     }
   }
 
@@ -39,6 +33,13 @@ export class World extends React.Component<any, any> {
       onInit(this);
     }
     this.renderAnimationFrame();
+  }
+
+  initPhysics() {
+    const gravity = { x: 0, y: 0, z: -9.8 };
+    this.physics = new CANNON.World();
+    this.physics.gravity.set(gravity.x, gravity.y, gravity.z);
+    console.log("NEW PHYSICS");
   }
 
   initWorld(domRoot) {
@@ -84,12 +85,8 @@ export class World extends React.Component<any, any> {
     if (this.lastFrameTime) {
       const delta = (now - this.lastFrameTime) / 1000;
       this.physics.step(fixedTimeStep, delta, 10);
-      this.css3DScene.children
-        .filter((c: any) => c.renderAnimationFrame)
-        .forEach((c: any) => c.renderAnimationFrame(now, delta));
-      this.scene.children
-        .filter((c: any) => c.renderAnimationFrame)
-        .forEach((c: any) => c.renderAnimationFrame(now, delta));
+      this.css3DScene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
+      this.scene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
     }
     // this.controls.update();
     this.camera.lookAt(this.cameraTarget);
@@ -100,12 +97,9 @@ export class World extends React.Component<any, any> {
 
   render() {
     const { children, width, height } = this.props;
+    const style = { width: `${width}px`, height: `${height}px` };
     return (
-      <div
-        style={{ width: `${width}px`, height: `${height}px` }}
-        className="world"
-        ref={domRoot => this.initWorld(domRoot)}
-      >
+      <div style={style} className="world" ref={domRoot => this.initWorld(domRoot)}>
         {children}
       </div>
     );

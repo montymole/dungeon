@@ -51,10 +51,11 @@ export abstract class ReactThree extends React.Component<any, any> {
           }
         }}
       >
-        {" "}
         {this.props.children}
       </div>
-    ) : null;
+    ) : (
+      this.props.children || null
+    );
   }
 }
 /* ----------------------------------------------------------------------*/
@@ -72,6 +73,7 @@ export abstract class ThreeObj extends THREE.Object3D {
 
   constructor(props) {
     super();
+    console.log(props);
     this.init(props);
     this.update(props);
   }
