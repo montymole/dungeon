@@ -78,7 +78,7 @@ class Dungeon3D extends ThreeObj {
   }
 
   horizontalWall(tiles, room, y) {
-    let x1 = room.x;
+    let x1 = room.x - 1;
     let x2 = room.x;
     for (let x = room.x; x < room.x + room.w; x++) {
       const k = `x${x}y${y}`;
@@ -137,6 +137,8 @@ class Dungeon3D extends ThreeObj {
     await super.init(props);
     this.seed = props.dungeonMap.seed;
     this.initGraphics(props.dungeonMap);
+    // TODO init physics only for the active room
+    // TODO removePhysics from not active rooms
     this.initPhysics(props.dungeonMap);
   }
 

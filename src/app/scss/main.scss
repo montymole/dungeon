@@ -14,59 +14,25 @@ $c4: #0a8;
 
 .dungeonMenu {
   width: 200px;
-  position:absolute;
+  position: absolute;
   top: 300px;
   left: 8px;
   li {
-    display:block;
+    display: block;
     cursor: pointer;
-    background-color:#666;
-    padding:4px 8px;
+    background-color: #666;
+    padding: 4px 8px;
     text-shadow: #000 1px 1px 2px;
     &:hover {
-      background-color:#777;
+      background-color: #777;
     }
   }
 }
 
-.compass {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: solid 2px #fff;
-  position: relative;
-  h1 {
-    position: absolute;
-    top: 70px;
-    text-align: center;
-    width: 200px;
-  }
-  .n,
-  .s,
-  .w,
-  .e {
-    position: absolute;
-    font-size: 30px;
-    color: #aaa;
-  }
-  .n {
-    left: 0;
-    width: 200px;
-    text-align: center;
-  }
-  .s {
-    bottom: 0;
-    width: 200px;
-    text-align: center;
-  }
-  .w {
-    top: 70px;
-    left: 0;
-  }
-  .e {
-    top: 70px;
-    right: 0;
-  }
+.dungeonTitle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
 }
 
 .world {
