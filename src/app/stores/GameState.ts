@@ -25,7 +25,7 @@ export class GameState {
   keyDownListener: any;
   keyUpListener: any;
 
-  onKeyDown (event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent) {
     this.keyStateMap[event.code] = true;
     let x = this.playerPosition.x;
     let y = this.playerPosition.z;
@@ -64,27 +64,31 @@ export class GameState {
         break;
     }
   }
-  onKeyUp (event: KeyboardEvent) {
+  onKeyUp(event: KeyboardEvent) {
     this.keyStateMap[event.code] = false;
   }
 
-  @action("bind keyboardevents")
-  bindKeyboardEvents = () => {
+  onMouseDown(event: MouseEvent) {
+    console.log("mouse", event);
+  }
+
+  @action("bind hid")
+  bindEvents = () => {
     this.keyDownListener = window.addEventListener("keydown", this.onKeyDown.bind(this));
     this.keyUpListener = window.addEventListener("keyup", this.onKeyUp.bind(this));
   };
 
-  @action("unbind keyboardevents")
-  unbindKeyboardEvents = () => {
+  @action("unbind hid")
+  unbindEvents = () => {
     window.removeEventListener("keydown", this.keyDownListener);
     window.removeEventListener("keyup", this.keyUpListener);
   };
 
-  saveWorld (world) {
+  saveWorld(world) {
     this.world = world;
   }
 
-  updateFieldOfView () {
+  updateFieldOfView() {
     const { playerPosition, FOV, dungeonMap } = this;
     this.playerFov = FOV.fovPos(playerPosition.x, playerPosition.z, VIEW_RADIUS);
     this.visibleTiles = this.playerFov.map(k => dungeonMap && dungeonMap.tiles[k]).filter(t => t);
@@ -133,6 +137,12 @@ export class GameState {
   @action("list saved dungeons")
   listSavedDungeons = async () => {
     this.dungeons = await (await fetch("/dungeons", { method: "get" })).json();
+  };
+
+  @action("path finder")
+  pathFinder = async (startPosition, endPosition) => {
+    // TODO
+    return { startPosition, endPosition };
   };
 
   @action("load all materials")

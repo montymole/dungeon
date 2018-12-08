@@ -14,6 +14,7 @@ class Dungeon3D extends ThreeObj {
   visibleMeshes: any = [];
   materials: any = {};
   walls: any;
+  onClickTile: any;
 
   initGraphics(dungeonMap) {
     Object.keys(dungeonMap.tiles).map(k => {
@@ -50,6 +51,8 @@ class Dungeon3D extends ThreeObj {
         tileMesh.castShadow = true; // default is false
         tileMesh.receiveShadow = true; // default is false
         tileMesh.visible = false;
+        tileMesh.key = tile.key;
+        if (this.onClickTile) tileMesh.onClick = intersection => this.onClickTile(tile, intersection);
         this.meshMap[tile.key] = tileMesh;
         this.add(tileMesh);
       }
@@ -136,6 +139,7 @@ class Dungeon3D extends ThreeObj {
 
   async init(props) {
     this.glbSrc = "/gitf/test.glb";
+    this.onClickTile = props.onClickTile;
     this.seed = props.dungeonMap.seed;
     await super.init(props);
     this.initGraphics(props.dungeonMap);

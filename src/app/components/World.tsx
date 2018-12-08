@@ -17,9 +17,13 @@ export class World extends React.Component<any, any> {
   css3Drenderer: THREE.CSS3DRenderer;
   physics: CANNON.World;
   cameraTarget: THREE.Vector3;
+  mouse: THREE.Vector2;
+  raycaster: THREE.Raycaster;
 
   constructor(props) {
     super(props);
+    this.mouse = new THREE.Vector2();
+    this.raycaster = new THREE.Raycaster();
     if (!this.physics) {
       this.initPhysics();
     }
@@ -29,6 +33,7 @@ export class World extends React.Component<any, any> {
     const { onInit } = this.props;
     this.initWebGL(this.domRoot);
     this.initCSS3D(this.domRoot);
+
     if (onInit) {
       onInit(this);
     }
@@ -48,11 +53,7 @@ export class World extends React.Component<any, any> {
 
   initWebGL(containerEl) {
     const { width, height, camera } = this.props;
-    this.renderer = new THREE.WebGLRenderer({
-      clearColor: 0x000000,
-      clearAlpha: 1,
-      antialias: true
-    });
+    this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -88,18 +89,26 @@ export class World extends React.Component<any, any> {
       this.css3DScene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
       this.scene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
     }
-    // this.controls.update();
     this.camera.lookAt(this.cameraTarget);
     this.renderer.render(this.scene, this.camera);
     this.css3Drenderer.render(this.css3DScene, this.camera);
     this.lastFrameTime = now;
   }
 
+  mouseDown(event) {
+    const { mouse, raycaster } = this;
+    mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y = -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, this.camera);
+    const intersects = raycaster.intersectObjects(this.scene.children, true);
+    if (intersects.length) intersects.some(i => !i.object["onClick"] || i.object["onClick"](i));
+  }
+
   render() {
     const { children, width, height } = this.props;
     const style = { width: `${width}px`, height: `${height}px` };
     return (
-      <div style={style} className="world" ref={domRoot => this.initWorld(domRoot)}>
+      <div style={style} className="world" ref={domRoot => this.initWorld(domRoot)} onMouseDown={e => this.mouseDown(e)}>
         {children}
       </div>
     );

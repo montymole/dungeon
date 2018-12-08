@@ -1,6 +1,9 @@
 import * as React from "react";
+import { pick } from "ramda";
 import { observer } from "mobx-react";
 import { World, Dungeon, Player, Item, Hud, MiniMap, CSSActor, RoomDebug, ItemDebug } from "./";
+import { TILE_TYPE } from "../../dungeon/constants";
+import { GameState } from "../stores/GameState";
 @observer
 export class Game extends React.Component<any, any> {
   async componentWillMount() {
@@ -13,12 +16,12 @@ export class Game extends React.Component<any, any> {
     else if (oldSeed) await gameState.getDungeon(oldSeed);
     // old seed
     else await gameState.getDungeon("ROGUE", true); // create initial dungeon
-    gameState.bindKeyboardEvents();
+    gameState.bindEvents();
   }
 
   async componentWillUnmount() {
     const { gameState } = this.props;
-    gameState.unbindKeyboardEvents();
+    gameState.unbindvents();
   }
 
   async createDungeon(seed) {
@@ -26,19 +29,28 @@ export class Game extends React.Component<any, any> {
     await gameState.getDungeon(seed);
   }
 
+  async tileClicked(tile) {
+    console.log("TILE CLICKED", tile);
+    if (tile.type === TILE_TYPE.FLOOR) {
+      const { gameState } = this.props;
+      const path = await gameState.pathFinder(gameState.playerPosition, pick(["x", "y", "z"], tile));
+      console.log("PATH", path);
+    }
+  }
+
   render() {
+    const DEBUG = false;
     const { gameState } = this.props;
     const { world, dungeons, dungeonMap, visibleTiles, visibleItems, playerFov, cameraPosition, playerPosition } = gameState;
     return (
       <World onInit={world => this.props.gameState.saveWorld(world)} camera={cameraPosition} width={window.innerWidth} height={window.innerHeight}>
         {Boolean(world && dungeonMap && playerFov) && (
-          <Dungeon world={world} dungeonMap={dungeonMap} playerFov={playerFov}>
+          <Dungeon world={world} dungeonMap={dungeonMap} playerFov={playerFov} onClickTile={tile => this.tileClicked(tile)}>
             <Player world={world} position={playerPosition} />
           </Dungeon>
         )}
-
-        <RoomDebug world={world} dungeonMap={dungeonMap} />
-        <ItemDebug world={world} visibleItems={visibleItems} />
+        {DEBUG && <RoomDebug world={world} dungeonMap={dungeonMap} />}
+        {DEBUG && <ItemDebug world={world} visibleItems={visibleItems} />}
         <Hud>
           <div className="dungeonTitle">
             <h1>{dungeonMap && dungeonMap.seed}</h1>
