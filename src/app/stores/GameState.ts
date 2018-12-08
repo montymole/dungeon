@@ -8,7 +8,6 @@ export class GameState {
 
   @observable dungeons: any[] = [];
   @observable dungeonMap;
-  @observable tiles;
   @observable materials: any[] = [];
   @observable objects3d: any[] = [];
 
@@ -26,7 +25,7 @@ export class GameState {
   keyDownListener: any;
   keyUpListener: any;
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown (event: KeyboardEvent) {
     this.keyStateMap[event.code] = true;
     let x = this.playerPosition.x;
     let y = this.playerPosition.z;
@@ -65,7 +64,7 @@ export class GameState {
         break;
     }
   }
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp (event: KeyboardEvent) {
     this.keyStateMap[event.code] = false;
   }
 
@@ -81,11 +80,11 @@ export class GameState {
     window.removeEventListener("keyup", this.keyUpListener);
   };
 
-  saveWorld(world) {
+  saveWorld (world) {
     this.world = world;
   }
 
-  updateFieldOfView() {
+  updateFieldOfView () {
     const { playerPosition, FOV, dungeonMap } = this;
     this.playerFov = FOV.fovPos(playerPosition.x, playerPosition.z, VIEW_RADIUS);
     this.visibleTiles = this.playerFov.map(k => dungeonMap && dungeonMap.tiles[k]).filter(t => t);
@@ -120,13 +119,11 @@ export class GameState {
   @action("create dungeon area")
   getDungeon = async (seed, save = false) => {
     // nullify old data
-    this.tiles = null;
     this.items = null;
     this.dungeonMap = null;
     const dungeonMap = await (await fetch("/dungeon", { method: "post", body: JSON.stringify({ seed, save, x: -50, y: -50, w: 250, h: 250 }), headers: { "Content-Type": "application/json" } })).json();
     this.dungeonMap = dungeonMap;
     this.items = flatten(dungeonMap.rooms.map(r => r.items));
-    this.tiles = Object.keys(dungeonMap.tiles).map(k => dungeonMap.tiles[k]);
     this.FOV = new FOV(dungeonMap.tiles);
     const firstRoom = dungeonMap.rooms[0];
     this.playerPosition = { x: firstRoom.x + 2, z: firstRoom.y + 2, y: 0 };

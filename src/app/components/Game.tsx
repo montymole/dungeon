@@ -5,8 +5,8 @@ import { VIEW_RADIUS } from "../../dungeon/constants";
 
 @observer
 export class Game extends React.Component<any, any> {
-  tiles: any;
-  async componentWillMount() {
+
+  async componentWillMount () {
     const { gameState } = this.props;
     await gameState.listSavedDungeons();
     const newSeed = window.location.href.split("#")[1];
@@ -20,34 +20,33 @@ export class Game extends React.Component<any, any> {
     gameState.bindKeyboardEvents();
   }
 
-  async componentWillUnmount() {
+  async componentWillUnmount () {
     const { gameState } = this.props;
     gameState.unbindKeyboardEvents();
   }
 
-  async createDungeon(seed) {
+  async createDungeon (seed) {
     const { gameState } = this.props;
     await gameState.getDungeon(seed);
   }
 
-  saveWorld(world) {
+  saveWorld (world) {
     this.props.gameState.saveWorld(world);
   }
 
-  synthVoice(text) {
+  synthVoice (text) {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance();
     utterance.text = text;
     synth.speak(utterance);
   }
 
-  render() {
+  render () {
     const { gameState } = this.props;
     const {
       world,
       dungeons,
       dungeonMap,
-      tiles,
       visibleTiles,
       visibleItems,
       playerFov,
@@ -63,9 +62,9 @@ export class Game extends React.Component<any, any> {
           width={window.innerWidth}
           height={window.innerHeight}
         >
-          {tiles && tiles.length && (
-            <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
-          )}
+          {dungeonMap &&
+            <Dungeon world={world} dungeonMap={dungeonMap} playerFov={playerFov} />
+          }
           {visibleItems &&
             visibleItems.map(item => (
               <CSSActor

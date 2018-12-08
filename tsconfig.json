@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "typeRoots": [
+      "./typings"
+    ],
     "target": "es6",
     "jsx": "react",
     "module": "commonjs",
@@ -14,6 +17,12 @@
     "sourceMap": false,
     "baseUrl": "src"
   },
-  "include": ["src/**/*", "static/fmodstudio.js"],
-  "exclude": ["node_modules", "src/app"]
+  "include": [
+    "src/**/*",
+    "static/fmodstudio.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/app"
+  ]
 }
