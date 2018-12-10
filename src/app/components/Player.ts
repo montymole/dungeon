@@ -23,7 +23,6 @@ class Player3D extends ThreeObj {
 
   findObjectByName(name) {
     const obj = this.glb.scene.children.find(c => c.name === name);
-    console.log(obj);
     return obj;
   }
 
@@ -82,11 +81,13 @@ class Player3D extends ThreeObj {
       // setup animations
       this.mixer = new THREE.AnimationMixer(this.avatar);
       this.mixer.timeScale = 10;
+      this.animations.IDLE = this.findAnimationByName("IDLE");
       this.animations.WALK = this.findAnimationByName("WALK");
     }
     this.add(this.avatarContainer);
   }
   playAnimation(name) {
+    console.log("PLAY ANIM", name);
     if (this.mixer && this.animations[name]) {
       if (this.action) this.action.stop();
       this.action = this.mixer.clipAction(this.animations[name]);
@@ -105,6 +106,7 @@ class Player3D extends ThreeObj {
   }
   moveTo(position) {
     // https://greensock.com/docs/TweenMax/TweenMax()
+    // test
     this.direction.subVectors(this.position, position).normalize();
     if (this.avatarContainer) {
       // TODO fix so that character rotates the shortest direction
@@ -119,8 +121,7 @@ class Player3D extends ThreeObj {
     this.movementTween = TweenMax.to(this.position, 0.5, {
       ...position,
       onComplete: () => {
-        // TODO should call mix to IDLE animation
-        this.stopAnimation();
+        this.playAnimation("IDLE");
       }
     });
     this.playAnimation("WALK");
