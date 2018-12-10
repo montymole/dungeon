@@ -1,14 +1,19 @@
-# Minimal server env
+# HORDER
 
+mission: carry treasures to exit area
 
 # TODO
 
+game modes:
+
+- grid movement 'strategy' mode
+- realtime physics mode
 
 ## DUNGEON
 
 - add static light sources and fov to them
-- bug: clean exit old dungeon -> generate new
-
+- active room player near or sees room -> create physics
+- room physicis
 
 ## DUNGEON GEN
 
@@ -19,14 +24,15 @@
 ## PLAYER
 
 - click pathfinder, (only visible area)
-- player facing direction
+- player enters room with objects grid movement mode -> physics mode
+- physics mode grid mode -> find nearest grid
 - torch vs lamp mode
 - directional fov
 - switch to better camera orbit controls
 - arrows => relative direction keys
-- awds => rotate, forward backward  shift+ad strafe
+- awds => rotate, forward backward shift+ad strafe
 
-## ITEMS 
+## ITEMS
 
 - item visibilty FOV + ROOM
 - stack and collect items -> player/monster/item inventory
