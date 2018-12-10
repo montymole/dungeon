@@ -1,4 +1,5 @@
-import EasyStar from "easystarjs";
+import * as ndarray from "ndarray";
+import * as createPlanner from "l1-path-finder";
 import { VIEW_RADIUS, TILE_TYPE } from "./constants";
 
 export class PathFinder {
@@ -13,36 +14,26 @@ export class PathFinder {
     const y1 = y - r;
     const y2 = y + r;
     const g = [];
-    let gy = 0;
-    let gx = 0;
-    for (let yi = y1; yi < y2; yi++) {
-      g[gy] = [];
-      gx = 0;
-      for (let xi = x1; xi < x2; xi++) {
+    for (let xi = x1; xi < x2; xi++) {
+      for (let yi = y1; yi < y2; yi++) {
         const k = `x${Math.round(xi)}y${Math.round(yi)}`;
         const tile = this.tilemap[k];
-        g[gy][gx] = (tile && tile.type) || 0;
-        gx++;
+        g.push(tile && tile.type && tile.type === TILE_TYPE.FLOOR ? 1 : 0);
       }
-      gy++;
     }
-    return g;
+    return ndarray(g, [r * 2, r * 2]);
   }
   async findPath(startX, startY, endX, endY) {
-    const easystar = new EasyStar.js();
-    const grid = this.createGrid(startX, startY, VIEW_RADIUS);
-    console.log(grid);
-    easystar.setGrid(grid);
-    easystar.setAcceptableTiles([TILE_TYPE.FLOOR, TILE_TYPE.CORRIDOR]);
     const sx = VIEW_RADIUS;
     const sy = VIEW_RADIUS;
-    const ex = startX - endX;
-    const ey = startY - endY;
-    const path = await new Promise(resolve => {
-      easystar.findPath(sx, sy, ex, ey, resolve);
-    });
-    console.log(path);
+    const ex = VIEW_RADIUS + (startX - endX);
+    const ey = VIEW_RADIUS + (startY - endY);
+    const maze = this.createGrid(startX, startY, VIEW_RADIUS);
+    console.log(maze);
+    const planner = createPlanner(maze);
+    const path = [];
+    const dist = planner.search(sx, sy, ex, ey, path);
     // TODO adjust path to original coordinates
-    return path;
+    return { path, dist };
   }
 }

@@ -140,9 +140,14 @@ export class GameState {
   };
 
   @action("path finder")
-  pathFinder = async (startPosition, endPosition) => {
-    // TODO
-    return { startPosition, endPosition };
+  pathFinder = async (start, end) => {
+    const { seed } = this.dungeonMap;
+    const path = await (await fetch("/dungeon/path", {
+      method: "post",
+      body: JSON.stringify({ seed, start, end }),
+      headers: { "Content-Type": "application/json" }
+    })).json();
+    return path;
   };
 
   @action("load all materials")

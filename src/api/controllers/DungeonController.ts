@@ -1,6 +1,8 @@
 import { BaseController } from "./classes";
 import { Dungeon } from "../../dungeon/DungeonGenerator";
 import { DungeonSave } from "../models/DungeonSave";
+import { PathFinder } from "../../dungeon/PathFinder";
+import { start } from "repl";
 
 const dungeons = {};
 
@@ -37,5 +39,17 @@ export class SavedDungeons extends BaseController {
       console.error("no db?");
       return Object.keys(dungeons).map((k, i) => ({ id: i, seed: k, name: k }));
     }
+  }
+}
+
+export class FindPath extends BaseController {
+  static routes = ["POST /dungeon/path"];
+  async response() {
+    const { seed, start, end } = this.params;
+    const dungeon = getDungeon(seed);
+    const pf = new PathFinder(dungeon.tilemap);
+    const path = await pf.findPath(start.x, start.y, end.x, end.y);
+    console.log("path:", path);
+    return { path };
   }
 }
