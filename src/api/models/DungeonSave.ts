@@ -9,5 +9,3 @@ export class DungeonSave extends BaseModel {
   @s ranking: number;
   static tableName = TABLES.DUNGEONS;
 }
-
-console.log("CLASS IS", DungeonSave);
