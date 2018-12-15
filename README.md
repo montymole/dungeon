@@ -1,8 +1,18 @@
 # HORDER
 
-mission: carry treasures to exit area
+synopsis carry treasures to exit area
+
+
+# RECENT additions
+
+Bring in mixamo animations an characters
+ https://github.com/Kupoman/blendergltf 
+static see mixamo.blender, user kupoman exporter (can export action stash)
+
 
 # TODO
+
+
 
 game modes:
 

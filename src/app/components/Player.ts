@@ -26,8 +26,16 @@ class Player3D extends ThreeObj {
 		return obj;
 	}
 
+	mapAllAnimations() {
+		if (this.glb) {
+			this.glb.animations.forEach((animation) => {
+				this.animations[animation.name] = animation;
+				console.log('HAS ANIMATION:', animation.name);
+			});
+		}
+	}
+
 	findAnimationByName(name) {
-		console.log('ANIMATiONS', this.glb.animations);
 		const animation = this.glb.animations.find((c) => c.name === name);
 		return animation;
 	}
@@ -80,8 +88,11 @@ class Player3D extends ThreeObj {
 			// setup animations
 			this.mixer = new THREE.AnimationMixer(this.avatar);
 			// this.mixer.timeScale = 10;  this sets animation speed
+			this.mapAllAnimations();
+			/*
 			this.animations.IDLE = this.findAnimationByName('IDLE');
-			this.animations.WALK = this.findAnimationByName('WALK');
+      this.animations.WALK = this.findAnimationByName('WALK');
+      */
 		}
 		this.add(this.avatarContainer);
 	}
@@ -124,7 +135,7 @@ class Player3D extends ThreeObj {
 				this.playAnimation('IDLE');
 			}
 		});
-		this.playAnimation('WALK');
+		this.playAnimation('RUN');
 	}
 	// this is called every frame;
 	renderAnimationFrame(now, delta) {
