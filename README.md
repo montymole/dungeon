@@ -17,6 +17,7 @@ docker-compose up
 - generic dungeon seeding
 - rogue like field of view
 - database api backend
+- minimal docker env
 
 ## TODO
 - generic path finder, for player and ai movement (in progress)
