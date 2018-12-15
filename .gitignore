@@ -4,6 +4,6 @@
 /node_modules
 .DS_Store
 /out
-
+dump.rdb
 .idea
 data

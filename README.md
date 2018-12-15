@@ -1,33 +1,19 @@
-This is work in progress.
+# HORDER
 
-# build
-```
-npm install
-npm run build
-docker-compose build
-docker-compose up
-```
-## HAS FEATURES
-- css3d + gl view layers
-- animation + tweening
-- cannon physics
-- mobx based client state
-- threejs react classes
-- fmod music + audio
-- generic dungeon seeding
-- rogue like field of view
-- database api backend
-- minimal docker env
+mission: carry treasures to exit area
 
-## TODO
-- generic path finder, for player and ai movement (in progress)
-- sockets
+# TODO
 
-### DUNGEON
+game modes:
+
+- grid movement 'strategy' mode
+- realtime physics mode
+
+## DUNGEON
 
 - add static light sources and fov to them
-- bug: clean exit old dungeon -> generate new
-
+- active room player near or sees room -> create physics
+- room physicis
 
 ### DUNGEON GEN
 
@@ -37,14 +23,16 @@ docker-compose up
 
 ### PLAYER
 
-- lighting torch vs lamp mode
+- click pathfinder, (only visible area)
+- player enters room with objects grid movement mode -> physics mode
+- physics mode grid mode -> find nearest grid
+- torch vs lamp mode
 - directional fov
-- better camera orbit controls
-- direction relative direction keys
-- awds => rotate, forward backward  shift+ad strafe
-- click movement (required client and server side path finder)
+- switch to better camera orbit controls
+- arrows => relative direction keys
+- awds => rotate, forward backward shift+ad strafe
 
-## ITEMS 
+## ITEMS
 
 - item visibilty FOV + ROOM
 - stack and collect items -> player/monster/item inventory

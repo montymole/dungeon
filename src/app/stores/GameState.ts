@@ -4,12 +4,10 @@ import { FOV } from "../../dungeon/FovMap";
 import { TILE_TYPE, VIEW_RADIUS } from "../../dungeon/constants";
 
 export class GameState {
-  @observable fetching;
   @observable world;
 
   @observable dungeons: any[] = [];
   @observable dungeonMap;
-  @observable tiles;
   @observable materials: any[] = [];
   @observable objects3d: any[] = [];
 
@@ -27,7 +25,8 @@ export class GameState {
   keyDownListener: any;
   keyUpListener: any;
 
-  onKeyDown (event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent) {
+    this.keyStateMap[event.code] = true;
     let x = this.playerPosition.x;
     let y = this.playerPosition.z;
     switch (event.code) {
@@ -56,92 +55,114 @@ export class GameState {
       this.playerPosition.z = y; // screen z is map y
       this.updateFieldOfView();
     }
-    this.keyStateMap[event.code] = true;
+    switch (tile.type) {
+      case TILE_TYPE.STAIRS_DOWN:
+        this.stairsDown();
+        break;
+      case TILE_TYPE.STAIRS_DOWN:
+        this.stairsUp();
+        break;
+    }
   }
-  onKeyUp (event: KeyboardEvent) {
+  onKeyUp(event: KeyboardEvent) {
     this.keyStateMap[event.code] = false;
   }
 
-  @action("bind keyboardevents") bindKeyboardEvents = () => {
-    this.keyDownListener = window.addEventListener(
-      "keydown",
-      this.onKeyDown.bind(this)
-    );
-    this.keyUpListener = window.addEventListener(
-      "keyup",
-      this.onKeyUp.bind(this)
-    );
+  onMouseDown(event: MouseEvent) {
+    console.log("mouse", event);
   }
 
-  @action("unbind keyboardevents") unbindKeyboardEvents = () => {
+  @action("bind hid")
+  bindEvents = () => {
+    this.keyDownListener = window.addEventListener("keydown", this.onKeyDown.bind(this));
+    this.keyUpListener = window.addEventListener("keyup", this.onKeyUp.bind(this));
+  };
+
+  @action("unbind hid")
+  unbindEvents = () => {
     window.removeEventListener("keydown", this.keyDownListener);
     window.removeEventListener("keyup", this.keyUpListener);
-  }
+  };
 
-  saveWorld (world) {
+  saveWorld(world) {
     this.world = world;
   }
 
-  updateFieldOfView () {
+  updateFieldOfView() {
     const { playerPosition, FOV, dungeonMap } = this;
     this.playerFov = FOV.fovPos(playerPosition.x, playerPosition.z, VIEW_RADIUS);
-    this.visibleTiles = this.playerFov
-      .map(k => dungeonMap && dungeonMap.tiles[k])
-      .filter(t => t);
+    this.visibleTiles = this.playerFov.map(k => dungeonMap && dungeonMap.tiles[k]).filter(t => t);
     // visible items TODO
     this.visibleItems = this.items;
   }
 
-  @action("create dungeon area") getDungeon = async (seed, save = false) => {
+  currentDungeonIdx = () => {
+    let cidx;
+    this.dungeons.some((d, idx) => {
+      if (this.dungeonMap.seed === d.seed) {
+        cidx = idx;
+        return true;
+      }
+      return false;
+    });
+    return cidx;
+  };
+
+  stairsUp = async () => {
+    await this.listSavedDungeons();
+    let nextDungeon = this.dungeons[this.currentDungeonIdx() - 1] || this.dungeons[0];
+    await this.getDungeon(nextDungeon.seed);
+  };
+
+  stairsDown = async () => {
+    await this.listSavedDungeons();
+    let nextDungeon = this.dungeons[this.currentDungeonIdx() + 1] || this.dungeons[0];
+    await this.getDungeon(nextDungeon.seed);
+  };
+
+  @action("create dungeon area")
+  getDungeon = async (seed, save = false) => {
     // nullify old data
-    this.tiles = null;
     this.items = null;
     this.dungeonMap = null;
-    const dungeonMap = await (await fetch("/dungeon", {
-      method: "post",
-      body: JSON.stringify({
-        seed,
-        save,
-        x: -50,
-        y: -50,
-        w: 250,
-        h: 250
-      }),
-      headers: { "Content-Type": "application/json" }
-    })).json();
+    const dungeonMap = await (await fetch("/dungeon", { method: "post", body: JSON.stringify({ seed, save, x: -50, y: -50, w: 250, h: 250 }), headers: { "Content-Type": "application/json" } })).json();
     this.dungeonMap = dungeonMap;
     this.items = flatten(dungeonMap.rooms.map(r => r.items));
-
     this.FOV = new FOV(dungeonMap.tiles);
     const firstRoom = dungeonMap.rooms[0];
-    this.playerPosition = {
-      x: firstRoom.x + 2,
-      z: firstRoom.y + 2,
-      y: 0
-    };
+    this.playerPosition = { x: firstRoom.x + 2, z: firstRoom.y + 2, y: 0 };
     this.updateFieldOfView();
-    this.tiles = Object.keys(dungeonMap.tiles).map(k => dungeonMap.tiles[k]);
-  }
+  };
 
-  @action("list saved dungeons") listSavedDungeons = async () => {
+  @action("list saved dungeons")
+  listSavedDungeons = async () => {
     this.dungeons = await (await fetch("/dungeons", { method: "get" })).json();
-  }
+  };
 
-  @action("load all materials") loadMaterials = async () => {
-    this.fetching = true;
+  @action("path finder")
+  pathFinder = async (start, end) => {
+    const { seed } = this.dungeonMap;
+    const path = await (await fetch("/dungeon/path", {
+      method: "post",
+      body: JSON.stringify({ seed, start, end }),
+      headers: { "Content-Type": "application/json" }
+    })).json();
+    return path;
+  };
+
+  @action("load all materials")
+  loadMaterials = async () => {
     const materials = await (await fetch("/materials")).json();
     runInAction("update materilas state", () => {
       this.materials = materials;
-      this.fetching = false;
     });
-  }
+  };
 
-  @action("load object") loadObject = async (id: number) => {
-    this.fetching = true;
+  @action("load object")
+  loadObject = async (id: number) => {
     const obj = await (await fetch(`/object/${id}`)).json();
     runInAction("update objects state", () => {
       this.objects3d.push(obj);
-      this.fetching = false;
     });
-  }
+  };
 }

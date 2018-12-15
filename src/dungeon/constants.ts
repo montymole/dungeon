@@ -9,15 +9,11 @@ export const TILE_TYPE = {
   STAIRS_UP: 6,
   STAIRS_DOWN: 7
 };
+export function tileTypeKey(n: number) {
+  return Object.keys(TILE_TYPE).find(k => TILE_TYPE[k] == n);
+}
 // fov see thru (set here if doesnt block 100%)
-export const SEETHRU = [
-  TILE_TYPE.EMPTY,
-  TILE_TYPE.FLOOR,
-  TILE_TYPE.DOOR,
-  TILE_TYPE.CORRIDOR,
-  TILE_TYPE.STAIRS_UP,
-  TILE_TYPE.STAIRS_DOWN
-];
+export const SEETHRU = [TILE_TYPE.EMPTY, TILE_TYPE.FLOOR, TILE_TYPE.DOOR, TILE_TYPE.CORRIDOR, TILE_TYPE.STAIRS_UP, TILE_TYPE.STAIRS_DOWN];
 
 export const VIEW_RADIUS = 20;
 
@@ -31,16 +27,12 @@ export const TILE_SUB_TYPE = {
   BOTTOM_LEFT_CORNER: 5,
   BOTTOM_RIGHT_CORNER: 6
 };
-export const ADJACENT = [
-  [-1, 0],
-  [1, 0],
-  [0, -1],
-  [0, 1],
-  [-1, -1],
-  [-1, 1],
-  [1, -1],
-  [1, 1]
-];
+
+export function subtypeKey(n: number) {
+  return Object.keys(TILE_SUB_TYPE).find(k => TILE_SUB_TYPE[k] == n);
+}
+
+export const ADJACENT = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]];
 // directions
 export const DIRECTION = {
   NORTH: 0,
@@ -48,6 +40,7 @@ export const DIRECTION = {
   SOUTH: 2,
   WEST: 3
 };
+
 // character symbols
 export const SYMBOLS = {
   [TILE_TYPE.EMPTY]: [" "],
@@ -66,27 +59,26 @@ export const ROLL = {
 
 export const RANDOM_SEED = "DUNGEON";
 
-
 export const ITEMS = {
   COPPER_COIN: {
     value: 0.1,
     mass: 0.1,
-    symbol: '¢'
+    symbol: "¢"
   },
   SILVER_COIN: {
     value: 0.25,
     mass: 0.1,
-    symbol: '£'
+    symbol: "£"
   },
   GOLD_COIN: {
     value: 1,
     mass: 0.1,
-    symbol: '$'
+    symbol: "$"
   },
   SWORD: {
     value: 10,
     mass: 5,
-    unique: 'sword',
-    symbol: 'W'
-  },
-}
+    unique: "sword",
+    symbol: "W"
+  }
+};

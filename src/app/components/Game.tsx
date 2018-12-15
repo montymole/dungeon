@@ -1,129 +1,71 @@
 import * as React from "react";
+import { pick } from "ramda";
 import { observer } from "mobx-react";
-import { World, Dungeon, Player, Item, Hud, MiniMap, CSSActor } from "./";
-import { VIEW_RADIUS } from "../../dungeon/constants";
-
+import { World, Dungeon, Player, Item, Hud, MiniMap, CSSActor, RoomDebug, ItemDebug } from "./";
+import { TILE_TYPE } from "../../dungeon/constants";
+import { GameState } from "../stores/GameState";
 @observer
 export class Game extends React.Component<any, any> {
-  tiles: any;
-  async componentWillMount () {
+  async componentWillMount() {
     const { gameState } = this.props;
     await gameState.listSavedDungeons();
     const newSeed = window.location.href.split("#")[1];
     const oldSeed = gameState.dungeons && gameState.dungeons[0] && gameState.dungeons[0].seed;
-    if (newSeed)
-      await gameState.getDungeon(newSeed, true); // create from seeed
-    else if (oldSeed)
-      await gameState.getDungeon(oldSeed); //old seed
-    else
-      await gameState.getDungeon('ROGUE', true); // create initial dungeon
-    gameState.bindKeyboardEvents();
+    if (newSeed) await gameState.getDungeon(newSeed, true);
+    // create from seeed
+    else if (oldSeed) await gameState.getDungeon(oldSeed);
+    // old seed
+    else await gameState.getDungeon("ROGUE", true); // create initial dungeon
+    gameState.bindEvents();
   }
 
-  async componentWillUnmount () {
+  async componentWillUnmount() {
     const { gameState } = this.props;
-    gameState.unbindKeyboardEvents();
+    gameState.unbindvents();
   }
 
-  async createDungeon (seed) {
+  async createDungeon(seed) {
     const { gameState } = this.props;
     await gameState.getDungeon(seed);
   }
 
-  saveWorld (world) {
-    this.props.gameState.saveWorld(world);
+  async tileClicked(tile) {
+    console.log("TILE CLICKED", tile);
+    if (tile.type === TILE_TYPE.FLOOR) {
+      const { gameState } = this.props;
+      const path = await gameState.pathFinder(gameState.playerPosition, pick(["x", "y", "z"], tile));
+      console.log("PATH", path);
+    }
   }
 
-  synthVoice (text) {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance();
-    utterance.text = text;
-    synth.speak(utterance);
-  }
-
-  render () {
+  render() {
+    const DEBUG = false;
     const { gameState } = this.props;
-    const {
-      world,
-      dungeons,
-      dungeonMap,
-      tiles,
-      visibleTiles,
-      visibleItems,
-      playerFov,
-      cameraPosition,
-      playerPosition
-    } = gameState;
+    const { world, dungeons, dungeonMap, visibleTiles, visibleItems, playerFov, cameraPosition, playerPosition } = gameState;
     return (
-      <div>
-        <World
-          onInit={world => this.saveWorld(world)}
-          gravity={{ x: 0, y: 0, z: -9.8 }}
-          camera={cameraPosition}
-          width={window.innerWidth}
-          height={window.innerHeight}
-        >
-          {tiles && tiles.length && (
-            <Dungeon world={world} tiles={tiles} playerFov={playerFov} />
-          )}
-          {visibleItems &&
-            visibleItems.map(item => (
-              <CSSActor
-                key={item.id}
-                world={world}
-                position={{ x: item.x, z: item.y, y: 2 }}
-                rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
-              >
-                <small>{item.symbol}</small>
-                <Item
-                  key={item.id}
-                  world={world}
-                  position={{ x: item.x, z: item.y, y: 0.15 }}
-                />
-              </CSSActor>
-            ))}
-          <Player world={world} position={playerPosition} />
-          {dungeonMap &&
-            dungeonMap.rooms.map(room => (
-              <CSSActor
-                key={`r_${room.id}`}
-                world={world}
-                position={{
-                  x: room.x - 1 + Math.round(room.w / 2),
-                  z: room.y - 1 + Math.round(room.h / 2),
-                  y: 2
-                }}
-                rotation={{ y: 0, x: -90 * (Math.PI / 180), z: 0 }}
-              >
-                <h2
-                  onClick={() => this.synthVoice(room.name)}
-                  style={{
-                    width: room.w * 10 + "px",
-                    height: room.h * 10 + "px"
-                  }}
-                >
-                  {room.name}
-                </h2>
-              </CSSActor>
-            ))}
-          <Hud>
-            <div className="compass">
-              <div className="n">N</div>
-              <div className="e">E</div>
-              <div className="w">W</div>
-              <div className="s">S</div>
-              <h1>{dungeonMap && dungeonMap.seed}</h1>
-            </div>
-            <ul className="dungeonMenu">
-              {dungeons && dungeons.map((d) => <li key={d.id} onClick={() => this.createDungeon(d.seed)}>{d.name}</li>)}
-            </ul>
-            <MiniMap
-              playerPosition={playerPosition}
-              visibleTiles={visibleTiles}
-            />
-          </Hud>
-        </World>
-      </div>
+      <World onInit={world => this.props.gameState.saveWorld(world)} camera={cameraPosition} width={window.innerWidth} height={window.innerHeight}>
+        {Boolean(world && dungeonMap && playerFov) && (
+          <Dungeon world={world} dungeonMap={dungeonMap} playerFov={playerFov} onClickTile={tile => this.tileClicked(tile)}>
+            <Player world={world} position={playerPosition} />
+          </Dungeon>
+        )}
+        {DEBUG && <RoomDebug world={world} dungeonMap={dungeonMap} />}
+        {DEBUG && <ItemDebug world={world} visibleItems={visibleItems} />}
+        <Hud>
+          <div className="dungeonTitle">
+            <h1>{dungeonMap && dungeonMap.seed}</h1>
+          </div>
+          <ul className="dungeonMenu">
+            {dungeons &&
+              dungeons.map(d => (
+                <li key={d.id} onClick={() => this.createDungeon(d.seed)}>
+                  {d.name}
+                </li>
+              ))}
+          </ul>
+          <MiniMap playerPosition={playerPosition} visibleTiles={visibleTiles} />
+        </Hud>
+      </World>
     );
   }
 }

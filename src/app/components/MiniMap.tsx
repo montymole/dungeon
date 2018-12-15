@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { tileTypeKey, subtypeKey } from "../../dungeon/constants";
 const SIZE = 32;
 
 export class MiniMap extends React.Component<any, any> {
@@ -16,7 +16,7 @@ export class MiniMap extends React.Component<any, any> {
           {visibleTiles &&
             visibleTiles.map(tile => (
               <div
-                className={`tile type${tile.type}subtype${tile.subtype}`}
+                className={`tile ${tileTypeKey(tile.type)} ${subtypeKey(tile.subtype)}`}
                 key={tile.key}
                 style={{
                   left: tile.x * SIZE + "px",

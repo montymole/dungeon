@@ -6,3 +6,5 @@ export * from "./Actor";
 export * from "./CSSActor";
 export * from "./Hud";
 export * from "./MiniMap";
+export * from "./RoomDebug";
+export * from "./ItemDebug";

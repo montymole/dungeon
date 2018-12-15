@@ -1,57 +1,24 @@
-import * as THREE from "three";
-import * as GLTFLoader from "three-gltf-loader";
+declare var THREE: any;
 import { difference } from "ramda";
-global["THREE"] = THREE;
-
 import { TILE_TYPE, TILE_SUB_TYPE } from "../../dungeon/constants";
-
-import { ReactThree } from "./ReactThree";
+import { ReactThree, ThreeObj } from "./ReactThree";
+import * as CANNON from "cannon";
 
 export class Dungeon extends ReactThree {
   threeClass = Dungeon3D;
 }
 
-class Dungeon3D extends THREE.Object3D {
-  world: any;
-  glb: any;
+class Dungeon3D extends ThreeObj {
+  seed: string;
   meshMap: any = {};
   visibleMeshes: any = [];
   materials: any = {};
+  walls: any;
+  onClickTile: any;
 
-  constructor(props) {
-    super();
-    this.init(props);
-    this.update(props);
-  }
-
-  async loadGlb (path) {
-    const loader = new GLTFLoader();
-    return new Promise((resolve, reject) => {
-      loader.load(path, resolve);
-    });
-  }
-
-  findMeshByName (name) {
-    const SCALE = 0.01;
-    const origMesh = this.glb.scene.children.find(c => c.name === name);
-    const mesh = origMesh.clone();
-    // mesh.material = this.materials[name] || origMesh.material;
-    mesh.scale.set(SCALE, SCALE, SCALE);
-    return mesh;
-  }
-
-  async init (props) {
-    const { glbSrc = "/gitf/test.glb", tiles, world } = props;
-    if (!this.glb) {
-      // load object data
-      this.glb = await this.loadGlb(glbSrc);
-      this.materials.CORNER = this.materials.FLOOR = new THREE.MeshPhongMaterial(
-        { color: 0x202020 }
-      );
-      this.materials.WALL = new THREE.MeshPhongMaterial({ color: 0x606080 });
-      this.materials.DOOR = new THREE.MeshPhongMaterial({ color: 0x6060a0 });
-    }
-    tiles.forEach(tile => {
+  initGraphics(dungeonMap) {
+    Object.keys(dungeonMap.tiles).map(k => {
+      const tile = dungeonMap.tiles[k];
       let tileMesh;
       switch (tile.type) {
         case TILE_TYPE.WALL:
@@ -84,19 +51,114 @@ class Dungeon3D extends THREE.Object3D {
         tileMesh.castShadow = true; // default is false
         tileMesh.receiveShadow = true; // default is false
         tileMesh.visible = false;
+        tileMesh.key = tile.key;
+        if (this.onClickTile) tileMesh.onClick = intersection => this.onClickTile(tile, intersection);
         this.meshMap[tile.key] = tileMesh;
         this.add(tileMesh);
       }
     });
-    this.world = world;
-    if (world && world.scene) world.scene.add(this);
   }
-  destroy () {
+
+  async initPhysics(dungeonMap) {
+    const { world } = this;
+    // reinit world physics to clear all old bodies
+    world.initPhysics();
+    // create physics floor
+    const floor = new CANNON.Body({
+      mass: 0, // mass
+      shape: new CANNON.Plane(),
+      position: new CANNON.Vec3(0, 0, 0)
+    });
+    if (world && world.physics) world.physics.addBody(floor);
+    // create walls
+    this.walls = [];
+    const { rooms, tiles } = dungeonMap;
+    rooms.forEach(room => {
+      // create wall boxes
+      this.horizontalWall(tiles, room, room.y);
+      this.horizontalWall(tiles, room, room.y - 1 + room.h);
+      this.verticalWall(tiles, room, room.x);
+      this.verticalWall(tiles, room, room.x - 1 + room.w);
+    });
+  }
+
+  horizontalWall(tiles, room, y) {
+    let x1 = room.x - 1;
+    let x2 = room.x;
+    for (let x = room.x; x < room.x + room.w; x++) {
+      const k = `x${x}y${y}`;
+      const tile = tiles[k];
+      // northwall
+      if (tile.type === TILE_TYPE.WALL) {
+        x2 = x;
+      } else {
+        //wall ends
+        this.wallBox(x1 + 0.5, y - 0.5, x2 + 0.5, y + 0.5);
+        x1 = x;
+      }
+    }
+    if (x1 !== x2) this.wallBox(x1 + 0.5, y - 0.5, x2 + 0.5, y + 0.5);
+  }
+
+  verticalWall(tiles, room, x) {
+    let y1 = room.y + 1;
+    let y2 = room.y + 1;
+    for (let y = room.y + 1; y < room.y + room.h; y++) {
+      const k = `x${x}y${y}`;
+      const tile = tiles[k];
+      // northwall
+      if (tile.type === TILE_TYPE.WALL) {
+        y2 = y;
+      } else {
+        //wall ends
+        this.wallBox(x - 0.5, y1 - 0.5, x + 0.5, y2 - 0.5);
+        y1 = y;
+      }
+    }
+    if (y1 !== y2) this.wallBox(x - 0.5, y1 - 0.5, x + 0.5, y2 - 0.5);
+  }
+
+  wallBox(x1, y1, x2, y2) {
+    const { world } = this;
+    const box = new THREE.Box3();
+    box.set(new THREE.Vector3(x1, 0, y1), new THREE.Vector3(x2, 3, y2));
+    const helper = new THREE.Box3Helper(box, 0xffff00);
+    this.add(helper);
+    const h = 2.5;
+    const w = x2 - x1;
+    const d = y2 - y1;
+    const shape = new CANNON.Box(new CANNON.Vec3(w, h, d));
+    const body = new CANNON.Body({
+      mass: 0,
+      shape,
+      position: new CANNON.Vec3(x1, y2, 0)
+    });
+    if (world && world.physics) world.physics.addBody(body);
+    this.walls.push({ body, helper });
+  }
+
+  async init(props) {
+    this.glbSrc = "/gitf/test.glb";
+    this.onClickTile = props.onClickTile;
+    this.seed = props.dungeonMap.seed;
+    await super.init(props);
+    this.initGraphics(props.dungeonMap);
+    // TODO init physics only for the active room
+    // TODO removePhysics from not active rooms
+    console.log("pass", props, props.dungeonMap.seed);
+    await this.initPhysics(props.dungeonMap);
+  }
+
+  destroy() {
     this.world.scene.remove(this);
   }
-  update (props) {
+
+  async update(props) {
+    if (props.dungeonMap.seed !== this.seed) {
+      await this.init(props);
+    }
     const { playerFov } = props;
-    if (playerFov) {
+    if (playerFov && this.meshMap) {
       const visibleNow = [];
       playerFov.forEach(key => {
         if (this.meshMap[key]) {
@@ -104,13 +166,8 @@ class Dungeon3D extends THREE.Object3D {
           this.meshMap[key].visible = true;
         }
       });
-      difference(this.visibleMeshes, visibleNow).forEach(
-        key => (this.meshMap[key].visible = false)
-      );
+      difference(this.visibleMeshes, visibleNow).forEach(key => (this.meshMap[key].visible = false));
       this.visibleMeshes = visibleNow;
     }
   }
-
-  // this is called every frame;
-  renderAnimationFrame (clock) { }
 }

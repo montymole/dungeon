@@ -107,6 +107,17 @@ export class Dungeon extends Procedural {
     return { seed, rooms, tiles };
   }
 
+  tiledAreaDimensions (tiles) {
+    const area = { x1: tiles[0].x, y1: tiles[0].y, x2: tiles[0].x, y2: tiles[0].y };
+    tiles.forEach(t => {
+      if (t.x < area.x1) area.x1 = t.x;
+      if (t.y < area.y1) area.y1 = t.y;
+      if (t.x > area.x2) area.x2 = t.x;
+      if (t.y > area.y2) area.y2 = t.y;
+    });
+    return area;
+  }
+
   toString (x: number, y: number, w: number, h: number) {
     const { tilemap, rooms } = this;
     let r = "";
