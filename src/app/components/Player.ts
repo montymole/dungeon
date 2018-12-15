@@ -10,8 +10,9 @@ export class Player extends ReactThree {
 	threeClass = Player3D;
 }
 class Player3D extends ThreeObj {
-	animations: any = {}; // animation map
 	mixer: THREE.AnimationMixer;
+	animations: any = {}; // animation map
+	currentActionName: string;
 	action: THREE.AnimationAction; // current animation
 	movementTween: any; // current movement animation state
 	light: THREE.PointLight;
@@ -30,7 +31,7 @@ class Player3D extends ThreeObj {
 		if (this.glb) {
 			this.glb.animations.forEach((animation) => {
 				this.animations[animation.name] = animation;
-				console.log('HAS ANIMATION:', animation.name);
+				console.log('PLAYER NOW HAS ANIMATION:', animation.name);
 			});
 		}
 	}
@@ -87,36 +88,25 @@ class Player3D extends ThreeObj {
 			this.avatar.position.set(0, 0.2, 0);
 			// setup animations
 			this.mixer = new THREE.AnimationMixer(this.avatar);
-			// this.mixer.timeScale = 10;  this sets animation speed
 			this.mapAllAnimations();
-			/*
-			this.animations.IDLE = this.findAnimationByName('IDLE');
-      this.animations.WALK = this.findAnimationByName('WALK');
-      */
 		}
 		this.add(this.avatarContainer);
 	}
-	playAnimation(name) {
-		console.log('PLAY ANIM', name);
-		if (this.mixer && this.animations[name]) {
-			// if (this.action) this.action.stop();
-			this.action = this.mixer.clipAction(this.animations[name]);
-			this.action.play();
-		}
+	fadeToAction(name) {
+		if (!this.animations || !this.animations[name] || this.currentActionName === name) return;
+		console.log('NEXT ACTION->', name);
+		const nextAction = this.mixer.clipAction(this.animations[name]).play();
+		nextAction.enabled = true;
+		if (this.action) this.action.crossFadeTo(nextAction, 0.5, false);
+		this.action = nextAction;
+		this.currentActionName = name;
 	}
-	stopAnimation() {
-		if (this.action) {
-			this.action.stop();
-		}
-	}
-
 	update(props) {
 		const { position } = props;
 		if (position) this.moveTo(position);
 	}
 	moveTo(position) {
 		// https://greensock.com/docs/TweenMax/TweenMax()
-		// test
 		this.direction.subVectors(this.position, position).normalize();
 		if (this.avatarContainer) {
 			// TODO fix so that character rotates the shortest direction
@@ -131,11 +121,11 @@ class Player3D extends ThreeObj {
 		this.movementTween = TweenMax.to(this.position, 0.5, {
 			...position,
 			onComplete: () => {
-				this.stopAnimation();
-				this.playAnimation('IDLE');
+				this.fadeToAction('IDLE');
 			}
 		});
-		this.playAnimation('RUN');
+		// start running if already walking
+		this.fadeToAction(this.currentActionName === 'WALK' ? 'RUN' : 'WALK');
 	}
 	// this is called every frame;
 	renderAnimationFrame(now, delta) {
