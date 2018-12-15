@@ -1,29 +1,47 @@
-# Minimal server env
+This is work in progress.
 
+# build
+```
+npm install
+npm run build
+docker-compose build
+docker-compose up
+```
+## HAS FEATURES
+- css3d + gl view layers
+- animation + tweening
+- cannon physics
+- mobx based client state
+- threejs react classes
+- fmod music + audio
+- generic dungeon seeding
+- rogue like field of view
+- database api backend
 
-# TODO
+## TODO
+- generic path finder, for player and ai movement (in progress)
+- sockets
 
-
-## DUNGEON
+### DUNGEON
 
 - add static light sources and fov to them
 - bug: clean exit old dungeon -> generate new
 
 
-## DUNGEON GEN
+### DUNGEON GEN
 
 - more Corridor and Room types
 - api save dungeon seeds
 - dungeon seeding tool to pick best seeds
 
-## PLAYER
+### PLAYER
 
-- player facing direction
-- torch vs lamp mode
+- lighting torch vs lamp mode
 - directional fov
-- switch to better camera orbit controls
-- arrows => relative direction keys
+- better camera orbit controls
+- direction relative direction keys
 - awds => rotate, forward backward  shift+ad strafe
+- click movement (required client and server side path finder)
 
 ## ITEMS 
 
