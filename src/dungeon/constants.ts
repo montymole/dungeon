@@ -82,3 +82,10 @@ export const ITEMS = {
     symbol: "W"
   }
 };
+
+export const PLAYER_ACTIONS = {
+  IDLE: 0,
+  MOVE: 1,
+  SHOOT: 2,
+  DIE: 3
+};
