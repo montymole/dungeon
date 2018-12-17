@@ -1,5 +1,4 @@
-declare var THREE: any;
-
+import * as THREE from 'three';
 import '../../../node_modules/three/examples/js/controls/TrackballControls';
 import * as TweenMax from 'gsap/umd/TweenMax';
 
@@ -67,8 +66,8 @@ class Player3D extends ThreeObj {
 		this.controls.keys = [];
 		this.controls.target = this.position;
 		this.controls.keys = [];
-		// lighting
-		this.light = new THREE.PointLight(0xffffff, 5, VIEW_RADIUS, 4);
+		// lighting   color, intensity, radius, decay
+		this.light = new THREE.PointLight(0xffffff, 20, VIEW_RADIUS, 4);
 		this.light.position.set(0, 2.5, 0);
 		this.light.castShadow = true;
 		// shadow properties for the light
@@ -97,15 +96,15 @@ class Player3D extends ThreeObj {
 		console.log('NEXT ACTION->', name);
 		const nextAction = this.mixer.clipAction(this.animations[name]).play();
 		nextAction.enabled = true;
-		if (this.action) this.action.crossFadeTo(nextAction, 0.5, false);
+		if (this.action) this.action.crossFadeTo(nextAction, 0.3, true);
 		this.action = nextAction;
 		this.currentActionName = name;
 	}
-	update(props) {
+	async update(props) {
 		const { position } = props;
-		if (position) this.moveTo(position);
+		if (position) await this.moveTo(position);
 	}
-	moveTo(position) {
+	async moveTo(position) {
 		// https://greensock.com/docs/TweenMax/TweenMax()
 		this.direction.subVectors(this.position, position).normalize();
 		if (this.avatarContainer) {
@@ -114,18 +113,23 @@ class Player3D extends ThreeObj {
 			const angle = Math.atan2(this.direction.x, this.direction.z);
 			TweenMax.to(this.avatarContainer.rotation, 0.5, { y: angle });
 		}
+		let t = 0.5;
 		if (this.movementTween && this.movementTween.isActive()) {
 			// delete old tween
+			t += this.movementTween.totalTime();
 			this.movementTween.kill();
 		}
-		this.movementTween = TweenMax.to(this.position, 0.5, {
-			...position,
-			onComplete: () => {
-				this.fadeToAction('IDLE');
-			}
-		});
 		// start running if already walking
 		this.fadeToAction(this.currentActionName === 'WALK' ? 'RUN' : 'WALK');
+		return new Promise((resolve) => {
+			this.movementTween = TweenMax.to(this.position, t, {
+				...position,
+				onComplete: () => {
+					this.fadeToAction('IDLE');
+					resolve(true);
+				}
+			});
+		});
 	}
 	// this is called every frame;
 	renderAnimationFrame(now, delta) {
@@ -134,8 +138,8 @@ class Player3D extends ThreeObj {
 			this.mixer.update(delta);
 		}
 		// light
-		this.light.intensity = 6 + 0.1 * Math.sin(now * 0.02);
-		this.light.shadow.camera.far = this.light.distance;
+		// this.light.intensity = 6 + 0.1 * Math.sin(now * 0.02);
+		// this.light.shadow.camera.far = this.light.distance;
 		this.controls.update();
 	}
 }

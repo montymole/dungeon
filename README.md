@@ -12,8 +12,6 @@ static see mixamo.blender, user kupoman exporter (can export action stash)
 
 # TODO
 
-
-
 game modes:
 
 - grid movement 'strategy' mode
