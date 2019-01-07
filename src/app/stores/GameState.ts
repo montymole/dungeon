@@ -1,7 +1,7 @@
 import { flatten } from 'ramda';
-import { observable, action, runInAction, when } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { FOV } from '../../dungeon/FovMap';
-import { TILE_TYPE, VIEW_RADIUS } from '../../dungeon/constants';
+import { TILE_TYPE, VIEW_RADIUS, PLAYER_ACTIONS } from '../../dungeon/constants';
 
 export class GameState {
 	@observable world;
@@ -14,7 +14,7 @@ export class GameState {
 	@observable keyStateMap: any = {};
 	@observable cameraPosition: any = { x: 0, y: 0, z: 0 };
 	@observable playerPosition: any = { x: 0, y: 0, z: 0 };
-	@observable movementPath: number[] = [];
+	@observable playerAction: number = PLAYER_ACTIONS.IDLE;
 
 	@observable FOV: any;
 	@observable playerFov: any;
@@ -34,35 +34,45 @@ export class GameState {
 			case 'KeyA':
 			case 'ArrowLeft':
 				x--;
+				this.playerAction = PLAYER_ACTIONS.MOVE;
 				break;
 			case 'KeyD':
 			case 'ArrowRight':
 				x++;
+				this.playerAction = PLAYER_ACTIONS.MOVE;
 				break;
 			case 'KeyW':
 			case 'ArrowUp':
 				y--;
+				this.playerAction = PLAYER_ACTIONS.MOVE;
 				break;
 			case 'KeyS':
 			case 'ArrowDown':
 				y++;
+				this.playerAction = PLAYER_ACTIONS.MOVE;
+				break;
+			case 'Space':
+				this.playerAction = PLAYER_ACTIONS.SHOOT;
 				break;
 			default:
 				console.log('keydown', event.code);
 		}
-		const tile = this.dungeonMap && this.dungeonMap.tiles[`x${x}y${y}`];
-		if (tile.type !== TILE_TYPE.WALL && tile.type !== TILE_TYPE.CORRIDOR_WALL) {
-			this.playerPosition.x = x;
-			this.playerPosition.z = y; // screen z is map y
-			this.updateFieldOfView();
-		}
-		switch (tile.type) {
-			case TILE_TYPE.STAIRS_DOWN:
-				this.stairsDown();
-				break;
-			case TILE_TYPE.STAIRS_DOWN:
-				this.stairsUp();
-				break;
+		// TODO change player position inside player class, pass whole gamestate to player object
+		if (this.playerAction == PLAYER_ACTIONS.MOVE) {
+			const tile = this.dungeonMap && this.dungeonMap.tiles[`x${x}y${y}`];
+			if (tile.type !== TILE_TYPE.WALL && tile.type !== TILE_TYPE.CORRIDOR_WALL) {
+				this.playerPosition.x = x;
+				this.playerPosition.z = y; // screen z is map y
+				this.updateFieldOfView();
+			}
+			switch (tile.type) {
+				case TILE_TYPE.STAIRS_DOWN:
+					this.stairsDown();
+					break;
+				case TILE_TYPE.STAIRS_DOWN:
+					this.stairsUp();
+					break;
+			}
 		}
 	}
 	onKeyUp(event: KeyboardEvent) {
@@ -152,7 +162,7 @@ export class GameState {
 			body: JSON.stringify({ seed, start, end }),
 			headers: { 'Content-Type': 'application/json' }
 		})).json();
-		this.movementPath = path;
+		return path;
 	};
 
 	@action('load all materials')
