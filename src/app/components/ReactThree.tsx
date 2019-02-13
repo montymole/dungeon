@@ -72,7 +72,6 @@ export abstract class ThreeObj extends THREE.Object3D {
 
   constructor(props) {
     super();
-    console.log(props);
     this.init(props);
     this.update(props);
   }

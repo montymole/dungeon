@@ -12,9 +12,13 @@ static see mixamo.blender, user kupoman exporter (can export action stash)
 
 # TODO
 
+## login
+https://solid.inrupt.com/docs/installing-running-nss
+
+
 game modes:
 
-- grid movement 'strategy' mode
+- grid movement 'strategy' mode 
 - realtime physics mode
 
 ## DUNGEON

@@ -67,6 +67,7 @@
     "express": "4.16.4",
     "gsap": "^2.0.2",
     "helmet": "3.15.0",
+    "howler": "^2.1.1",
     "http": "0.0.0",
     "knex": "0.15.2",
     "knex-db-manager": "0.4.0",

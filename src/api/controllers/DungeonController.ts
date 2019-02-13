@@ -16,6 +16,18 @@ function getDungeon(seed = "ROGUE") {
 
 export class RevealArea extends BaseController {
   static routes = ["POST /dungeon"];
+  static paramSchema = {
+    type: 'object',
+    properties: {
+      x: { type: 'number' },
+      y: { type: 'number' },
+      w: { type: 'number' },
+      h: { type: 'number' },
+      seed: { type: 'string' },
+      save: { type: 'boolean' },
+      name: { type: 'string' }
+    }
+  }
   async response() {
     const { x, y, w, h, seed, save, name } = this.params;
     const dungeon = getDungeon(seed);
@@ -44,6 +56,14 @@ export class SavedDungeons extends BaseController {
 
 export class FindPath extends BaseController {
   static routes = ["POST /dungeon/path"];
+  static paramSchema = {
+    type: 'object',
+    properties: {
+      seed: { type: 'string' },
+      start: { type: 'object' },
+      end: { type: 'object' }
+    }
+  }
   async response() {
     const { seed, start, end } = this.params;
     const dungeon = getDungeon(seed);
