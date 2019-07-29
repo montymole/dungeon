@@ -1,8 +1,8 @@
 require('./scss/main.scss');
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { GameState, FMODState } from './stores';
 import { Game } from './components/Game';
+import { FMODState, GameState } from './stores';
 
 const gameState = new GameState();
 const fmodState = new FMODState();

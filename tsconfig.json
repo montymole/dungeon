@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": [
-      "./typings"
-    ],
+    "typeRoots": ["./typings"],
     "target": "es6",
     "jsx": "react",
     "module": "commonjs",
@@ -15,14 +13,13 @@
     "noImplicitAny": false,
     "allowJs": true,
     "sourceMap": false,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin"
+      }
+    ]
   },
-  "include": [
-    "src/**/*",
-    "static/fmodstudio.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/app"
-  ]
+  "include": ["src/**/*", "static/fmodstudio.js"],
+  "exclude": ["node_modules", "src/app"]
 }

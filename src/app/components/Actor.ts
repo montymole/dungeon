@@ -1,6 +1,6 @@
-import * as THREE from "three";
-import * as CANNON from "cannon";
-import { ReactThree } from "./ReactThree";
+import * as CANNON from 'cannon';
+import * as THREE from 'three';
+import { ReactThree } from './ReactThree';
 
 export class Actor extends ReactThree {
   threeClass = Actor3D;
@@ -26,19 +26,19 @@ class Actor3D extends THREE.Object3D {
       material = instance && instance.material
     } = props;
     let geometry;
-    let shape = (instance && instance.shape) || props.shape || "CUBE";
+    let shape = (instance && instance.shape) || props.shape || 'CUBE';
     // graphics
     if (material) {
       this.material = new THREE[material.shader](material.props);
     }
     switch (shape) {
-      case "PLANE":
+      case 'PLANE':
         geometry = new THREE.PlaneGeometry(10, 10, 64, 64);
         shape = new CANNON.Plane();
         this.mesh = new THREE.Mesh(geometry, this.material);
         this.mesh.scale.set(100, 100, 100);
         break;
-      case "CUBE":
+      case 'CUBE':
       default:
         geometry = new THREE.CubeGeometry(2, 2, 2);
         shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
@@ -60,7 +60,7 @@ class Actor3D extends THREE.Object3D {
         }
       }
     }
-    if (scale) this.scale.set(scale.x, scale.y, scale.z);
+    if (scale) { this.scale.set(scale.x, scale.y, scale.z); }
     this.add(this.mesh);
     // physics
     if (mass !== null) {
@@ -69,10 +69,10 @@ class Actor3D extends THREE.Object3D {
         shape,
         position: new CANNON.Vec3(position.x, position.y, position.z)
       });
-      if (onCollide) this.body.addEventListener("collide", onCollide);
-      if (world && world.physics) world.physics.addBody(this.body);
+      if (onCollide) { this.body.addEventListener('collide', onCollide); }
+      if (world && world.physics) { world.physics.addBody(this.body); }
     }
-    if (world && world.scene) world.scene.add(this);
+    if (world && world.scene) { world.scene.add(this); }
   }
   update(props) {
     const { position, rotation } = props;

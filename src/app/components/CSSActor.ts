@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import * as CANNON from "cannon";
-import "three/examples/js/renderers/CSS3DRenderer";
-import { ReactThree } from "./ReactThree";
+import * as CANNON from 'cannon';
+import * as THREE from 'three';
+import 'three/examples/js/renderers/CSS3DRenderer';
+import { ReactThree } from './ReactThree';
 
 export class CSSActor extends ReactThree {
   threeClass = CSSActor3D;
@@ -20,22 +20,26 @@ class CSSActor3D extends THREE.CSS3DObject {
     this.init(props);
     this.update(props);
   }
-  init (props) {
+  init(props) {
     const { world, mass = 0, position, onCollide } = props;
     // physics
     this.body = new CANNON.Body({
       mass,
       position: new CANNON.Vec3(position.x, position.y, position.z),
-      shape: new CANNON.Box(
-        new CANNON.Vec3(CANNON_SCALE, CANNON_SCALE, CANNON_SCALE)
-      )
+      shape: new CANNON.Box(new CANNON.Vec3(CANNON_SCALE, CANNON_SCALE, CANNON_SCALE))
     });
     this.world = world;
-    if (onCollide) this.body.addEventListener("collide", onCollide);
-    if (world && world.physics) world.physics.addBody(this.body);
-    if (world && world.scene) world.css3DScene.add(this);
+    if (onCollide) {
+      this.body.addEventListener('collide', onCollide);
+    }
+    if (world && world.physics) {
+      world.physics.addBody(this.body);
+    }
+    if (world && world.scene) {
+      world.css3DScene.add(this);
+    }
   }
-  destroy () {
+  destroy() {
     try {
       this.world.physics.remove(this.body);
       this.world.css3DScene.remove(this);
@@ -43,7 +47,7 @@ class CSSActor3D extends THREE.CSS3DObject {
       console.error(err);
     }
   }
-  update (props) {
+  update(props) {
     const { position, rotation } = props;
     if (position) {
       this.body.position.x = position.x;
@@ -56,7 +60,7 @@ class CSSActor3D extends THREE.CSS3DObject {
       this.rotation.z = rotation.z;
     }
   }
-  renderAnimationFrame (clock) {
+  renderAnimationFrame(clock) {
     this.position.x = this.body.position.x;
     this.position.y = this.body.position.y;
     this.position.z = this.body.position.z;

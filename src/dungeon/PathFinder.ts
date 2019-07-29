@@ -1,6 +1,6 @@
-import * as ndarray from "ndarray";
-import * as createPlanner from "l1-path-finder";
-import { VIEW_RADIUS, TILE_TYPE } from "./constants";
+import * as createPlanner from 'l1-path-finder';
+import * as ndarray from 'ndarray';
+import { TILE_TYPE, VIEW_RADIUS } from './constants';
 
 export class PathFinder {
   tilemap: any;
@@ -29,11 +29,9 @@ export class PathFinder {
     const ex = VIEW_RADIUS + (startX - endX);
     const ey = VIEW_RADIUS + (startY - endY);
     const maze = this.createGrid(startX, startY, VIEW_RADIUS);
-    console.log(maze);
     const planner = createPlanner(maze);
     const path = [];
     const dist = planner.search(sx, sy, ex, ey, path);
-    // TODO adjust path to original coordinates
-    return { path, dist };
+    return { path: path.map((p) => p - VIEW_RADIUS), dist };
   }
 }

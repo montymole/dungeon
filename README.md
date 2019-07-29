@@ -12,6 +12,15 @@ static see mixamo.blender, user kupoman exporter (can export action stash)
 
 # TODO
 
+## AI
+https://en.wikipedia.org/wiki/Decision_tree
+https://dhtmlx.com/blog/javascript-decision-tree-visualization-tool-finding-solutions/
+https://github.com/lagodiuk/decision-tree-js
+https://github.com/mikolalysenko/l1-path-finder
+https://www.easystarjs.com/
+
+
+
 game modes:
 
 - grid movement 'strategy' mode

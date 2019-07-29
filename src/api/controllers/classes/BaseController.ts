@@ -2,9 +2,9 @@
  * Base Class for Controllers
  */
 
-import * as R from "ramda";
-import { Router, Request, Response } from "express";
-import { Controller, ControllerError } from "./Controller";
+import { Request, Response, Router } from 'express';
+import * as R from 'ramda';
+import { Controller, ControllerError } from './Controller';
 
 export default abstract class BaseController implements Controller {
   req: Request;
@@ -35,7 +35,7 @@ export default abstract class BaseController implements Controller {
   async handle() {
     await this.reqParams();
     if (!(await this.authorizationCheck())) {
-      return this.res.status(401).json({ error: { message: "unauthorized", code: 401 } });
+      return this.res.status(401).json({ error: { message: 'unauthorized', code: 401 } });
     }
     try {
       const result: any = await this.response();

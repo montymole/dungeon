@@ -1,5 +1,5 @@
-import * as React from "react";
-import { CSSActor } from "./";
+import * as React from 'react';
+import { CSSActor } from './';
 
 export class RoomDebug extends React.Component<any, any> {
   synthVoice(text) {
@@ -12,7 +12,7 @@ export class RoomDebug extends React.Component<any, any> {
     const { world, dungeonMap } = this.props;
     return (
       (dungeonMap &&
-        dungeonMap.rooms.map(room => (
+        dungeonMap.rooms.map((room) => (
           <CSSActor
             key={`r_${room.id}`}
             world={world}
@@ -26,8 +26,8 @@ export class RoomDebug extends React.Component<any, any> {
             <h2
               onClick={() => this.synthVoice(room.name)}
               style={{
-                width: room.w * 10 + "px",
-                height: room.h * 10 + "px"
+                width: room.w * 10 + 'px',
+                height: room.h * 10 + 'px'
               }}
             >
               {room.name}

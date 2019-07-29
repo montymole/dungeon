@@ -1,9 +1,9 @@
-import * as React from "react";
-import * as THREE from "three";
-import * as CANNON from "cannon";
-global["THREE"] = THREE;
+import * as CANNON from 'cannon';
+import * as React from 'react';
+import * as THREE from 'three';
+global.THREE = THREE;
 
-import "../../../node_modules/three/examples/js/renderers/CSS3DRenderer";
+import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
 
 const fixedTimeStep = 1.0 / 60.0; // seconds
 export class World extends React.Component<any, any> {
@@ -44,7 +44,7 @@ export class World extends React.Component<any, any> {
     const gravity = { x: 0, y: 0, z: -9.8 };
     this.physics = new CANNON.World();
     this.physics.gravity.set(gravity.x, gravity.y, gravity.z);
-    console.log("NEW PHYSICS");
+    console.log('NEW PHYSICS');
   }
 
   initWorld(domRoot) {
@@ -57,8 +57,8 @@ export class World extends React.Component<any, any> {
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
-    this.renderer.domElement.style.position = "absolute";
-    this.renderer.domElement.style.zIndex = "1";
+    this.renderer.domElement.style.position = 'absolute';
+    this.renderer.domElement.style.zIndex = '1';
     containerEl.appendChild(this.renderer.domElement);
     this.scene = new THREE.Scene();
     // default camera
@@ -73,16 +73,16 @@ export class World extends React.Component<any, any> {
     const { width, height } = this.props;
     this.css3Drenderer = new THREE.CSS3DRenderer();
     this.css3Drenderer.setSize(width, height);
-    this.css3Drenderer.domElement.style.position = "absolute";
-    this.css3Drenderer.domElement.style.top = "0";
-    this.css3Drenderer.domElement.style.zIndex = "2";
+    this.css3Drenderer.domElement.style.position = 'absolute';
+    this.css3Drenderer.domElement.style.top = '0';
+    this.css3Drenderer.domElement.style.zIndex = '2';
     containerEl.appendChild(this.css3Drenderer.domElement);
     this.css3DScene = new THREE.Scene();
     return this.css3Drenderer.domElement;
   }
 
   renderAnimationFrame(now: number = 0) {
-    requestAnimationFrame(t => this.renderAnimationFrame(t));
+    requestAnimationFrame((t) => this.renderAnimationFrame(t));
     if (this.lastFrameTime) {
       const delta = (now - this.lastFrameTime) / 1000;
       this.physics.step(fixedTimeStep, delta, 10);
@@ -101,14 +101,16 @@ export class World extends React.Component<any, any> {
     mouse.y = -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, this.camera);
     const intersects = raycaster.intersectObjects(this.scene.children, true);
-    if (intersects.length) intersects.some(i => !i.object["onClick"] || i.object["onClick"](i));
+    if (intersects.length) {
+      intersects.some((i) => !i.object.onClick || i.object.onClick(i));
+    }
   }
 
   render() {
     const { children, width, height } = this.props;
     const style = { width: `${width}px`, height: `${height}px` };
     return (
-      <div style={style} className="world" ref={domRoot => this.initWorld(domRoot)} onMouseDown={e => this.mouseDown(e)}>
+      <div style={style} className='world' ref={(domRoot) => this.initWorld(domRoot)} onMouseDown={(e) => this.mouseDown(e)}>
         {children}
       </div>
     );
