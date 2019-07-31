@@ -1,6 +1,6 @@
-import Procedural from "./Procedural";
-import { ITEMS } from "./constants";
+import { ITEMS } from './constants';
 import NameGenerator from './NameGenerator';
+import Procedural from './Procedural';
 
 export default class Item extends Procedural {
   id: number;
@@ -21,11 +21,11 @@ export default class Item extends Procedural {
     this.y = y;
     this.randomItemClass();
   }
-  randomItemClass () {
+  randomItemClass() {
     const typeIds = Object.keys(ITEMS);
     this.type = typeIds[this.randomInt(typeIds.length)];
     const itemClass = ITEMS[this.type];
-    Object.keys(itemClass).forEach(k => {
+    Object.keys(itemClass).forEach((k) => {
       this[k] = itemClass[k];
     });
     if (!this.name) {
@@ -35,7 +35,9 @@ export default class Item extends Procedural {
           nameGenerator[`${this.unique}Name`] ||
           nameGenerator.capFirst(this.unique);
       } else {
-        this.name = nameGenerator.capFirst(this.type.toLowerCase().replace('_', ' '));
+        this.name = nameGenerator.capFirst(
+          this.type.toLowerCase().replace('_', ' ')
+        );
       }
     }
   }

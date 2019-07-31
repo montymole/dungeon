@@ -1,4 +1,8 @@
-export function scan (o) {
+/**
+ * scan tile hooks
+ * @param o
+ */
+export function scan(o) {
   const sx = o.x;
   const sy = o.y;
   const { w, h, onTile, onNextRow } = o;
@@ -8,6 +12,8 @@ export function scan (o) {
     for (let x = sx; x < ex; x++) {
       onTile(`x${x}y${y}`, x, y);
     }
-    if (onNextRow) onNextRow(y);
+    if (onNextRow) {
+      onNextRow(y);
+    }
   }
 }

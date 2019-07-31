@@ -1,3 +1,4 @@
+declare var global: any;
 import * as CANNON from 'cannon';
 import * as React from 'react';
 import * as THREE from 'three';
@@ -53,7 +54,11 @@ export class World extends React.Component<any, any> {
 
   initWebGL(containerEl) {
     const { width, height, camera } = this.props;
-    this.renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, clearAlpha: 1, antialias: true });
+    this.renderer = new THREE.WebGLRenderer({
+      clearColor: 0x000000,
+      clearAlpha: 1,
+      antialias: true
+    });
     this.renderer.setSize(width, height);
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -86,8 +91,12 @@ export class World extends React.Component<any, any> {
     if (this.lastFrameTime) {
       const delta = (now - this.lastFrameTime) / 1000;
       this.physics.step(fixedTimeStep, delta, 10);
-      this.css3DScene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
-      this.scene.children.filter((c: any) => c.renderAnimationFrame).forEach((c: any) => c.renderAnimationFrame(now, delta));
+      this.css3DScene.children
+        .filter((c: any) => c.renderAnimationFrame)
+        .forEach((c: any) => c.renderAnimationFrame(now, delta));
+      this.scene.children
+        .filter((c: any) => c.renderAnimationFrame)
+        .forEach((c: any) => c.renderAnimationFrame(now, delta));
     }
     this.camera.lookAt(this.cameraTarget);
     this.renderer.render(this.scene, this.camera);
@@ -102,7 +111,8 @@ export class World extends React.Component<any, any> {
     raycaster.setFromCamera(mouse, this.camera);
     const intersects = raycaster.intersectObjects(this.scene.children, true);
     if (intersects.length) {
-      intersects.some((i) => !i.object.onClick || i.object.onClick(i));
+      // TODO  intesects hook
+      console.log(intersects);
     }
   }
 
@@ -110,7 +120,12 @@ export class World extends React.Component<any, any> {
     const { children, width, height } = this.props;
     const style = { width: `${width}px`, height: `${height}px` };
     return (
-      <div style={style} className='world' ref={(domRoot) => this.initWorld(domRoot)} onMouseDown={(e) => this.mouseDown(e)}>
+      <div
+        style={style}
+        className='world'
+        ref={(domRoot) => this.initWorld(domRoot)}
+        onMouseDown={(e) => this.mouseDown(e)}
+      >
         {children}
       </div>
     );

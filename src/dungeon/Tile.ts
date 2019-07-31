@@ -1,4 +1,4 @@
-import { SYMBOLS, } from "./constants";
+import { SYMBOLS } from './constants';
 
 export default class Tile {
   key: string;
@@ -17,7 +17,7 @@ export default class Tile {
     this.subtype = subtype;
     this.symbol = SYMBOLS[type][subtype];
   }
-  setType (type) {
+  setType(type) {
     this.type = type;
     this.symbol = SYMBOLS[type][this.subtype];
   }

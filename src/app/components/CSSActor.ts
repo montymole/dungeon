@@ -26,7 +26,9 @@ class CSSActor3D extends THREE.CSS3DObject {
     this.body = new CANNON.Body({
       mass,
       position: new CANNON.Vec3(position.x, position.y, position.z),
-      shape: new CANNON.Box(new CANNON.Vec3(CANNON_SCALE, CANNON_SCALE, CANNON_SCALE))
+      shape: new CANNON.Box(
+        new CANNON.Vec3(CANNON_SCALE, CANNON_SCALE, CANNON_SCALE)
+      )
     });
     this.world = world;
     if (onCollide) {

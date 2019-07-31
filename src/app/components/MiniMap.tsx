@@ -16,7 +16,9 @@ export class MiniMap extends React.Component<any, any> {
           {visibleTiles &&
             visibleTiles.map((tile) => (
               <div
-                className={`tile ${tileTypeKey(tile.type)} ${subtypeKey(tile.subtype)}`}
+                className={`tile ${tileTypeKey(tile.type)} ${subtypeKey(
+                  tile.subtype
+                )}`}
                 key={tile.key}
                 style={{
                   left: tile.x * SIZE + 'px',

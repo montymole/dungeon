@@ -1,3 +1,4 @@
+declare var global: any;
 import * as THREE from 'three';
 global.THREE = THREE;
 import * as TweenMax from 'gsap/umd/TweenMax';
@@ -22,7 +23,10 @@ class Item3D extends THREE.Object3D {
     this.world = world;
     this.position.set(x, y, z);
     // test avatar (just cube)
-    const avatar = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+    const avatar = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 0.3, 0.3),
+      new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    );
     avatar.castShadow = true; // default is false
     avatar.receiveShadow = true; // default is false
     avatar.position.set(0, 0, 0);
@@ -32,7 +36,9 @@ class Item3D extends THREE.Object3D {
   }
   update(props) {
     const { position } = props;
-    if (position) { this.moveTo(position); }
+    if (position) {
+      this.moveTo(position);
+    }
   }
   moveTo(position) {
     TweenMax.to(this.position, 0.5, position);

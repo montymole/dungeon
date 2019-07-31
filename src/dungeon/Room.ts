@@ -1,14 +1,22 @@
-
-import { pick } from "ramda";
-import Tile from "./Tile";
-import { TILE_TYPE, TILE_SUB_TYPE } from "./constants";
-import { scan } from "./utils";
-import Procedural from "./Procedural";
-import Item from "./Item";
+import { pick } from 'ramda';
+import { TILE_SUB_TYPE, TILE_TYPE } from './constants';
+import Item from './Item';
+import Procedural from './Procedural';
+import Tile from './Tile';
+import { scan } from './utils';
 
 export default class Room extends Procedural {
   static PUBLIC = [
-    'id', 'x', 'y', 'w', 'h', 'name', 'stairsUp', 'stairsDown', 'items', 'tiles'
+    'id',
+    'x',
+    'y',
+    'w',
+    'h',
+    'name',
+    'stairsUp',
+    'stairsDown',
+    'items',
+    'tiles'
   ];
   id: number;
   x: number;
@@ -21,7 +29,7 @@ export default class Room extends Procedural {
   tiles: Tile[] = [];
   items: Item[] = [];
   dungeon: any;
-  toJSON () {
+  toJSON() {
     return pick(Room.PUBLIC, this);
   }
   constructor(o) {
@@ -36,13 +44,13 @@ export default class Room extends Procedural {
     this.name = name;
     this.create();
   }
-  get floorTiles () {
-    return this.tiles.filter(t => t.type === TILE_TYPE.FLOOR);
+  get floorTiles() {
+    return this.tiles.filter((t) => t.type === TILE_TYPE.FLOOR);
   }
-  itemsAt (x: number, y: number) {
-    return this.items.filter(i => i.x === x && i.y === y);
+  itemsAt(x: number, y: number) {
+    return this.items.filter((i) => i.x === x && i.y === y);
   }
-  checkAndFixOverlap () {
+  checkAndFixOverlap() {
     const MARGIN = 1;
     const { dungeon } = this;
     // check area overlap
@@ -57,7 +65,7 @@ export default class Room extends Procedural {
       }
     } while (overlap);
   }
-  create () {
+  create() {
     const { dungeon } = this;
     this.checkAndFixOverlap();
     const eastWall = this.x + this.w - 1;
@@ -65,7 +73,10 @@ export default class Room extends Procedural {
     const { tilemap } = dungeon;
     // carve room
     scan({
-      x: this.x, y: this.y, w: this.w, h: this.h,
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.h,
       onTile: (k, x, y) => {
         const at = dungeon.tileAt(x, y);
         const above = dungeon.tileAt(x, y - 1);
@@ -122,28 +133,31 @@ export default class Room extends Procedural {
       }
     });
   }
-  addItems (MAX_NUM_ITEMS: number = 10) {
+  addItems(MAX_NUM_ITEMS: number = 10) {
     const numItemsToAdd = this.randomInt(MAX_NUM_ITEMS);
     let addedItems = 0;
     while (addedItems < numItemsToAdd) {
       const floor = this.floorTiles[this.randomInt(this.floorTiles.length)];
       if (floor) {
-        this.items.push(new Item({
-          seed: this.seed + this.items.length,
-          id: this.id * 1000 + this.items.length,
-          x: floor.x, y: floor.y
-        }));
+        this.items.push(
+          new Item({
+            seed: this.seed + this.items.length,
+            id: this.id * 1000 + this.items.length,
+            x: floor.x,
+            y: floor.y
+          })
+        );
       }
       addedItems++;
     }
   }
-  get center () {
+  get center() {
     return [this.centerX, this.centerY];
   }
-  get centerX () {
+  get centerX() {
     return Math.round(this.x + this.w / 2);
   }
-  get centerY () {
+  get centerY() {
     return Math.round(this.y + this.h / 2);
   }
 }

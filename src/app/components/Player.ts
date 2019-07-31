@@ -41,7 +41,10 @@ class Player3D extends ThreeObj {
   }
 
   fallbackAvatar() {
-    return new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    return new THREE.Mesh(
+      new THREE.CylinderGeometry(0.2, 0.2, 1),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    );
   }
 
   async init(props) {
@@ -82,8 +85,9 @@ class Player3D extends ThreeObj {
     this.avatar.castShadow = true; // default is false
     this.avatar.receiveShadow = true; // default is false
     this.avatarContainer.add(this.avatar);
-    if (!this.glb) { this.avatar.position.set(0, 0.95, 0); }
-    else {
+    if (!this.glb) {
+      this.avatar.position.set(0, 0.95, 0);
+    } else {
       this.avatar.position.set(0, 0.2, 0);
       // setup animations
       this.mixer = new THREE.AnimationMixer(this.avatar);
@@ -92,24 +96,36 @@ class Player3D extends ThreeObj {
     this.add(this.avatarContainer);
   }
   fadeToAction(name) {
-    if (!this.animations || !this.animations[name] || this.currentActionName === name) { return; }
+    if (
+      !this.animations ||
+      !this.animations[name] ||
+      this.currentActionName === name
+    ) {
+      return;
+    }
     console.log('NEXT ACTION->', name);
     const nextAction = this.mixer.clipAction(this.animations[name]).play();
     nextAction.enabled = true;
-    if (this.action) { this.action.crossFadeTo(nextAction, 0.5, false); }
+    if (this.action) {
+      this.action.crossFadeTo(nextAction, 0.5, false);
+    }
     this.action = nextAction;
     this.currentActionName = name;
   }
   async update(props) {
     const { position, action } = props;
-    if (position) { await this.moveTo(position); }
+    if (position) {
+      await this.moveTo(position);
+    }
     switch (action) {
       case PLAYER_ACTIONS.SHOOT:
         this.shoot();
     }
   }
   async moveTo(position) {
-    if (this.position.distanceTo(position) === 0) { return; }
+    if (this.position.distanceTo(position) === 0) {
+      return;
+    }
     this.direction.subVectors(this.position, position).normalize();
     if (this.avatarContainer) {
       // https://greensock.com/docs/TweenMax/TweenMax()

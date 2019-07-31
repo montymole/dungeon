@@ -1,25 +1,41 @@
-# HORDER
+# GOALS
 
-synopsis carry treasures to exit area
+## Procedural level generation
 
+- level generation uses seeds
+- logical grid based level
+- physics representation
+
+## AI
+
+- pathfinding
+- decision trees
+
+## 2D representation, tilemap
+
+## 3D representation WebGL
+
+## 3D character animation
 
 # RECENT additions
 
 Bring in mixamo animations an characters
- https://github.com/Kupoman/blendergltf 
+https://github.com/Kupoman/blendergltf
 static see mixamo.blender, user kupoman exporter (can export action stash)
-
 
 # TODO
 
 ## AI
+
 https://en.wikipedia.org/wiki/Decision_tree
+
 https://dhtmlx.com/blog/javascript-decision-tree-visualization-tool-finding-solutions/
+
 https://github.com/lagodiuk/decision-tree-js
+
 https://github.com/mikolalysenko/l1-path-finder
+
 https://www.easystarjs.com/
-
-
 
 game modes:
 

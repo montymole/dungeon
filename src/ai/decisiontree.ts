@@ -93,14 +93,14 @@ function entropy(items, attr) {
   // of attribute
   const counter = countUniqueValues(items, attr);
 
-  let entropy = 0;
+  let e = 0;
   let p;
   for (const i in counter) {
     p = counter[i] / items.length;
-    entropy += -p * Math.log(p);
+    e += -p * Math.log(p);
   }
 
-  return entropy;
+  return e;
 }
 
 /**

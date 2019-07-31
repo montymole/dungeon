@@ -5,14 +5,14 @@ const MAX_ROOM_HEIGHT = 20;
 const MIN_NUM_ROOMS = 1;
 const MAX_NUM_ROOMS = 12;
 
-import { TILE_TYPE, SYMBOLS, } from "./constants";
-import NameGenerator from "./NameGenerator";
-import Tile from "./Tile";
-import Room from "./Room";
-import Maze from "./Maze";
-import Corridor from "./Corridor";
-import Procedural from "./Procedural";
-import { scan } from "./utils";
+import { SYMBOLS, TILE_TYPE } from './constants';
+import Corridor from './Corridor';
+import Maze from './Maze';
+import NameGenerator from './NameGenerator';
+import Procedural from './Procedural';
+import Room from './Room';
+import Tile from './Tile';
+import { scan } from './utils';
 
 export class Dungeon extends Procedural {
   tilemap: any = {};
@@ -20,15 +20,18 @@ export class Dungeon extends Procedural {
   corridors: any = [];
   nameGenerator: any = new NameGenerator(this.seed);
 
-  tileAt (x: number, y: number) {
+  tileAt(x: number, y: number) {
     const { tilemap } = this;
     return tilemap[`x${x}y${y}`] || new Tile(x, y, TILE_TYPE.EMPTY);
   }
 
-  checkOverlap (r, m = 0) {
+  checkOverlap(r, m = 0) {
     let overlaps = false;
     scan({
-      x: r.x - m, y: r.y - m, w: r.w + m * 2, h: r.h + m * 2,
+      x: r.x - m,
+      y: r.y - m,
+      w: r.w + m * 2,
+      h: r.h + m * 2,
       onTile: (k, x, y) => {
         const at = this.tileAt(x, y);
         if (at.type !== TILE_TYPE.EMPTY) {
@@ -39,12 +42,25 @@ export class Dungeon extends Procedural {
     return overlaps;
   }
 
-  testMaze (x, y, w, h) {
-    new Maze({ x, y, w, h, id: 1, seed: this.seed, dungeon: this, name: 'maze' });
+  testMaze(x, y, w, h) {
+    new Maze({
+      x,
+      y,
+      w,
+      h,
+      id: 1,
+      seed: this.seed,
+      dungeon: this,
+      name: 'maze'
+    });
   }
 
-
-  createArea (x: number, y: number, maxNumRooms: number = MAX_NUM_ROOMS, precalculatedFOV: boolean = false) {
+  createArea(
+    x: number,
+    y: number,
+    maxNumRooms: number = MAX_NUM_ROOMS,
+    precalculatedFOV: boolean = false
+  ) {
     const { rooms, corridors } = this;
     const numRooms = MIN_NUM_ROOMS + this.randomInt(maxNumRooms);
     const numCorridors = numRooms;
@@ -67,14 +83,19 @@ export class Dungeon extends Procedural {
       const room2 = rooms[this.randomInt(rooms.length)];
       const [sx, sy] = room1.center;
       const [ex, ey] = room2.center;
-      corridors.push(new Corridor({
-        sx, sy, ex, ey,
-        seed: this.seed + corridors.length,
-        dungeon: this
-      }));
+      corridors.push(
+        new Corridor({
+          sx,
+          sy,
+          ex,
+          ey,
+          seed: this.seed + corridors.length,
+          dungeon: this
+        })
+      );
     }
     // add walls to corridors
-    corridors.forEach(c => c.addWalls());
+    corridors.forEach((c) => c.addWalls());
 
     // add exits
     const firstRoom = rooms[0];
@@ -91,15 +112,18 @@ export class Dungeon extends Procedural {
     lastRoom.stairsDown.setType(TILE_TYPE.STAIRS_DOWN);
 
     // add items to rooms
-    rooms.forEach(r => r.addItems());
+    rooms.forEach((r) => r.addItems());
   }
 
-  getArea (x: number, y: number, w: number, h: number) {
+  getArea(x: number, y: number, w: number, h: number) {
     const { seed, rooms, corridors, tilemap } = this;
     const tiles = {};
     scan({
-      x, y, w, h,
-      onTile: k => {
+      x,
+      y,
+      w,
+      h,
+      onTile: (k) => {
         const tile = tilemap[k];
         tiles[k] = tile;
       }
@@ -107,23 +131,39 @@ export class Dungeon extends Procedural {
     return { seed, rooms, tiles };
   }
 
-  tiledAreaDimensions (tiles) {
-    const area = { x1: tiles[0].x, y1: tiles[0].y, x2: tiles[0].x, y2: tiles[0].y };
-    tiles.forEach(t => {
-      if (t.x < area.x1) area.x1 = t.x;
-      if (t.y < area.y1) area.y1 = t.y;
-      if (t.x > area.x2) area.x2 = t.x;
-      if (t.y > area.y2) area.y2 = t.y;
+  tiledAreaDimensions(tiles) {
+    const area = {
+      x1: tiles[0].x,
+      y1: tiles[0].y,
+      x2: tiles[0].x,
+      y2: tiles[0].y
+    };
+    tiles.forEach((t) => {
+      if (t.x < area.x1) {
+        area.x1 = t.x;
+      }
+      if (t.y < area.y1) {
+        area.y1 = t.y;
+      }
+      if (t.x > area.x2) {
+        area.x2 = t.x;
+      }
+      if (t.y > area.y2) {
+        area.y2 = t.y;
+      }
     });
     return area;
   }
 
-  toString (x: number, y: number, w: number, h: number) {
+  toString(x: number, y: number, w: number, h: number) {
     const { tilemap, rooms } = this;
-    let r = "";
+    let r = '';
     scan({
-      x, y, w, h,
-      onTile: k => {
+      x,
+      y,
+      w,
+      h,
+      onTile: (k) => {
         const tile = tilemap[k];
         if (!tile) {
           r += SYMBOLS[TILE_TYPE.EMPTY];
@@ -151,7 +191,7 @@ export class Dungeon extends Procedural {
       },
       onNextRow: () => {
         console.log(r);
-        r = "";
+        r = '';
       }
     });
   }

@@ -60,7 +60,9 @@ class Actor3D extends THREE.Object3D {
         }
       }
     }
-    if (scale) { this.scale.set(scale.x, scale.y, scale.z); }
+    if (scale) {
+      this.scale.set(scale.x, scale.y, scale.z);
+    }
     this.add(this.mesh);
     // physics
     if (mass !== null) {
@@ -69,10 +71,16 @@ class Actor3D extends THREE.Object3D {
         shape,
         position: new CANNON.Vec3(position.x, position.y, position.z)
       });
-      if (onCollide) { this.body.addEventListener('collide', onCollide); }
-      if (world && world.physics) { world.physics.addBody(this.body); }
+      if (onCollide) {
+        this.body.addEventListener('collide', onCollide);
+      }
+      if (world && world.physics) {
+        world.physics.addBody(this.body);
+      }
     }
-    if (world && world.scene) { world.scene.add(this); }
+    if (world && world.scene) {
+      world.scene.add(this);
+    }
   }
   update(props) {
     const { position, rotation } = props;

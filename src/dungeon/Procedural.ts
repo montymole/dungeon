@@ -1,5 +1,5 @@
-import * as randomSeed from "random-seed";
-import { RANDOM_SEED } from "./constants";
+import * as randomSeed from 'random-seed';
+import { RANDOM_SEED } from './constants';
 
 export default class Procedural {
   seed: string;
@@ -8,10 +8,10 @@ export default class Procedural {
     this.seed = seed;
     this.random = new randomSeed(this.seed);
   }
-  rollChance (c: number) {
+  rollChance(c: number) {
     return this.random(100) <= c;
   }
-  randomInt (n) {
+  randomInt(n) {
     return Math.round(this.random(n));
   }
 }

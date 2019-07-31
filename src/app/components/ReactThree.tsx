@@ -1,3 +1,4 @@
+declare var global: any;
 /* ----------------------------------------------------------------------*/
 /* react part
 /* ----------------------------------------------------------------------*/
@@ -17,7 +18,9 @@ export abstract class ReactThree extends React.Component<any, any> {
   }
   componentWillUnmount() {
     if (this.obj3d && this.obj3d.destroy) {
-      if (this.element) { this.element.remove(); }
+      if (this.element) {
+        this.element.remove();
+      }
       this.obj3d.destroy();
       delete this.obj3d;
       delete this.element;
@@ -29,7 +32,9 @@ export abstract class ReactThree extends React.Component<any, any> {
     if (!this.obj3d && world) {
       this.obj3d = new this.threeClass({ element, ...this.props });
     } else {
-      if (this.obj3d && this.obj3d.update) { this.obj3d.update({ ...this.props }); }
+      if (this.obj3d && this.obj3d.update) {
+        this.obj3d.update({ ...this.props });
+      }
     }
   }
   render() {
@@ -102,7 +107,9 @@ export abstract class ThreeObj extends THREE.Object3D {
     if (this.glbSrc && !this.glb) {
       this.glb = await this.loadGlb(this.glbSrc);
     }
-    if (world && world.scene) { world.scene.add(this); }
+    if (world && world.scene) {
+      world.scene.add(this);
+    }
   }
 
   destroy() {
