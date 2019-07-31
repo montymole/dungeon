@@ -1,7 +1,7 @@
-import { BaseController } from "./classes";
+import { BaseController } from './classes';
 
 export default class VersionController extends BaseController {
-  static routes = ["/version"];
+  static routes = ['/version'];
   async response() {
     return {
       node: process.version,

@@ -40,7 +40,7 @@ class Actor3D extends THREE.Object3D {
         break;
       case 'CUBE':
       default:
-        geometry = new THREE.CubeGeometry(2, 2, 2);
+        geometry = new THREE.BoxGeometry(2, 2, 2);
         shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
         this.mesh = new THREE.Mesh(geometry, this.material);
         break;

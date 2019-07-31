@@ -1,4 +1,3 @@
-import { start } from 'repl';
 import { Dungeon } from '../../dungeon/DungeonGenerator';
 import { PathFinder } from '../../dungeon/PathFinder';
 import { DungeonSave } from '../models/DungeonSave';
@@ -41,7 +40,6 @@ export class SavedDungeons extends BaseController {
     }
   }
 }
-
 export class FindPath extends BaseController {
   static routes = ['POST /dungeon/path'];
   async response() {

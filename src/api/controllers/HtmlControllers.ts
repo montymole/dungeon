@@ -1,8 +1,8 @@
 import { BaseController } from './classes';
 
 // html page template
-function html (opts: any): any {
-  return (`
+function html(opts: any): any {
+  return `
 <!DOCTYPE html>
 <html>
   <head>
@@ -15,15 +15,15 @@ function html (opts: any): any {
     <div id="root"><!--APP--></div>
     <script src="/fmodstudio.js"></script>
     <script src="${opts.appSrc}"></script>
-  </body> 
+  </body>
 </html>
-`);
+`;
 }
 
 export class IndexController extends BaseController {
   // all these are bind to same react app with client side routing
   static routes = ['/'];
-  async response () {
+  async response() {
     const opts = {
       title: process.env.npm_package_name,
       version: process.env.npm_package_version,
