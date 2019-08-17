@@ -8,3 +8,4 @@ export * from './Hud';
 export * from './MiniMap';
 export * from './RoomDebug';
 export * from './ItemDebug';
+export * from './Ground';

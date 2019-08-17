@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-global.THREE = THREE;
+(global as any).THREE = THREE;
 import * as TweenMax from 'gsap/umd/TweenMax';
 import { ReactThree } from './ReactThree';
 import { World } from './World';
@@ -32,7 +32,9 @@ class Item3D extends THREE.Object3D {
   }
   update(props) {
     const { position } = props;
-    if (position) { this.moveTo(position); }
+    if (position) {
+      this.moveTo(position);
+    }
   }
   moveTo(position) {
     TweenMax.to(this.position, 0.5, position);

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { TILE_TYPE } from '../../dungeon/constants';
 import { CSSActor, Dungeon, Hud, Item, ItemDebug, MiniMap, Player, RoomDebug, World } from './';
 
-const DEBUG = false;
+const DEBUG = true;
 
 @observer
 export class Game extends React.Component<any, any> {

@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 import * as React from 'react';
 import * as THREE from 'three';
-global.THREE = THREE;
+(global as any).THREE = THREE;
 
 import '../../../node_modules/three/examples/js/renderers/CSS3DRenderer';
 
@@ -102,7 +102,7 @@ export class World extends React.Component<any, any> {
     raycaster.setFromCamera(mouse, this.camera);
     const intersects = raycaster.intersectObjects(this.scene.children, true);
     if (intersects.length) {
-      intersects.some((i) => !i.object.onClick || i.object.onClick(i));
+      // intersects.some((i) => !i.object.onClick || i.object.onClick(i));
     }
   }
 
