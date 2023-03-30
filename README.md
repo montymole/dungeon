@@ -1,6 +1,4 @@
-# HORDER
-
-synopsis carry treasures to exit area
+this is work in progress....
 
 
 # RECENT additions
